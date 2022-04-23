@@ -2,6 +2,7 @@ import BaseSymbol from "./BaseSymbol";
 import * as MathFunctions from "./functions";
 import UnknownSymbol from "./UnknownSymbol";
 import Formula from "./Formula";
+import NumberSymbol from "./NumberSymbol";
 
 export default class Symbols {
   private static repo: {
@@ -13,12 +14,14 @@ export default class Symbols {
   }
 
   static makeSymbol(value: string | number, parent: Formula): BaseSymbol {
-    const name = value.toString(),
-      makeSymbolFn = this.repo[name];
+    if (typeof value == "number") {
+      return new NumberSymbol(value.toString());
+    }
+    const makeSymbolFn = this.repo[value];
     if (makeSymbolFn) {
       return makeSymbolFn(parent);
     } else {
-      return new UnknownSymbol(name);
+      return new UnknownSymbol(value);
     }
   }
 }

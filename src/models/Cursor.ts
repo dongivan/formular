@@ -3,6 +3,7 @@ import Symbols from "./Symbols";
 import MathFunction from "./MathFunction";
 import Operator from "./Operator";
 import Placeholder from "./controls/Placeholder";
+import NumberSymbol from "./NumberSymbol";
 
 export default class Cursor {
   formula: Formula;
@@ -14,6 +15,13 @@ export default class Cursor {
   }
 
   insertSymbol(symbolName: string | number): void {
+    if (typeof symbolName == "number") {
+      const prevSymbol = this.formula[this.position - 1];
+      if (prevSymbol instanceof NumberSymbol) {
+        prevSymbol.append(symbolName);
+        return;
+      }
+    }
     const symbol = Symbols.makeSymbol(symbolName, this.formula);
     if (this.formula[this.position] instanceof Placeholder) {
       this.formula.splice(this.position, 1);
@@ -104,6 +112,20 @@ export default class Cursor {
         } else {
           newPosition = this.position - 1;
         }
+      } else if (prevSymbol instanceof NumberSymbol) {
+        const tail = parseInt(prevSymbol.pop());
+        newPosition = this.position;
+        if (prevSymbol.length == 0) {
+          this.formula.splice(this.position - 1, 1);
+          newPosition -= 1;
+        }
+        const currentSymbol = this.formula[newPosition];
+        if (currentSymbol instanceof NumberSymbol) {
+          currentSymbol.unshift(tail);
+        } else {
+          const numberSymbol = Symbols.makeSymbol(tail, this.formula);
+          this.formula.splice(newPosition, 0, numberSymbol);
+        }
       } else {
         newPosition = this.position - 1;
       }
@@ -136,6 +158,20 @@ export default class Cursor {
           } else {
             newPosition = this.position + 1;
           }
+        }
+      } else if (currentSymbol instanceof NumberSymbol) {
+        const head = parseInt(currentSymbol.shift());
+        newPosition = this.position;
+        if (currentSymbol.length == 0) {
+          this.formula.splice(this.position, 1);
+        }
+        const prevSymbol = this.formula[newPosition - 1];
+        if (prevSymbol instanceof NumberSymbol) {
+          prevSymbol.append(head);
+        } else {
+          const numberSymbol = Symbols.makeSymbol(head, this.formula);
+          this.formula.splice(newPosition, 0, numberSymbol);
+          newPosition += 1;
         }
       } else {
         newPosition = this.position + 1;
