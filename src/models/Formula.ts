@@ -35,13 +35,7 @@ export default class Formula extends Array<GenericSymbol> {
 
   push(...items: GenericSymbol[]): number {
     items.forEach((item) => (item.formula = this));
-    console.log("before push", this.length);
     const result = super.push(...items);
-    console.log("pushed", this.length);
-    console.log("0", this[0]);
-    if (this[1]) {
-      console.log("1", this[1]);
-    }
     return result;
   }
 

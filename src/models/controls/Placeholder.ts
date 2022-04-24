@@ -9,7 +9,6 @@ export default class Placeholder extends GenericSymbol {
     super(formula, "placeholder");
     this.id = Placeholder.ID;
     Placeholder.ID += 1;
-    console.log("placeholder", this.id, "created");
   }
 
   toString(): string {
@@ -23,7 +22,6 @@ export default class Placeholder extends GenericSymbol {
   insertOnRight(symbolName: string | number): GenericSymbol {
     const newSymbol = super.insertOnRight(symbolName);
     if (this.position > 0) {
-      console.log("delete after insert on right");
       this.delete();
     }
     return newSymbol;

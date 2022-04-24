@@ -36,7 +36,6 @@ export default class GenericSymbol {
   }
 
   delete(): void {
-    console.log("delete", this.position);
     this.formula?.delete(this.position);
     this.formula = undefined;
   }
