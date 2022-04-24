@@ -1,6 +1,6 @@
-import BaseSymbol from "../BaseSymbol";
+import GenericSymbol from "../GenericSymbol";
 
-export default class Placeholder extends BaseSymbol {
+export default class Placeholder extends GenericSymbol {
   constructor() {
     super("placeholder");
   }

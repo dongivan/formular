@@ -1,8 +1,8 @@
-import BaseSymbol from "./BaseSymbol";
+import GenericSymbol from "./GenericSymbol";
 import Cursor from "./Cursor";
 import Formula from "./Formula";
 
-export default abstract class MathFunction extends BaseSymbol {
+export default abstract class MathFunction extends GenericSymbol {
   needLeft = false;
   params: Formula[];
   parentFormula: Formula;
