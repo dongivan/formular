@@ -4,7 +4,7 @@
     <textarea v-model="latexTextRef" style="width: 100%"></textarea>
   </div>
   <div>formula: {{ formula }}</div>
-  <div>cursor position: {{ cursor.position }}</div>
+  <div>cursor point at: {{ cursor.symbol }}</div>
   <div class="latex-container" ref="latexEleRef"></div>
   <!--HelloWorld msg="Welcome to Your Vue.js App12"/-->
 
@@ -28,7 +28,7 @@ import { Cursor, Formula } from "./models";
 import katex from "katex";
 
 const formula = ref(new Formula());
-const cursor = ref(new Cursor(formula.value, 0));
+const cursor = ref(new Cursor(formula.value[0]));
 
 const latexTextRef = computed(() => {
   return formula.value.renderLatex(cursor.value);

@@ -6,22 +6,22 @@ import NumberSymbol from "./NumberSymbol";
 
 export default class Symbols {
   private static repo: {
-    [key: string]: (parent: Formula) => GenericSymbol;
+    [key: string]: (formula: Formula) => GenericSymbol;
   } = {};
 
   static init(): void {
-    this.repo["power"] = (parent: Formula) => new MathFunctions.Power(parent);
+    this.repo["power"] = (formula: Formula) => new MathFunctions.Power(formula);
   }
 
-  static makeSymbol(value: string | number, parent: Formula): GenericSymbol {
+  static makeSymbol(formula: Formula, value: string | number): GenericSymbol {
     if (typeof value == "number") {
-      return new NumberSymbol(value.toString());
+      return new NumberSymbol(formula, value.toString());
     }
     const makeSymbolFn = this.repo[value];
     if (makeSymbolFn) {
-      return makeSymbolFn(parent);
+      return makeSymbolFn(formula);
     } else {
-      return new UnknownSymbol(value);
+      return new UnknownSymbol(formula, value);
     }
   }
 }
