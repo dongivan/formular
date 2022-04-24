@@ -47,7 +47,6 @@ export default class NumberSymbol extends GenericSymbol {
 
       if (rightSymbol.length == 0) {
         rightSymbol.delete();
-        super.sendCursorToRight(cursor);
       }
     } else {
       super.sendCursorToRight(cursor);
