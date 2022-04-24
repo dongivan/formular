@@ -13,6 +13,9 @@ export default class NumberSymbol extends GenericSymbol {
   }
 
   sendCursorToLeft(cursor: Cursor): void {
+    if (!this.formula) {
+      return;
+    }
     if (cursor.symbol != this) {
       cursor.symbol = this;
     }
@@ -31,6 +34,9 @@ export default class NumberSymbol extends GenericSymbol {
   }
 
   sendCursorToRight(cursor: Cursor): void {
+    if (!this.formula) {
+      return;
+    }
     if (cursor.symbol != this) {
       cursor.symbol = this;
     }
@@ -49,6 +55,9 @@ export default class NumberSymbol extends GenericSymbol {
   }
 
   receiveCursorFromLeft(cursor: Cursor): void {
+    if (!this.formula) {
+      return;
+    }
     if (this.length == 1) {
       super.receiveCursorFromLeft(cursor);
     } else {

@@ -23,15 +23,15 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref, watch } from "vue";
-import { Cursor, Formula } from "./models";
+import { computed, onMounted, reactive, ref, watch } from "vue";
+import { Formula } from "./models";
 import katex from "katex";
 
-const formula = ref(new Formula());
-const cursor = ref(new Cursor(formula.value[0]));
+const formula = reactive(new Formula());
+const cursor = formula.cursor;
 
 const latexTextRef = computed(() => {
-  return formula.value.renderLatex(cursor.value);
+  return formula.renderLatex();
 });
 
 const latexEleRef = ref();

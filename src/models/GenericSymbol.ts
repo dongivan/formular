@@ -3,7 +3,7 @@ import Formula from "./Formula";
 import Symbols from "./Symbols";
 
 export default class GenericSymbol {
-  formula: Formula;
+  formula: Formula | undefined | null;
   value: string;
   needLeft = false;
   needRight = false;
@@ -22,30 +22,42 @@ export default class GenericSymbol {
   }
 
   get position(): number {
-    return this.formula.indexOf(this);
+    return this.formula ? this.formula.indexOf(this) : -1;
   }
 
-  get leftSymbol(): GenericSymbol | null {
+  get leftSymbol(): GenericSymbol | undefined {
     const pos = this.position;
-    return pos == 0 ? null : this.formula[pos - 1];
+    return this.formula ? this.formula[pos - 1] : undefined;
   }
 
-  get rightSymbol(): GenericSymbol | null {
+  get rightSymbol(): GenericSymbol | undefined {
     const pos = this.position;
-    return pos == this.formula.length - 1 ? null : this.formula[pos + 1];
+    return this.formula ? this.formula[pos + 1] : undefined;
   }
 
   delete(): void {
-    this.formula.delete(this.position);
+    console.log("delete", this.position);
+    this.formula?.delete(this.position);
+    this.formula = undefined;
   }
 
   replaceBy(newSymbol: GenericSymbol): void {
-    this.formula.replace(this.position, newSymbol);
+    this.formula?.replace(this.position, newSymbol);
+    this.formula = undefined;
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  afterInsert(leftSymbol: GenericSymbol): GenericSymbol {
+    return this;
   }
 
   insertOnRight(symbolName: string | number): GenericSymbol {
-    const newSymbol = Symbols.makeSymbol(this.formula, symbolName);
+    if (!this.formula) {
+      throw new Error("Math Symbol is not in a Formula!");
+    }
+    let newSymbol = Symbols.makeSymbol(this.formula, symbolName);
     this.formula.insert(this.position + 1, newSymbol);
+    newSymbol = newSymbol.afterInsert(this);
     return newSymbol;
   }
 
@@ -57,7 +69,7 @@ export default class GenericSymbol {
     if (leftSymbol) {
       leftSymbol.receiveCursorFromRight(cursor);
     } else {
-      if (this.formula.parentFunction) {
+      if (this.formula?.parentFunction) {
         const parentFunctionParams = this.formula.parentFunction.params;
         const formulaIndex = parentFunctionParams.indexOf(this.formula);
         if (formulaIndex == 0) {
@@ -80,7 +92,7 @@ export default class GenericSymbol {
     if (rightSymbol) {
       rightSymbol.receiveCursorFromLeft(cursor);
     } else {
-      if (this.formula.parentFunction) {
+      if (this.formula?.parentFunction) {
         const parentFunctionParams = this.formula.parentFunction.params;
         const formulaIndex = parentFunctionParams.indexOf(this.formula);
         if (formulaIndex == parentFunctionParams.length - 1) {
@@ -102,10 +114,17 @@ export default class GenericSymbol {
     cursor.symbol = this;
   }
 
+  toLatex(): string {
+    return this.value;
+  }
+
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  renderLatex(cursor?: Cursor): string {
+  renderLatex(): string {
     return (
-      this.value + (cursor && cursor.symbol == this ? cursor.renderLatex() : "")
+      this.toLatex() +
+      (this.formula?.cursor.symbol == this
+        ? this.formula.cursor.renderLatex()
+        : "")
     );
   }
 }

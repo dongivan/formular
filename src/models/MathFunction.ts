@@ -9,13 +9,14 @@ export default class MathFunction extends GenericSymbol {
     super(formula, value);
     this.formula = formula;
     this.params = Array.from({ length: paramsCount }).map(
-      () => new Formula(this)
+      () => new Formula(formula.rootFormula, this)
     );
   }
 
   toJSON(): string {
-    return `[${this.value}, ${this.params
-      .map((formula) => formula.toJSON())
+    return `[${this.value}, ${new Array(this.params.length)
+      .fill(null)
+      .map((_, index) => this.params[index].toJSON())
       .join(", ")}]`;
   }
 
@@ -32,13 +33,11 @@ export default class MathFunction extends GenericSymbol {
     this.params[0][0].receiveCursorFromLeft(cursor);
   }
 
-  renderLatex(cursor?: Cursor): string {
+  toLatex(): string {
     let latex = this.value;
     for (const formula of this.params) {
-      latex += "{" + formula.renderLatex(cursor) + "}";
+      latex += "{" + formula.renderLatex() + "}";
     }
-    return (
-      latex + (cursor && cursor.symbol == this ? cursor.renderLatex() : "")
-    );
+    return latex;
   }
 }
