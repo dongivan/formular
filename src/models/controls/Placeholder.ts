@@ -27,12 +27,16 @@ export default class Placeholder extends GenericSymbol {
     return newSymbol;
   }
 
+  toLatex(): string {
+    return "{\\htmlClass{formular-placeholder}{\\ ?\\ }}";
+  }
+
   renderLatex(): string {
     const cursor = this.formula?.cursor;
     return cursor && cursor.symbol == this
       ? cursor.renderLatex()
       : this.visible
-      ? "{\\htmlClass{formular-placeholder}{\\ ?\\ }}"
+      ? this.toLatex()
       : "";
   }
 
