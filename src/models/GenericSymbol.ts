@@ -1,6 +1,5 @@
 import Cursor from "./Cursor";
 import Formula from "./Formula";
-import MathFunction from "./MathFunction";
 import Symbols from "./Symbols";
 
 export default class GenericSymbol {
@@ -47,11 +46,7 @@ export default class GenericSymbol {
   insertOnRight(symbolName: string | number): GenericSymbol {
     const newSymbol = Symbols.makeSymbol(this.formula, symbolName);
     this.formula.insert(this.position + 1, newSymbol);
-    if (newSymbol instanceof MathFunction) {
-      return newSymbol.params[0][0];
-    } else {
-      return newSymbol;
-    }
+    return newSymbol;
   }
 
   sendCursorToLeft(cursor: Cursor): void {

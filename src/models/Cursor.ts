@@ -10,7 +10,7 @@ export default class Cursor {
 
   insertSymbol(symbolName: string | number): void {
     const newSymbol = this.symbol.insertOnRight(symbolName);
-    this.symbol = newSymbol;
+    newSymbol.receiveCursorFromLeft(this);
   }
 
   moveLeft(): void {
