@@ -1,6 +1,6 @@
-import BaseSymbol from "./BaseSymbol";
+import GenericSymbol from "./GenericSymbol";
 
-export default class NumberSymbol extends BaseSymbol {
+export default class NumberSymbol extends GenericSymbol {
   append(value: number) {
     this.value += value.toString();
   }

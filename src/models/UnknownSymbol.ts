@@ -1,3 +1,3 @@
-import BaseSymbol from "./BaseSymbol";
+import GenericSymbol from "./GenericSymbol";
 
-export default class UnknownSymbol extends BaseSymbol {}
+export default class UnknownSymbol extends GenericSymbol {}

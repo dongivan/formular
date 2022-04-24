@@ -1,6 +1,6 @@
-import BaseSymbol from "./BaseSymbol";
+import GenericSymbol from "./GenericSymbol";
 
-export default abstract class Operator extends BaseSymbol {
+export default abstract class Operator extends GenericSymbol {
   static NEED_LEFT = 2;
   static NEED_RIGHT = 1;
   static NEED_BOTH = 3;

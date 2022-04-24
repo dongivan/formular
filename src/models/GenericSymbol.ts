@@ -1,6 +1,6 @@
 import Cursor from "./Cursor";
 
-export default abstract class BaseSymbol {
+export default class GenericSymbol {
   value: string;
 
   constructor(value: string) {

@@ -1,9 +1,9 @@
-import BaseSymbol from "./BaseSymbol";
+import GenericSymbol from "./GenericSymbol";
 import Cursor from "./Cursor";
 import Placeholder from "./controls/Placeholder";
 import MathFunction from "./MathFunction";
 
-export default class Formula extends Array<BaseSymbol> {
+export default class Formula extends Array<GenericSymbol> {
   parentFunction: MathFunction | undefined;
 
   constructor(parent?: MathFunction) {
