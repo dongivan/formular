@@ -19,6 +19,7 @@
     <button @click="cursor.insertSymbol('power')">^</button>
     <button @click="cursor.moveLeft()">&lt;-</button>
     <button @click="cursor.moveRight()">-&gt;</button>
+    <button @click="cursor.deleteSymbol()">Backspace!</button>
   </div>
 </template>
 

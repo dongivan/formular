@@ -12,10 +12,20 @@ export default class NumberSymbol extends GenericSymbol {
     }
   }
 
-  sendCursorToLeft(cursor: Cursor): void {
+  deleteFromRight(): GenericSymbol {
+    if (this.length == 1) {
+      return super.deleteFromRight();
+    } else {
+      this.pop();
+      return this;
+    }
+  }
+
+  sendCursorToLeft(): void {
     if (!this.formula) {
       return;
     }
+    const cursor = this.formula.rootFormula.cursor;
     if (cursor.symbol != this) {
       cursor.symbol = this;
     }
@@ -28,15 +38,16 @@ export default class NumberSymbol extends GenericSymbol {
       this.formula.insert(this.position + 1, newSymbol);
     }
     if (this.length == 0) {
-      super.sendCursorToLeft(cursor);
-      this.delete();
+      super.sendCursorToLeft();
+      this.detach();
     }
   }
 
-  sendCursorToRight(cursor: Cursor): void {
+  sendCursorToRight(): void {
     if (!this.formula) {
       return;
     }
+    const cursor = this.formula.rootFormula.cursor;
     if (cursor.symbol != this) {
       cursor.symbol = this;
     }
@@ -46,10 +57,10 @@ export default class NumberSymbol extends GenericSymbol {
       this.append(head);
 
       if (rightSymbol.length == 0) {
-        rightSymbol.delete();
+        rightSymbol.detach();
       }
     } else {
-      super.sendCursorToRight(cursor);
+      super.sendCursorToRight();
     }
   }
 

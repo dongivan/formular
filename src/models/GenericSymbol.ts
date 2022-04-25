@@ -3,7 +3,7 @@ import Formula from "./Formula";
 import Symbols from "./Symbols";
 
 export default class GenericSymbol {
-  formula: Formula | undefined | null;
+  formula: Formula;
   value: string;
   needLeft = false;
   needRight = false;
@@ -22,27 +22,23 @@ export default class GenericSymbol {
   }
 
   get position(): number {
-    return this.formula ? this.formula.indexOf(this) : -1;
+    return this.formula.indexOf(this);
   }
 
   get leftSymbol(): GenericSymbol | undefined {
-    const pos = this.position;
-    return this.formula ? this.formula[pos - 1] : undefined;
+    return this.formula[this.position - 1];
   }
 
   get rightSymbol(): GenericSymbol | undefined {
-    const pos = this.position;
-    return this.formula ? this.formula[pos + 1] : undefined;
+    return this.formula[this.position + 1];
   }
 
-  delete(): void {
-    this.formula?.delete(this.position);
-    this.formula = undefined;
+  detach(): void {
+    this.formula.delete(this.position);
   }
 
-  replaceBy(newSymbol: GenericSymbol): void {
-    this.formula?.replace(this.position, newSymbol);
-    this.formula = undefined;
+  replaceBy(...newSymbols: GenericSymbol[] | Formula): void {
+    this.formula.replace(this.position, ...newSymbols);
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -60,49 +56,24 @@ export default class GenericSymbol {
     return newSymbol;
   }
 
-  sendCursorToLeft(cursor: Cursor): void {
-    if (cursor.symbol !== this) {
-      cursor.symbol = this;
-    }
-    const leftSymbol = this.leftSymbol;
-    if (leftSymbol) {
-      leftSymbol.receiveCursorFromRight(cursor);
+  deleteFromRight(): GenericSymbol {
+    const operation = this.formula.getOperation("deleteFromRight", this);
+    const symbol = operation?.run(this);
+    if (symbol instanceof GenericSymbol) {
+      return symbol;
     } else {
-      if (this.formula?.parentFunction) {
-        const parentFunctionParams = this.formula.parentFunction.params;
-        const formulaIndex = parentFunctionParams.indexOf(this.formula);
-        if (formulaIndex == 0) {
-          const parentLeftSymbol = this.formula.parentFunction.leftSymbol;
-          /* the first symbol of a formula MUST be a Placeholder */
-          parentLeftSymbol?.receiveCursorFromRight(cursor);
-        } else {
-          const prevFormula = parentFunctionParams[formulaIndex - 1];
-          prevFormula[prevFormula.length - 1].receiveCursorFromRight(cursor);
-        }
-      }
+      throw new Error("DeleteFromRight should return a GenericSymbol object!");
     }
   }
 
-  sendCursorToRight(cursor: Cursor): void {
-    if (cursor.symbol !== this) {
-      cursor.symbol = this;
-    }
-    const rightSymbol = this.rightSymbol;
-    if (rightSymbol) {
-      rightSymbol.receiveCursorFromLeft(cursor);
-    } else {
-      if (this.formula?.parentFunction) {
-        const parentFunctionParams = this.formula.parentFunction.params;
-        const formulaIndex = parentFunctionParams.indexOf(this.formula);
-        if (formulaIndex == parentFunctionParams.length - 1) {
-          /* parent(MathFunction) should receive cursor like from right */
-          this.formula.parentFunction.receiveCursorFromRight(cursor);
-        } else {
-          const prevFormula = parentFunctionParams[formulaIndex + 1];
-          prevFormula[0].receiveCursorFromLeft(cursor);
-        }
-      }
-    }
+  sendCursorToLeft(): void {
+    const operation = this.formula.getOperation("sendCursorToLeft", this);
+    operation?.run(this);
+  }
+
+  sendCursorToRight(): void {
+    const operation = this.formula.getOperation("sendCursorToRight", this);
+    operation?.run(this);
   }
 
   receiveCursorFromRight(cursor: Cursor): void {
@@ -121,7 +92,7 @@ export default class GenericSymbol {
   renderLatex(): string {
     return (
       this.toLatex() +
-      (this.formula?.cursor.symbol == this
+      (this.formula.cursor.symbol == this
         ? this.formula.cursor.renderLatex()
         : "")
     );

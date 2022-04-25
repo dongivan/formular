@@ -1,4 +1,3 @@
-// import Symbols from "./Symbols";
 import GenericSymbol from "./GenericSymbol";
 
 export default class Cursor {
@@ -15,12 +14,17 @@ export default class Cursor {
     }
   }
 
+  deleteSymbol(): void {
+    const symbol = this.symbol.deleteFromRight();
+    this.symbol = symbol;
+  }
+
   moveLeft(): void {
-    this.symbol.sendCursorToLeft(this);
+    this.symbol.sendCursorToLeft();
   }
 
   moveRight(): void {
-    this.symbol.sendCursorToRight(this);
+    this.symbol.sendCursorToRight();
   }
 
   renderLatex(): string {

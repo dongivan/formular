@@ -12,7 +12,7 @@ export default class Placeholder extends GenericSymbol {
   }
 
   toString(): string {
-    return `placeholder<${this.id}>`;
+    return `_<${this.id}>`;
   }
 
   toJSON(): string {
@@ -22,7 +22,7 @@ export default class Placeholder extends GenericSymbol {
   insertOnRight(symbolName: string | number): GenericSymbol {
     const newSymbol = super.insertOnRight(symbolName);
     if (this.position > 0) {
-      this.delete();
+      this.detach();
     }
     return newSymbol;
   }

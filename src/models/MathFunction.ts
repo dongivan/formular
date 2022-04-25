@@ -1,8 +1,16 @@
 import GenericSymbol from "./GenericSymbol";
 import Cursor from "./Cursor";
 import Formula from "./Formula";
+import { SymbolOperation, InFunctionOperations } from "./operations";
 
 export default class MathFunction extends GenericSymbol {
+  static PARAMS_OPERATIONS: {
+    [key: string]: SymbolOperation;
+  } = {
+    sendCursorToLeft: new InFunctionOperations.SendCursorToLeft(),
+    sendCursorToRight: new InFunctionOperations.SendCursorToRight(),
+    deleteFromRight: new InFunctionOperations.DeleteFromRight(),
+  };
   params: Formula[];
 
   constructor(formula: Formula, value: string, paramsCount: number) {
@@ -20,7 +28,22 @@ export default class MathFunction extends GenericSymbol {
       .join(", ")}]`;
   }
 
-  sendCursorToLeft(cursor: Cursor): void {
+  getParamsOperation(
+    operName: string,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    symbol: GenericSymbol
+  ): SymbolOperation | undefined {
+    return MathFunction.PARAMS_OPERATIONS[operName];
+  }
+
+  deleteFromRight(): GenericSymbol {
+    const lastFormula = this.params[this.params.length - 1];
+    const lastSymbol = lastFormula[lastFormula.length - 1];
+    return lastSymbol;
+  }
+
+  sendCursorToLeft(): void {
+    const cursor = this.formula.rootFormula.cursor;
     if (cursor.symbol !== this) {
       cursor.symbol = this;
     }

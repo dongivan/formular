@@ -2,9 +2,17 @@ import GenericSymbol from "./GenericSymbol";
 import Cursor from "./Cursor";
 import Placeholder from "./controls/Placeholder";
 import MathFunction from "./MathFunction";
+import { SymbolOperation, SimpleOperations } from "./operations";
 
 export default class Formula extends Array<GenericSymbol> {
-  rootFormula: Formula | undefined;
+  static SYMBOL_OPERATIONS: {
+    [key: string]: SymbolOperation;
+  } = {
+    sendCursorToLeft: new SimpleOperations.SendCursorToLeft(),
+    sendCursorToRight: new SimpleOperations.SendCursorToRight(),
+    deleteFromRight: new SimpleOperations.DeleteFromRight(),
+  };
+  rootFormula: Formula;
   parentFunction: MathFunction | undefined;
   cursor: Cursor;
 
@@ -20,6 +28,23 @@ export default class Formula extends Array<GenericSymbol> {
       this.rootFormula = this;
       this.cursor = new Cursor(defaultPlaceholder);
     }
+  }
+
+  getOperation(
+    operName: string,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    symbol: GenericSymbol
+  ): SymbolOperation | undefined {
+    if (this.parentFunction) {
+      const operation = this.parentFunction.getParamsOperation(
+        operName,
+        symbol
+      );
+      if (operation) {
+        return operation;
+      }
+    }
+    return Formula.SYMBOL_OPERATIONS[operName];
   }
 
   toJSON(): string {
@@ -40,25 +65,43 @@ export default class Formula extends Array<GenericSymbol> {
   }
 
   delete(pos: number) {
-    const symbol = this[pos];
-    symbol.formula = undefined;
+    if (pos < 0) {
+      return;
+    }
     for (let i = pos; i < this.length - 1; i++) {
       this[i] = this[i + 1];
     }
     this.pop();
   }
 
-  replace(pos: number, newSymbol: GenericSymbol) {
-    this[pos] = newSymbol;
-    newSymbol.formula = this;
+  replace(pos: number, ...newSymbols: GenericSymbol[]) {
+    const first = newSymbols.shift();
+    if (!first) {
+      this.delete(pos);
+      return;
+    }
+    first.formula = this;
+    this[pos] = first;
+    this.insert(pos + 1, ...newSymbols);
   }
 
-  insert(pos: number, newSymbol: GenericSymbol) {
-    for (let i = this.length; i > pos; i--) {
-      this[i] = this[i - 1];
+  insert(pos: number, ...newSymbols: GenericSymbol[]): void {
+    const insertLength = newSymbols.length;
+    if (insertLength == 0) {
+      return;
     }
-    this[pos] = newSymbol;
-    newSymbol.formula = this;
+    for (
+      let i = this.length - 1 + insertLength;
+      i > pos - 1 + insertLength;
+      i--
+    ) {
+      this[i] = this[i - insertLength];
+    }
+    for (let i = 0; i < insertLength; i++) {
+      const newSymbol = newSymbols.pop() as GenericSymbol;
+      newSymbol.formula = this;
+      this[pos + insertLength - i - 1] = newSymbol;
+    }
   }
 
   insertPlaceholder(pos: number) {
