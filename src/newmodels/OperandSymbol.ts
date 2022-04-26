@@ -1,11 +1,3 @@
-export default class OperandSymbol {
-  private _value: string;
+import MathSymbol from "./MathSymbol";
 
-  constructor(value: string) {
-    this._value = value;
-  }
-
-  toLatex(): string {
-    return this._value;
-  }
-}
+export default class OperandSymbol extends MathSymbol {}

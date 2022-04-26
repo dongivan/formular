@@ -1,40 +1,31 @@
-import Placeholder from "./operand-symbols/Placeholder";
+import Number from "./operand-symbols/Number";
 import OperandSymbol from "./OperandSymbol";
-import Formula from "./Formula";
 
 export default class Operand {
-  private _values: OperandSymbol[] = [];
-  private _formula: Formula;
+  private _list: OperandSymbol[] = [];
 
-  constructor(formula: Formula) {
-    this._values.push(new Placeholder());
-    this._formula = formula;
+  constructor(...symbols: OperandSymbol[]) {
+    symbols.forEach((symbol) => this._list.push(symbol));
   }
 
-  get formula(): Formula {
-    return this._formula;
+  push(symbol: OperandSymbol): boolean {
+    if (
+      this._list.length == 0 ||
+      (symbol instanceof Number &&
+        this._list[this._list.length - 1] instanceof Number)
+    ) {
+      this._list.push(symbol);
+      return true;
+    } else {
+      return false;
+    }
   }
 
   get length(): number {
-    return this._values.length;
-  }
-
-  get index(): number {
-    return this._formula.indexOf(this);
-  }
-
-  insert(pos: number, symbol: OperandSymbol): void {
-    this._values.splice(pos, 0, symbol);
+    return this._list.length;
   }
 
   toLatex(): string {
-    const latexes: string[] = this._values.map<string>((symbol) =>
-        symbol.toLatex()
-      ),
-      cursor = this._formula.cursor;
-    if (cursor.operand == this) {
-      latexes[cursor.pos] += cursor.toLatex();
-    }
-    return latexes.join("");
+    return this._list.map<string>((symbol) => symbol.toLatex()).join("");
   }
 }
