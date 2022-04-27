@@ -50,7 +50,6 @@ export default class InfixExpression {
         this._pushOperand(new Operand(SymbolFactory.createPlaceholder()));
       }
     }
-    console.log(this.toJSON());
   }
 
   get length(): number {
