@@ -1,8 +1,12 @@
-import Operator from "../OperatorSymbol";
+import OperatorSymbol from "../OperatorSymbol";
 
-export default class HiddenTimes extends Operator {
+export default class HiddenTimes extends OperatorSymbol {
   constructor() {
     super("");
-    this._priority = 1;
+    this._priority = 2;
+  }
+
+  toJSON(): string {
+    return "·";
   }
 }

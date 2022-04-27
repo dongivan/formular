@@ -1,18 +1,22 @@
 import Cursor from "./operand-symbols/Cursor";
 import MathSymbol from "./MathSymbol";
-import Number from "./operand-symbols/Number";
+import NumberSymbol from "./operand-symbols/NumberSymbol";
 import OperandSymbol from "./OperandSymbol";
 import HiddenTimes from "./operator-symbols/HiddenTimes";
 import Plus from "./operator-symbols/Plus";
 import Placeholder from "./operand-symbols/Placeholder";
+import LeftParen from "./operator-symbols/LeftParen";
+import RightParen from "./operator-symbols/RightParen";
 
 export default class SymbolFactory {
   private static _SYMBOL_CLASSES: {
     [key: string]: typeof MathSymbol;
   } = {
-    number: Number,
+    number: NumberSymbol,
     hidden: HiddenTimes,
     "+": Plus,
+    "(": LeftParen,
+    ")": RightParen,
   };
 
   static create(name: string | number) {
@@ -31,5 +35,9 @@ export default class SymbolFactory {
 
   static createPlaceholder(): Placeholder {
     return new Placeholder();
+  }
+
+  static createHiddenTimes(): HiddenTimes {
+    return new HiddenTimes();
   }
 }

@@ -19,6 +19,8 @@
     </button>
     <!-- <button @click="cursor.insertSymbol('power')">^</button> -->
     <button @click="symbolContainer.insertAtCursor('+')">+</button>
+    <button @click="symbolContainer.insertAtCursor('(')">(</button>
+    <button @click="symbolContainer.insertAtCursor(')')">)</button>
     <!-- <button @click="symbolContainer.insertAtCursor('-')">-</button> -->
     <!-- <button @click="symbolContainer.insertAtCursor('*')">*</button> -->
     <!-- <button @click="symbolContainer.insertAtCursor('/')">/</button> -->

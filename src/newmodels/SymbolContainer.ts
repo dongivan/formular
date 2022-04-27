@@ -1,10 +1,9 @@
 import MathSymbol from "./MathSymbol";
 import Cursor from "./operand-symbols/Cursor";
-import OperandSymbol from "./OperandSymbol";
-import Operand from "./Operand";
+import Operand from "./rpn/Operand";
 import OperatorSymbol from "./OperatorSymbol";
 import SymbolFactory from "./SymbolFactory";
-import RPNList from "./RPNList";
+import RPNGenerator from "./rpn/RPNGenerator";
 
 export default class SymbolContainer {
   private _list: MathSymbol[] = [];
@@ -25,7 +24,7 @@ export default class SymbolContainer {
     return this._list.length;
   }
 
-  get(pos: number) {
+  get(pos: number): MathSymbol | undefined {
     return this._list[pos];
   }
 
@@ -106,95 +105,14 @@ export default class SymbolContainer {
   //   }
   // }
 
-  // toRPNList(): (Operand | Operator)[] {
-  //   const RPNList: (Operand | Operator)[] = [],
-  //     stack: Operator[] = [];
-  //   let pos = 0;
-  //   while (pos < this._list.length) {
-  //     const oper = this._list[pos];
-  //     if (oper instanceof Operand) {
-  //       RPNList.push(oper);
-  //     } else if (oper instanceof Operator) {
-  //       while (stack.length > 0 && stack[0].priority >= oper.priority) {
-  //         RPNList.push(stack[0]);
-  //         stack.shift();
-  //       }
-  //       stack.unshift(oper);
-  //     }
-  //     pos += 1;
-  //   }
-  //   while (stack.length > 0) {
-  //     RPNList.push(stack[0]);
-  //     stack.shift();
-  //   }
-
-  //   return RPNList;
-  // }
-
   toRPNList(): readonly (Operand | OperatorSymbol)[] {
-    const rpnList = new RPNList(this);
-    return rpnList.output;
-    /* base on shunting yard algorithm */
-    // const rpnList: (Operand | OperatorSymbol)[] = [],
-    //   operatorStack: OperatorSymbol[] = [];
-    // let pos = 0,
-    //   operand: Operand = new Operand();
-    // while (pos < this._list.length) {
-    //   const symbol = this._list[pos];
-    //   if (symbol instanceof OperandSymbol) {
-    //     if (!operand.push(symbol)) {
-    //       rpnList.push(operand);
-    //       operand = new Operand();
-    //       this._pushOperatorIntoStack(
-    //         SymbolFactory.create("hidden") as OperatorSymbol,
-    //         operatorStack,
-    //         rpnList
-    //       );
-    //       operand.push(symbol);
-    //     }
-    //   } else if (symbol instanceof OperatorSymbol) {
-    //     if (operand.length > 0) {
-    //       rpnList.push(operand);
-    //       operand = new Operand();
-    //     }
-    //     this._pushOperatorIntoStack(symbol, operatorStack, rpnList);
-    //   }
-
-    //   pos += 1;
-    // }
-
-    // if (operand.length > 0) {
-    //   rpnList.push(operand);
-    // }
-
-    // while (operatorStack.length > 0) {
-    //   rpnList.push(operatorStack[0]);
-    //   operatorStack.shift();
-    // }
-    // return rpnList;
+    const rpn = new RPNGenerator(this);
+    return rpn.toPostfixExpression().RPNList;
   }
 
-  // private _pushOperatorIntoStack(
-  //   operator: OperatorSymbol,
-  //   operatorStack: OperatorSymbol[],
-  //   rpnList: (Operand | OperandSymbol)[]
-  // ) {
-  //   while (
-  //     operatorStack.length > 0 &&
-  //     operatorStack[0].priority >= operator.priority
-  //   ) {
-  //     rpnList.push(operatorStack[0]);
-  //     operatorStack.shift();
-  //   }
-  //   operatorStack.unshift(operator);
-  // }
-
   toLatex(): string {
-    //   const RPNList = this.toRPNList(),
     const rpnList = this.toRPNList(),
       stack: string[] = [];
-    // let latexText = "";
-    // latexText = this._list.map<string>((symbol) => symbol.toLatex()).join("");
     let pos = 0;
     while (pos < rpnList.length) {
       const oper = rpnList[pos];
@@ -219,7 +137,6 @@ export default class SymbolContainer {
 
       pos += 1;
     }
-    // return latexText;
     return stack.join("");
   }
 
