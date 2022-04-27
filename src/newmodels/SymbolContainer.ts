@@ -1,7 +1,7 @@
 import MathSymbol from "./MathSymbol";
 import Cursor from "./operand-symbols/Cursor";
 import Operand from "./rpn/Operand";
-import OperatorSymbol from "./OperatorSymbol";
+import Operator from "./rpn/Operator";
 import SymbolFactory from "./SymbolFactory";
 import RPNGenerator from "./rpn/RPNGenerator";
 
@@ -20,6 +20,10 @@ export default class SymbolContainer {
 
   get length(): number {
     return this._list.length;
+  }
+
+  get symbols(): MathSymbol[] {
+    return this._list;
   }
 
   get(pos: number): MathSymbol | undefined {
@@ -110,7 +114,7 @@ export default class SymbolContainer {
   //   }
   // }
 
-  toRPNList(): readonly (Operand | OperatorSymbol)[] {
+  toRPNList(): readonly (Operand | Operator)[] {
     const rpn = new RPNGenerator(this);
     return rpn.toPostfixExpression().RPNList;
   }
@@ -123,7 +127,7 @@ export default class SymbolContainer {
       const oper = rpnList[pos];
       if (oper instanceof Operand) {
         stack.push(oper.toLatex());
-      } else if (oper instanceof OperatorSymbol) {
+      } else if (oper instanceof Operator) {
         let latex = oper.toLatex();
         if (oper.hasRightOperand) {
           const rightOperand = stack.pop();

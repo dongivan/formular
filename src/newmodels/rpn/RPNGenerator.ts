@@ -6,10 +6,10 @@ export default class RPNGenerator {
   private _infix: InfixExpression;
 
   constructor(container: SymbolContainer) {
-    this._infix = new InfixExpression(container);
+    this._infix = new InfixExpression(container.symbols);
   }
 
   toPostfixExpression(): PostfixExpression {
-    return new PostfixExpression(this._infix);
+    return new PostfixExpression(this._infix.list);
   }
 }
