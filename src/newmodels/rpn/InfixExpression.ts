@@ -25,6 +25,16 @@ export default class InfixExpression {
 
   private _generateInfixList(symbols: MathSymbol[]) {
     const infixList: (Operand | Operator)[] = [];
+
+    if (symbols.length == 0) {
+      /* symbols list HAS NO members, just push a "placeholder" and return */
+      this._pushOperand(
+        infixList,
+        new Operand(SymbolFactory.createPlaceholder())
+      );
+      return infixList;
+    }
+
     let pos = 0,
       operandCache: Operand = new Operand();
     while (pos < symbols.length) {

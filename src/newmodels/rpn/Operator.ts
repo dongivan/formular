@@ -13,6 +13,10 @@ export default class Operator {
     this._params = val;
   }
 
+  get params(): (Operand | Operator)[][] {
+    return this._params;
+  }
+
   get hasLeftOperand(): boolean {
     return this._operator.hasLeftOperand;
   }

@@ -17,16 +17,25 @@ export default class SymbolFactory {
     "/": OperatorSymbols.Divide,
     "(": OperatorSymbols.LeftParen,
     ")": OperatorSymbols.RightParen,
+    "^": OperatorSymbols.Power,
   };
 
-  static create(name: string | number) {
+  static create(name: string | number): MathSymbol[] {
     let cls;
     if (typeof name == "number") {
       cls = SymbolFactory._SYMBOL_CLASSES["number"];
     } else {
       cls = SymbolFactory._SYMBOL_CLASSES[name] || OperandSymbol;
     }
-    return new cls(name);
+    const symbol = new cls(name),
+      symbols = [symbol];
+    if (symbol.paramsNumber > 0) {
+      for (let i = symbol.paramsNumber; i > 1; i--) {
+        symbols.push(new OperatorSymbols.ParamSeparator());
+      }
+      symbols.push(new OperatorSymbols.ParamEnd());
+    }
+    return symbols;
   }
 
   static createCursor(): Cursor {
