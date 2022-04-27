@@ -10,8 +10,6 @@ export default class SymbolContainer {
   private _cursor: Cursor;
 
   constructor() {
-    // const symbol = new Placeholder();
-    // this._list.push(symbol);
     this._cursor = SymbolFactory.createCursor();
     this._list.push(this._cursor);
   }
@@ -31,6 +29,13 @@ export default class SymbolContainer {
   insertAtCursor(value: number | string) {
     const cursorPos = this._list.indexOf(this._cursor);
     this._list.splice(cursorPos, 0, SymbolFactory.create(value));
+  }
+
+  deleteSymbolBeforeCursor() {
+    const cursorPos = this._list.indexOf(this._cursor);
+    if (cursorPos > 0) {
+      this._list.splice(cursorPos - 1, 1);
+    }
   }
 
   moveCursorTo(pos: number) {
