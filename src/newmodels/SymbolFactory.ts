@@ -1,22 +1,22 @@
-import Cursor from "./operand-symbols/Cursor";
 import MathSymbol from "./MathSymbol";
-import NumberSymbol from "./operand-symbols/NumberSymbol";
 import OperandSymbol from "./OperandSymbol";
-import HiddenTimes from "./operator-symbols/HiddenTimes";
-import Plus from "./operator-symbols/Plus";
+import Cursor from "./operand-symbols/Cursor";
 import Placeholder from "./operand-symbols/Placeholder";
-import LeftParen from "./operator-symbols/LeftParen";
-import RightParen from "./operator-symbols/RightParen";
+import NumberSymbol from "./operand-symbols/NumberSymbol";
+import * as OperatorSymbols from "./operator-symbols";
 
 export default class SymbolFactory {
   private static _SYMBOL_CLASSES: {
     [key: string]: typeof MathSymbol;
   } = {
     number: NumberSymbol,
-    hidden: HiddenTimes,
-    "+": Plus,
-    "(": LeftParen,
-    ")": RightParen,
+    hidden: OperatorSymbols.HiddenTimes,
+    "+": OperatorSymbols.Plus,
+    "-": OperatorSymbols.Minus,
+    "*": OperatorSymbols.Times,
+    "/": OperatorSymbols.Divide,
+    "(": OperatorSymbols.LeftParen,
+    ")": OperatorSymbols.RightParen,
   };
 
   static create(name: string | number) {
@@ -37,7 +37,7 @@ export default class SymbolFactory {
     return new Placeholder();
   }
 
-  static createHiddenTimes(): HiddenTimes {
-    return new HiddenTimes();
+  static createHiddenTimes(): OperatorSymbols.HiddenTimes {
+    return new OperatorSymbols.HiddenTimes();
   }
 }
