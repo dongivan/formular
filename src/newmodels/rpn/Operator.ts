@@ -22,7 +22,7 @@ export default class Operator {
   }
 
   get hasParams(): boolean {
-    return this._operator.hasParams;
+    return !!this._operator.paramsNumber;
   }
 
   get priority(): number {

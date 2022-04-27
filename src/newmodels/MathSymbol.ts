@@ -1,13 +1,13 @@
 export default class MathSymbol {
   protected _value: string;
-  protected _hasParams = false;
+  protected _paramsNumber = 0;
 
   constructor(value: string | number) {
     this._value = value.toString();
   }
 
-  get hasParams(): boolean {
-    return this._hasParams;
+  get paramsNumber(): number {
+    return this._paramsNumber;
   }
 
   toString(): string {

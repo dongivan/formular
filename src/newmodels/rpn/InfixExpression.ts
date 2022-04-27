@@ -50,7 +50,7 @@ export default class InfixExpression {
         }
 
         const operator = new Operator(symbol);
-        if (symbol.hasParams) {
+        if (symbol.paramsNumber > 0) {
           const { params, endPos } = this._generateParams(pos, symbols);
           operator.params = params;
           pos = endPos;
@@ -109,7 +109,7 @@ export default class InfixExpression {
           /* break */
           break;
         }
-      } else if (item.hasParams) {
+      } else if (item.paramsNumber > 0) {
         /* item has params, so operator level += 1 */
         opLvl += 1;
       }
