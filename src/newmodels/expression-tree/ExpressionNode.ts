@@ -74,7 +74,6 @@ export default class ExpressionNode {
         parenCounts[1] += 1;
       }
     }
-    console.log(parenCounts);
     return parenCounts;
   }
 }
