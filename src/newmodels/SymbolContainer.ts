@@ -2,9 +2,9 @@ import MathSymbol from "./MathSymbol";
 import Cursor from "./operand-symbols/Cursor";
 import SymbolFactory from "./SymbolFactory";
 import { ParamEnd, ParamSeparator } from "./operator-symbols";
-import ExpressionBinaryTree from "./rpn/ExpressionBinaryTree";
-import InfixExpression from "./rpn/InfixExpression";
-import PostfixExpression from "./rpn/PostfixExpression";
+import ExpressionBinaryTree from "./expression-tree/ExpressionBinaryTree";
+import InfixExpression from "./expression-tree/InfixExpression";
+import PostfixExpression from "./expression-tree/PostfixExpression";
 
 export default class SymbolContainer {
   private _list: MathSymbol[] = [];
