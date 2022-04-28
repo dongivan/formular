@@ -2,6 +2,7 @@ import OperatorSymbol from "../OperatorSymbol";
 
 export default class Power extends OperatorSymbol {
   protected _latexTemplate = "^{<1>}";
+  protected _leftOperandLatexTemplate = "{<1>}";
 
   constructor() {
     super("^");

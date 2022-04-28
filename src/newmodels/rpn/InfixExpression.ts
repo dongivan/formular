@@ -12,9 +12,7 @@ export default class InfixExpression {
   private _list: SymbolGroup[];
 
   constructor(symbols: MathSymbol[]) {
-    // this._list = [];
     this._list = this._generateInfixList(symbols);
-    // console.log(this.toString());
   }
 
   get length(): number {
@@ -108,7 +106,6 @@ export default class InfixExpression {
 
       if (item instanceof ParamSeparator && opLvl == 1) {
         /* current item is param separator ("|") and operator level is 1, so push param into params */
-        // params.push(this._generateInfixList(param));
         params.push(param);
         param = [];
         /* continue */
@@ -118,7 +115,6 @@ export default class InfixExpression {
         opLvl -= 1;
         if (opLvl == 0) {
           /* operator level == 0 means all params of current operator have been pushed */
-          // params.push(this._generateInfixList(param));
           params.push(param);
           param = [];
           /* break */
@@ -180,11 +176,6 @@ export default class InfixExpression {
     infixList.push(operand);
   }
 
-  // toJSON(): string {
-  //   return (
-  //     "[" + this._list.map<string>((symbol) => symbol.toJSON()).join(", ") + "]"
-  //   );
-  // }
   toString(): string {
     return (
       "[" +

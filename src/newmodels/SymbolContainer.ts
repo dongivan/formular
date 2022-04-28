@@ -111,52 +111,9 @@ export default class SymbolContainer {
     this.moveCursor(1);
   }
 
-  // indexOf(oper: Operand | Operator): number {
-  //   return this._list.indexOf(oper);
-  // }
-
-  // findPrevOperand(operand: Operand): Operand | undefined {
-  //   const pos = this._list.indexOf(operand);
-  //   for (let i = pos - 1; i >= 0; i -= 1) {
-  //     const prevOperand = this._list[i];
-  //     if (prevOperand instanceof Operand) {
-  //       return prevOperand;
-  //     }
-  //   }
-  //   return undefined;
-  // }
-
-  // findNextOperand(operand: Operand): Operand | undefined {
-  //   const pos = this._list.indexOf(operand);
-  //   for (let i = pos + 1; i < this._list.length; i += 1) {
-  //     const nextOperand = this._list[i];
-  //     if (nextOperand instanceof Operand) {
-  //       return nextOperand;
-  //     }
-  //   }
-  //   return undefined;
-  // }
-
-  // insertOperator(pos: number, operator: Operator) {
-  //   const index =
-  //     pos < 0 ? 0 : pos > this._list.length ? this._list.length : pos;
-  //   if (operator.hasRightOperand) {
-  //     if (!(this._list[index] instanceof Operand)) {
-  //       this._list.splice(index, 0, new Operand(this));
-  //     }
-  //   }
-  //   this._list.splice(index, 0, operator);
-  //   if (operator.hasLeftOperand) {
-  //     if (!(this._list[index - 1] instanceof Operand)) {
-  //       this._list.splice(index, 0, new Operand(this));
-  //     }
-  //   }
-  // }
-
   toLatex(): string {
     const infix = new InfixExpression(this._list);
     const postfix = new PostfixExpression(infix);
-    console.log(postfix.toString());
     const tree = new ExpressionBinaryTree(postfix);
     return tree.renderLatex();
   }

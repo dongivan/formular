@@ -1,5 +1,6 @@
 import ExpressionBinaryTree from "./ExpressionBinaryTree";
 import InfixExpression from "./InfixExpression";
+import Operator from "./Operator";
 import PostfixExpression from "./PostfixExpression";
 import SymbolGroup from "./SymbolGroup";
 
@@ -15,11 +16,19 @@ export default class ExpressionNode {
   renderLatex(): string {
     let latex = "";
     if (this.leftChild) {
-      latex += this.leftChild.renderLatex();
+      const leftChildLatex = this.leftChild.renderLatex();
+      latex +=
+        this.value instanceof Operator
+          ? this.value.symbol.renderLatexOfLeftOperand(leftChildLatex)
+          : leftChildLatex;
     }
     latex += this._renderLatex();
     if (this.rightChild) {
-      latex += this.rightChild.renderLatex();
+      const rightChildLatex = this.rightChild.renderLatex();
+      latex +=
+        this.value instanceof Operator
+          ? this.value.symbol.renderLatexOfRightOperand(rightChildLatex)
+          : rightChildLatex;
     }
     return latex;
   }

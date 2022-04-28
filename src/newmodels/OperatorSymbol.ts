@@ -9,6 +9,8 @@ export default abstract class OperatorSymbol extends MathSymbol {
   protected _priority = 1;
   protected _hasLeftOperand = true;
   protected _hasRightOperand = true;
+  protected _leftOperandLatexTemplate = "<1>";
+  protected _rightOperandLatexTemplate = "<1>";
 
   constructor(value: string) {
     super(value);
@@ -24,5 +26,25 @@ export default abstract class OperatorSymbol extends MathSymbol {
 
   get hasRightOperand(): boolean {
     return this._hasRightOperand;
+  }
+
+  renderLatexOfLeftOperand(leftLatex: string) {
+    if (this._hasLeftOperand && this._leftOperandLatexTemplate) {
+      return this._leftOperandLatexTemplate.replace(
+        new RegExp(`<1>`, "g"),
+        leftLatex
+      );
+    }
+    return "";
+  }
+
+  renderLatexOfRightOperand(rightLatex: string) {
+    if (this._hasRightOperand && this._rightOperandLatexTemplate) {
+      return this._rightOperandLatexTemplate.replace(
+        new RegExp(`<1>`, "g"),
+        rightLatex
+      );
+    }
+    return "";
   }
 }
