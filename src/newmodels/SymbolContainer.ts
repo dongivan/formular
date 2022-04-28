@@ -4,6 +4,7 @@ import Operand from "./rpn/Operand";
 import Operator from "./rpn/Operator";
 import SymbolFactory from "./SymbolFactory";
 import RPNGenerator from "./rpn/RPNGenerator";
+import { ParamEnd, ParamSeparator } from "./operator-symbols";
 
 export default class SymbolContainer {
   private _list: MathSymbol[] = [];
@@ -42,6 +43,40 @@ export default class SymbolContainer {
   deleteSymbolBeforeCursor() {
     const cursorPos = this._list.indexOf(this._cursor);
     if (cursorPos > 0) {
+      const symbol = this._list[cursorPos - 1];
+      if (symbol instanceof ParamSeparator || symbol instanceof ParamEnd) {
+        /* previous symbol is a param separator or a param end, just move left. */
+        this.moveCursorLeft();
+        return;
+      }
+      if (symbol.paramsNumber > 0) {
+        /* previous symbol has params */
+        let nextPos = cursorPos + 1,
+          paramsEmpty = true;
+        while (nextPos < this._list.length) {
+          const nextSymbol = this._list[nextPos];
+          if (nextSymbol instanceof ParamSeparator) {
+            /* next symbol is a param separator, go next pos */
+            nextPos += 1;
+          } else if (nextSymbol instanceof ParamEnd) {
+            /* next symbol is a param end, AND symbols between `symbol` and `nextSymbol` ARE
+              ALL ParamSeparator objects.*/
+            break;
+          } else {
+            /* next symbol IS NOT ParamSeparator OR ParamEnd, which means params are not empty. */
+            paramsEmpty = false;
+            break;
+          }
+        }
+        if (paramsEmpty) {
+          /* params ARE empty, remove all symbols from `cursorPos + 1` to `nextPos` */
+          this._list.splice(cursorPos + 1, nextPos - cursorPos);
+        } else {
+          /* params ARE NOT empty, just move left. */
+          this.moveCursorLeft();
+          return;
+        }
+      }
       this._list.splice(cursorPos - 1, 1);
     }
   }
