@@ -36,7 +36,7 @@ export default class SymbolContainer {
       symbols = SymbolFactory.create(value);
     this._list.splice(cursorPos, 0, ...symbols);
     if (symbols.length > 1) {
-      this.moveCursorTo(cursorPos + symbols.length - 1);
+      this.moveCursorTo(cursorPos + 1);
     }
   }
 
