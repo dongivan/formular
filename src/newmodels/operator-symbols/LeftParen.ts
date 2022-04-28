@@ -7,7 +7,7 @@ export default class LeftParen extends Operator {
     this._hasLeftOperand = false;
   }
 
-  toJSON(): string {
+  toString(): string {
     return "(";
   }
 }

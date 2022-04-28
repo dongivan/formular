@@ -5,7 +5,7 @@
     <textarea v-model="symbolLatexTextRef" style="width: 100%"></textarea>
   </div>
   <div>symbol list: {{ symbolContainer }}</div>
-  <div>symbol rpn: {{ symbolContainer.toRPNList() }}</div>
+  <!-- <div>symbol rpn: {{ symbolContainer.toRPNList() }}</div> -->
   <div class="latex-container" ref="symbolLatexEleRef"></div>
   <!--HelloWorld msg="Welcome to Your Vue.js App12"/-->
 

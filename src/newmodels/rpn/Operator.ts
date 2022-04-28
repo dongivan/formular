@@ -1,20 +1,13 @@
+import MathSymbol from "../MathSymbol";
 import OperatorSymbol from "../OperatorSymbol";
-import Operand from "./Operand";
+import SymbolGroup from "./SymbolGroup";
 
-export default class Operator {
+export default class Operator extends SymbolGroup {
   private _operator: OperatorSymbol;
-  private _params: (Operand | Operator)[][] = [];
 
-  constructor(operator: OperatorSymbol) {
+  constructor(operator: OperatorSymbol, params?: MathSymbol[][]) {
+    super(params);
     this._operator = operator;
-  }
-
-  set params(val: (Operand | Operator)[][]) {
-    this._params = val;
-  }
-
-  get params(): (Operand | Operator)[][] {
-    return this._params;
   }
 
   get hasLeftOperand(): boolean {
@@ -37,27 +30,20 @@ export default class Operator {
     return this._operator;
   }
 
-  toLatex(): string {
-    return (
-      this._operator.toLatex() +
-      this._params
-        .map<string>(
-          (param) =>
-            "{" + param.map<string>((item) => item.toLatex()).join("") + "}"
-        )
-        .join("")
-    );
+  get symbols(): MathSymbol[] {
+    return [this._operator];
   }
 
-  toJSON(): string {
+  toString(): string {
     return (
-      this._operator.toLatex() +
-      this._params
-        .map<string>(
-          (param) =>
-            "{" + param.map<string>((item) => item.toJSON()).join("") + "}"
-        )
-        .join("")
+      this._operator.toString() +
+      (this._params.length > 0
+        ? "(" +
+          this.params.map<string>((param) =>
+            param.map<string>((group) => group.toString()).join(", ")
+          ) +
+          ")"
+        : "")
     );
   }
 }

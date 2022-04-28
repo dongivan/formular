@@ -1,10 +1,12 @@
 import MathSymbol from "./MathSymbol";
 import Cursor from "./operand-symbols/Cursor";
-import Operand from "./rpn/Operand";
-import Operator from "./rpn/Operator";
 import SymbolFactory from "./SymbolFactory";
-import RPNGenerator from "./rpn/RPNGenerator";
+// import RPNGenerator from "./rpn/RPNGenerator";
 import { ParamEnd, ParamSeparator } from "./operator-symbols";
+// import SymbolGroup from "./rpn/SymbolGroup";
+import ExpressionBinaryTree from "./rpn/ExpressionBinaryTree";
+import InfixExpression from "./rpn/InfixExpression";
+import PostfixExpression from "./rpn/PostfixExpression";
 
 export default class SymbolContainer {
   private _list: MathSymbol[] = [];
@@ -153,42 +155,15 @@ export default class SymbolContainer {
   //   }
   // }
 
-  toRPNList(): readonly (Operand | Operator)[] {
-    const rpn = new RPNGenerator(this);
-    return rpn.toPostfixExpression().RPNList;
-  }
-
   toLatex(): string {
-    const rpnList = this.toRPNList(),
-      stack: string[] = [];
-    let pos = 0;
-    while (pos < rpnList.length) {
-      const oper = rpnList[pos];
-      if (oper instanceof Operand) {
-        stack.push(oper.toLatex());
-      } else if (oper instanceof Operator) {
-        let latex = oper.toLatex();
-        if (oper.hasRightOperand) {
-          const rightOperand = stack.pop();
-          if (rightOperand) {
-            latex += rightOperand;
-          }
-        }
-        if (oper.hasLeftOperand) {
-          const leftOperand = stack.pop();
-          if (leftOperand) {
-            latex = leftOperand + latex;
-          }
-        }
-        stack.push(latex);
-      }
-
-      pos += 1;
-    }
-    return stack.join("");
+    const infix = new InfixExpression(this._list);
+    const postfix = new PostfixExpression(infix);
+    console.log(postfix.toString());
+    const tree = new ExpressionBinaryTree(postfix);
+    return tree.renderLatex();
   }
 
-  toJSON(): string {
+  toString(): string {
     return "[" + this._list.toString() + "]";
   }
 }

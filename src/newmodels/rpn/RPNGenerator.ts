@@ -10,6 +10,6 @@ export default class RPNGenerator {
   }
 
   toPostfixExpression(): PostfixExpression {
-    return new PostfixExpression(this._infix.list);
+    return new PostfixExpression(this._infix);
   }
 }

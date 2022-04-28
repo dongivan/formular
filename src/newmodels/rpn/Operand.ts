@@ -1,10 +1,13 @@
+import MathSymbol from "../MathSymbol";
 import NumberSymbol from "../operand-symbols/NumberSymbol";
 import OperandSymbol from "../OperandSymbol";
+import SymbolGroup from "./SymbolGroup";
 
-export default class Operand {
+export default class Operand extends SymbolGroup {
   private _list: OperandSymbol[] = [];
 
   constructor(...symbols: OperandSymbol[]) {
+    super(undefined);
     symbols.forEach((symbol) => this._list.push(symbol));
   }
 
@@ -25,13 +28,15 @@ export default class Operand {
     return this._list.length;
   }
 
-  toLatex(): string {
-    return this._list.map<string>((symbol) => symbol.toLatex()).join("");
+  set params(groups: MathSymbol[][]) {
+    this._params = groups;
   }
 
-  toJSON(): string {
-    return (
-      "[" + this._list.map<string>((symbol) => symbol.toJSON()).join(", ") + "]"
-    );
+  get symbols(): MathSymbol[] {
+    return this._list;
+  }
+
+  toString(): string {
+    return this._list.map<string>((symbol) => symbol.toString()).join("");
   }
 }

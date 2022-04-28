@@ -6,7 +6,7 @@ export default class HiddenTimes extends OperatorSymbol {
     this._priority = 2;
   }
 
-  toJSON(): string {
+  toString(): string {
     return "·";
   }
 }

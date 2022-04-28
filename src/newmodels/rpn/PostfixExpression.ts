@@ -2,36 +2,28 @@ import Operand from "./Operand";
 import LeftParen from "../operator-symbols/LeftParen";
 import RightParen from "../operator-symbols/RightParen";
 import Operator from "./Operator";
+import SymbolGroup from "./SymbolGroup";
+import InfixExpression from "./InfixExpression";
 
 export default class PostfixExpression {
-  private _list: (Operand | Operator)[];
+  private _list: SymbolGroup[];
 
-  constructor(infix: readonly (Operand | Operator)[]) {
-    this._list = this._generatePostfixList(infix);
+  constructor(infix: InfixExpression) {
+    this._list = this._generatePostfixList(infix.list);
   }
 
-  private _generatePostfixList(
-    infix: readonly (Operand | Operator)[]
-  ): (Operand | Operator)[] {
+  private _generatePostfixList(infix: readonly SymbolGroup[]): SymbolGroup[] {
     /* use shunting yard algorithm to parse infix expression to postfix expression */
-    const postfixList: (Operand | Operator)[] = [],
+    const postfixList: SymbolGroup[] = [],
       operatorStack: Operator[] = [];
 
     let pos = 0;
     while (pos < infix.length) {
-      let item = infix[pos];
+      const item = infix[pos];
       if (item instanceof Operand) {
         postfixList.push(item);
       } else if (item instanceof Operator) {
-        if (item.hasParams) {
-          const postfixedItem = new Operator(item.symbol),
-            params: (Operator | Operand)[][] = [];
-          for (const param of item.params) {
-            params.push(this._generatePostfixList(param));
-          }
-          postfixedItem.params = params;
-          item = postfixedItem;
-        }
+        /* directly use `item` which is an Operator object here will cause prettier error */
         if (item.symbol instanceof RightParen) {
           /* the current symbol is a ")", so push it into stack(top operators of the stack will pop to the output 
             list one by one until the stack is empty or the top one is a ")" ). */
@@ -66,7 +58,7 @@ export default class PostfixExpression {
   private _pushOperatorIntoStack(
     operator: Operator,
     operatorStack: Operator[],
-    postfixList: (Operand | Operator)[]
+    postfixList: SymbolGroup[]
   ) {
     /* pop operators from the operator stack until the priority of the top operator is less than the operator's
      and push them into the output list */
@@ -81,7 +73,15 @@ export default class PostfixExpression {
     operatorStack.unshift(operator);
   }
 
-  get RPNList(): readonly (Operand | Operator)[] {
+  get list(): readonly SymbolGroup[] {
     return Object.freeze(this._list);
+  }
+
+  toString(): string {
+    return (
+      "[" +
+      this._list.map<string>((symbol) => symbol.toString()).join(", ") +
+      "]"
+    );
   }
 }
