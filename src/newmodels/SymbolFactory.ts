@@ -11,6 +11,7 @@ export default class SymbolFactory {
     number: OperandSymbols.NumberSymbol,
     hidden: OperatorSymbols.HiddenTimes,
     sqrt: OperandSymbols.SquareRoot,
+    over: OperandSymbols.Over,
 
     /* operator symbols */
     "+": OperatorSymbols.Plus,

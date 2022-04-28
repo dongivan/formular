@@ -6,7 +6,9 @@
   </div>
   <div>symbol list: {{ symbolContainer }}</div>
   <!-- <div>symbol rpn: {{ symbolContainer.toRPNList() }}</div> -->
-  <div class="latex-container" ref="symbolLatexEleRef"></div>
+  <div class="latex-container" style="width: 100%">
+    <div class="latex-ele" ref="symbolLatexEleRef"></div>
+  </div>
   <!--HelloWorld msg="Welcome to Your Vue.js App12"/-->
 
   <div>
@@ -23,6 +25,7 @@
     <button @click="symbolContainer.insertAtCursor('-')">-</button>
     <button @click="symbolContainer.insertAtCursor('*')">*</button>
     <button @click="symbolContainer.insertAtCursor('/')">/</button>
+    <button @click="symbolContainer.insertAtCursor('over')">over</button>
     <button @click="symbolContainer.insertAtCursor('^')">^</button>
     <button @click="symbolContainer.insertAtCursor('sqrt')">sqrt</button>
     <button @click="symbolContainer.moveCursorLeft()">&lt;-</button>
@@ -65,7 +68,7 @@ watch(
       strict: false,
       trust: true,
       output: "html",
-      displayMode: false,
+      // displayMode: true,
     });
   },
   {
@@ -79,13 +82,17 @@ watch(
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
   color: #2c3e50;
   margin-top: 60px;
 }
 .latex-container {
   border: 1px solid black;
   min-height: 50px;
+  width: 100%;
+
+  .latex-ele {
+    display: inline-block;
+  }
 }
 .formular-cursor {
   background: skyblue;
