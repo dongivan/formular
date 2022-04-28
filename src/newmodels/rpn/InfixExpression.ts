@@ -39,8 +39,15 @@ export default class InfixExpression {
       operandCache: Operand = new Operand();
     while (pos < symbols.length) {
       const symbol = symbols[pos];
+      let operatorParams = undefined;
+      if (symbol.paramsNumber > 0) {
+        /* current symbol has params, fetch them from symbols */
+        const { params, endPos } = this._generateParams(pos, symbols);
+        operatorParams = params;
+        pos = endPos;
+      }
       if (symbol instanceof OperandSymbol) {
-        /* the symbol is an OperandSymbol, try to push it in the operand cache */
+        /* current symbol is an OperandSymbol, try to push it in the operand cache */
         if (!operandCache.push(symbol)) {
           /* push failed for the reason that the operand cache IS NOT empty, AND the symbol
           OR the first member of operand cache IS NOT a NumberSymbol object */
@@ -51,6 +58,11 @@ export default class InfixExpression {
           /* push the OperandSymbol object into the operand cache */
           operandCache.push(symbol);
         }
+        /* now operandCache has current symbol */
+        if (operatorParams) {
+          /* current symbol has params, set them to operandCache because it has current symbol */
+          operandCache.params = operatorParams;
+        }
       } else if (symbol instanceof OperatorSymbol) {
         /* the symbol is an OperatorSymbol, check the operand cache */
         if (operandCache.length > 0) {
@@ -59,12 +71,7 @@ export default class InfixExpression {
           operandCache = new Operand();
         }
 
-        let operatorParams;
-        if (symbol.paramsNumber > 0) {
-          const { params, endPos } = this._generateParams(pos, symbols);
-          operatorParams = params;
-          pos = endPos;
-        }
+        /* create Operator object with current symbol (which is an OperatorSymbol object) and params */
         const operator = new Operator(symbol, operatorParams);
 
         /* push the operator into the infix expression */

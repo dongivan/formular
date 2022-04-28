@@ -7,6 +7,10 @@ export default abstract class SymbolGroup {
     this._params = params || [];
   }
 
+  set params(groups: MathSymbol[][]) {
+    this._params = groups;
+  }
+
   get params(): MathSymbol[][] {
     return this._params;
   }

@@ -1,16 +1,18 @@
 import MathSymbol from "./MathSymbol";
 import OperandSymbol from "./OperandSymbol";
-import Cursor from "./operand-symbols/Cursor";
-import Placeholder from "./operand-symbols/Placeholder";
-import NumberSymbol from "./operand-symbols/NumberSymbol";
+import * as OperandSymbols from "./operand-symbols";
 import * as OperatorSymbols from "./operator-symbols";
 
 export default class SymbolFactory {
   private static _SYMBOL_CLASSES: {
     [key: string]: typeof MathSymbol;
   } = {
-    number: NumberSymbol,
+    /* operand symbols */
+    number: OperandSymbols.NumberSymbol,
     hidden: OperatorSymbols.HiddenTimes,
+    sqrt: OperandSymbols.SquareRoot,
+
+    /* operator symbols */
     "+": OperatorSymbols.Plus,
     "-": OperatorSymbols.Minus,
     "*": OperatorSymbols.Times,
@@ -38,12 +40,12 @@ export default class SymbolFactory {
     return symbols;
   }
 
-  static createCursor(): Cursor {
-    return new Cursor();
+  static createCursor(): OperandSymbols.Cursor {
+    return new OperandSymbols.Cursor();
   }
 
-  static createPlaceholder(): Placeholder {
-    return new Placeholder();
+  static createPlaceholder(): OperandSymbols.Placeholder {
+    return new OperandSymbols.Placeholder();
   }
 
   static createHiddenTimes(): OperatorSymbols.HiddenTimes {

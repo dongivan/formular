@@ -28,10 +28,6 @@ export default class Operand extends SymbolGroup {
     return this._list.length;
   }
 
-  set params(groups: MathSymbol[][]) {
-    this._params = groups;
-  }
-
   get symbols(): MathSymbol[] {
     return this._list;
   }

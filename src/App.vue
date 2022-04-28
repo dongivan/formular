@@ -24,6 +24,7 @@
     <button @click="symbolContainer.insertAtCursor('*')">*</button>
     <button @click="symbolContainer.insertAtCursor('/')">/</button>
     <button @click="symbolContainer.insertAtCursor('^')">^</button>
+    <button @click="symbolContainer.insertAtCursor('sqrt')">sqrt</button>
     <button @click="symbolContainer.moveCursorLeft()">&lt;-</button>
     <button @click="symbolContainer.moveCursorRight()">-&gt;</button>
     <button @click="symbolContainer.deleteSymbolBeforeCursor()">
