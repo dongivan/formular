@@ -1,3 +1,4 @@
+import { LeftParen, RightParen } from "../operator-symbols";
 import ExpressionBinaryTree from "./ExpressionBinaryTree";
 import InfixExpression from "./InfixExpression";
 import Operator from "./Operator";
@@ -53,5 +54,27 @@ export default class ExpressionNode {
       }
       return "";
     }
+  }
+
+  setParenLevelRecursively(): [number, number] {
+    const leftChildCounts: [number, number] =
+      this.leftChild?.setParenLevelRecursively() || [0, 0];
+    const rightChildCounts: [number, number] =
+      this.rightChild?.setParenLevelRecursively() || [0, 0];
+    const parenCounts: [number, number] = [
+      Math.max(leftChildCounts[0], rightChildCounts[0]),
+      Math.max(leftChildCounts[1], rightChildCounts[1]),
+    ];
+    if (this.value instanceof Operator) {
+      if (this.value.symbol instanceof LeftParen) {
+        this.value.symbol.level = parenCounts[0];
+        parenCounts[0] += 1;
+      } else if (this.value.symbol instanceof RightParen) {
+        this.value.symbol.level = parenCounts[1];
+        parenCounts[1] += 1;
+      }
+    }
+    console.log(parenCounts);
+    return parenCounts;
   }
 }

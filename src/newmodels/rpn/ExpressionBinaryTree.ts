@@ -9,6 +9,7 @@ export default class ExpressionBinaryTree {
 
   constructor(postfix: PostfixExpression) {
     this.root = this._parsePostfixToBinaryTree(postfix);
+    this.root.setParenLevelRecursively();
   }
 
   private _parsePostfixToBinaryTree(

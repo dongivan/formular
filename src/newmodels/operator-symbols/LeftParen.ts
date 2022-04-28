@@ -1,6 +1,6 @@
-import Operator from "../OperatorSymbol";
+import AbstractParen from "./AbstractParen";
 
-export default class LeftParen extends Operator {
+export default class LeftParen extends AbstractParen {
   constructor() {
     super("\\lparen");
     this._priority = 10;
