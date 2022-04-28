@@ -1,9 +1,7 @@
 import MathSymbol from "./MathSymbol";
 import Cursor from "./operand-symbols/Cursor";
 import SymbolFactory from "./SymbolFactory";
-// import RPNGenerator from "./rpn/RPNGenerator";
 import { ParamEnd, ParamSeparator } from "./operator-symbols";
-// import SymbolGroup from "./rpn/SymbolGroup";
 import ExpressionBinaryTree from "./rpn/ExpressionBinaryTree";
 import InfixExpression from "./rpn/InfixExpression";
 import PostfixExpression from "./rpn/PostfixExpression";
