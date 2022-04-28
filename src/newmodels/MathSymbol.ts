@@ -20,7 +20,8 @@ export default class MathSymbol {
   }
 
   renderLatex(params?: string[]): string {
-    let result = this._latexTemplate || this._value;
+    let result =
+      this._latexTemplate == undefined ? this._value : this._latexTemplate;
     if (params) {
       for (let i = 0; i < this._paramsNumber; i++) {
         result = result.replace(new RegExp(`<${i + 1}>`, "g"), params[i] || "");
