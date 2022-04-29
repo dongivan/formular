@@ -41,6 +41,18 @@ export default class SymbolFactory {
     return symbols;
   }
 
+  static createSymbol(clsName: string, value: string): MathSymbol {
+    const cls =
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (<any>OperatorSymbols)[clsName] || (<any>OperandSymbols)[clsName];
+    if (!cls) {
+      return SymbolFactory.createPlaceholder();
+    } else {
+      const symbol = new cls(value);
+      return symbol;
+    }
+  }
+
   static createCursor(): OperandSymbols.Cursor {
     return new OperandSymbols.Cursor();
   }

@@ -33,6 +33,18 @@
     <button @click="symbolContainer.deleteSymbolBeforeCursor()">
       Backspace!
     </button>
+    <button
+      @click="symbolContainer.undo()"
+      :disabled="!symbolContainer.couldUndo"
+    >
+      UNDO
+    </button>
+    <button
+      @click="symbolContainer.redo()"
+      :disabled="!symbolContainer.couldRedo"
+    >
+      REDO
+    </button>
   </div>
 </template>
 

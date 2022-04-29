@@ -15,8 +15,14 @@ export default class MathSymbol {
     return this._value;
   }
 
-  toJSON(): string {
-    return this.toString();
+  toJSON(): {
+    type: string;
+    value: string;
+  } {
+    return {
+      type: this.constructor.name,
+      value: this.toString(),
+    };
   }
 
   renderLatex(params?: string[]): string {

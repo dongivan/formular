@@ -8,11 +8,14 @@ import PostfixExpression from "./expression-tree/PostfixExpression";
 
 export default class SymbolContainer {
   private _list: MathSymbol[] = [];
+  private _steps: string[] = [];
+  private _currentStep = -1;
   private _cursor: Cursor;
 
   constructor() {
     this._cursor = SymbolFactory.createCursor();
     this._list.push(this._cursor);
+    this._pushStep();
   }
 
   get cursor(): Cursor {
@@ -38,6 +41,8 @@ export default class SymbolContainer {
     if (symbols.length > 1) {
       this.moveCursorTo(cursorPos + 1);
     }
+
+    this._pushStep();
   }
 
   deleteSymbolBeforeCursor() {
@@ -79,6 +84,7 @@ export default class SymbolContainer {
       }
       this._list.splice(cursorPos - 1, 1);
     }
+    this._pushStep();
   }
 
   moveCursorTo(pos: number) {
@@ -109,6 +115,61 @@ export default class SymbolContainer {
 
   moveCursorRight() {
     this.moveCursor(1);
+  }
+
+  private _pushStep(): void {
+    this._steps.splice(this._currentStep + 1);
+    this._steps.push(JSON.stringify(this._list));
+    this._currentStep = this._steps.length - 1;
+  }
+
+  undo(): void {
+    if (!this.couldUndo) {
+      return;
+    }
+    this._currentStep -= 1;
+    const step = this._steps[this._currentStep];
+    if (!step) {
+      return;
+    }
+    this._list = this._rebuildStep(step);
+  }
+
+  redo(): void {
+    if (!this.couldRedo) {
+      return;
+    }
+    this._currentStep += 1;
+    const step = this._steps[this._currentStep];
+    if (!step) {
+      return;
+    }
+    this._list = this._rebuildStep(step);
+  }
+
+  private _rebuildStep(step: string): MathSymbol[] {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const list: MathSymbol[] = JSON.parse(step, (k: string, v: any) => {
+      if (/[0-9]+/.test(k)) {
+        const { type, value }: { type: string; value: string } = v;
+        if (type == Cursor.name) {
+          return this._cursor;
+        } else {
+          return SymbolFactory.createSymbol(type, value);
+        }
+      } else {
+        return v;
+      }
+    });
+    return list;
+  }
+
+  get couldRedo(): boolean {
+    return this._currentStep < this._steps.length - 1;
+  }
+
+  get couldUndo(): boolean {
+    return this._currentStep > 0;
   }
 
   toLatex(): string {
