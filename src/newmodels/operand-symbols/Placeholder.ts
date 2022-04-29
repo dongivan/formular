@@ -2,7 +2,7 @@ import OperandSymbol from "../OperandSymbol";
 
 export default class Placeholder extends OperandSymbol {
   protected _latexTemplate =
-    "{\\colorbox{transparent}{\\htmlClass{formular-placeholder}{\\ ?\\ }}}";
+    "\\htmlClass{formular-placeholder}{\\ ?\\ \\mathstrut}";
 
   constructor() {
     super("placeholder");

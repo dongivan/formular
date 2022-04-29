@@ -2,7 +2,7 @@ import OperandSymbol from "../OperandSymbol";
 
 export default class Cursor extends OperandSymbol {
   protected _latexTemplate =
-    "\\colorbox{transparent}{\\htmlClass{formular-cursor}{\\phantom{O}}}";
+    "{\\htmlClass{formular-cursor}{{\\phantom{O}\\mathstrut}}}";
 
   constructor() {
     super("cursor");
