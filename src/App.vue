@@ -82,6 +82,8 @@ watch(
       output: "html",
       // displayMode: true,
     });
+
+    console.log(symbolLatexEleRef.value);
   },
   {
     immediate: true,

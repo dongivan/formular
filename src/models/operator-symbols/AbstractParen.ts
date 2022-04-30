@@ -1,7 +1,7 @@
 import Operator from "../OperatorSymbol";
 
 export default abstract class AbstractParen extends Operator {
-  level = 0;
+  protected _latexTemplate = "<1><2>";
   protected static readonly _PREFIXES = [
     "",
     "\\big",
@@ -9,10 +9,11 @@ export default abstract class AbstractParen extends Operator {
     "\\bigg",
     "\\Bigg",
   ];
+  level = 0;
 
-  renderLatex(params?: string[]): string {
+  renderLatex(): string {
     const prefix =
       AbstractParen._PREFIXES[Math.min(Math.max(this.level, 0), 4)] || "";
-    return prefix + super.renderLatex(params);
+    return super.renderLatex([prefix, this._value]);
   }
 }
