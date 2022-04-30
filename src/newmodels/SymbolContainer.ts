@@ -5,6 +5,7 @@ import { ParamEnd, ParamSeparator } from "./operator-symbols";
 import ExpressionBinaryTree from "./expression-tree/ExpressionBinaryTree";
 import InfixExpression from "./expression-tree/InfixExpression";
 import PostfixExpression from "./expression-tree/PostfixExpression";
+import Config from "./Config";
 
 export default class SymbolContainer {
   private _list: MathSymbol[] = [];
@@ -13,6 +14,7 @@ export default class SymbolContainer {
   private _cursor: Cursor;
 
   constructor() {
+    Config.init();
     this._cursor = SymbolFactory.createCursor();
     this._list.push(this._cursor);
     this._pushStep();
