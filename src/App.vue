@@ -51,7 +51,7 @@
 <script setup lang="ts">
 import { computed, onMounted, reactive, ref, watch } from "vue";
 import katex from "katex";
-import SymbolContainer from "./newmodels/SymbolContainer";
+import SymbolContainer from "./models/SymbolContainer";
 
 const isMountedRef = ref(false);
 
