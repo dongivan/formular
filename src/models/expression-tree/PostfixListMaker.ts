@@ -2,19 +2,24 @@ import Operand from "./Operand";
 import LeftParen from "../operator-symbols/LeftParen";
 import RightParen from "../operator-symbols/RightParen";
 import Operator from "./Operator";
-import SymbolGroup from "./SymbolGroup";
-import InfixExpression from "./InfixExpression";
+import Formula from "../Formula";
+import InfixList from "./InfixList";
+import PostfixList from "./PostfixList";
 
-export default class PostfixExpression {
-  private _list: SymbolGroup[];
+export default class PostfixListMaker {
+  private _formula: Formula;
 
-  constructor(infix: InfixExpression) {
-    this._list = this._generatePostfixList(infix.list);
+  constructor(formula: Formula) {
+    this._formula = formula;
   }
 
-  private _generatePostfixList(infix: readonly SymbolGroup[]): SymbolGroup[] {
+  make(infix: InfixList): PostfixList {
+    return this._generatePostfixList(infix);
+  }
+
+  private _generatePostfixList(infix: InfixList): PostfixList {
     /* use shunting yard algorithm to parse infix expression to postfix expression */
-    const postfixList: SymbolGroup[] = [],
+    const postfixList: PostfixList = [],
       operatorStack: Operator[] = [];
 
     let pos = 0;
@@ -58,7 +63,7 @@ export default class PostfixExpression {
   private _pushOperatorIntoStack(
     operator: Operator,
     operatorStack: Operator[],
-    postfixList: SymbolGroup[]
+    postfixList: PostfixList
   ) {
     /* pop operators from the operator stack until the priority of the top operator is less than the operator's
      and push them into the output list */
@@ -71,17 +76,5 @@ export default class PostfixExpression {
       operatorStack.shift();
     }
     operatorStack.unshift(operator);
-  }
-
-  get list(): readonly SymbolGroup[] {
-    return Object.freeze(this._list);
-  }
-
-  toString(): string {
-    return (
-      "[" +
-      this._list.map<string>((symbol) => symbol.toString()).join(", ") +
-      "]"
-    );
   }
 }

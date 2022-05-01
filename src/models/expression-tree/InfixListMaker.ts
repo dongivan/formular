@@ -4,27 +4,24 @@ import OperatorSymbol from "../OperatorSymbol";
 import OperandSymbol from "../OperandSymbol";
 import ParamSeparator from "../operator-symbols/ParamSeparator";
 import ParamEnd from "../operator-symbols/ParamEnd";
-import SymbolGroup from "./SymbolGroup";
 import Operand from "./Operand";
 import Operator from "./Operator";
+import Formula from "../Formula";
+import InfixList from "./InfixList";
 
-export default class InfixExpression {
-  private _list: SymbolGroup[];
+export default class InfixListMaker {
+  private _formula: Formula;
 
-  constructor(symbols: MathSymbol[]) {
-    this._list = this._generateInfixList(symbols);
+  constructor(formula: Formula) {
+    this._formula = formula;
   }
 
-  get length(): number {
-    return this._list.length;
+  make(symbols: MathSymbol[]): InfixList {
+    return this._generateInfixList(symbols);
   }
 
-  get list(): readonly SymbolGroup[] {
-    return Object.freeze(this._list);
-  }
-
-  private _generateInfixList(symbols: MathSymbol[]) {
-    const infixList: SymbolGroup[] = [];
+  private _generateInfixList(symbols: MathSymbol[]): InfixList {
+    const infixList: InfixList = [];
 
     if (symbols.length == 0) {
       /* symbols list HAS NO members, just push a "placeholder" and return */
@@ -136,7 +133,7 @@ export default class InfixExpression {
     return { params, endPos: pos };
   }
 
-  private _pushOperator(infixList: SymbolGroup[], operator: Operator) {
+  private _pushOperator(infixList: InfixList, operator: Operator) {
     const prevItem = infixList[infixList.length - 1];
     if (!prevItem) {
       if (operator.hasLeftOperand) {
@@ -167,7 +164,7 @@ export default class InfixExpression {
     infixList.push(operator);
   }
 
-  private _pushOperand(infixList: SymbolGroup[], operand: Operand) {
+  private _pushOperand(infixList: InfixList, operand: Operand) {
     if (operand.length == 0) {
       return;
     }
@@ -181,13 +178,5 @@ export default class InfixExpression {
       infixList.push(new Operator(SymbolFactory.createHiddenTimes()));
     }
     infixList.push(operand);
-  }
-
-  toString(): string {
-    return (
-      "[" +
-      this._list.map<string>((symbol) => symbol.toString()).join(", ") +
-      "]"
-    );
   }
 }

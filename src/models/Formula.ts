@@ -2,10 +2,10 @@ import MathSymbol from "./MathSymbol";
 import Cursor from "./operand-symbols/Cursor";
 import SymbolFactory from "./SymbolFactory";
 import { ParamEnd, ParamSeparator } from "./operator-symbols";
-import ExpressionBinaryTree from "./expression-tree/ExpressionBinaryTree";
-import InfixExpression from "./expression-tree/InfixExpression";
-import PostfixExpression from "./expression-tree/PostfixExpression";
+import BinaryTreeMaker from "./expression-tree/BinaryTreeMaker";
+import PostfixListMaker from "./expression-tree/PostfixListMaker";
 import Config from "./Config";
+import InfixListMaker from "./expression-tree/InfixListMaker";
 
 export default class Formula {
   private _list: MathSymbol[] = [];
@@ -13,11 +13,19 @@ export default class Formula {
   private _currentStep = -1;
   private _cursor: Cursor;
 
+  private _infixMaker: InfixListMaker;
+  private _postfixMaker: PostfixListMaker;
+  private _binaryTreeMaker: BinaryTreeMaker;
+
   constructor() {
     Config.init();
     this._cursor = SymbolFactory.createCursor();
     this._list.push(this._cursor);
     this._pushStep();
+
+    this._infixMaker = new InfixListMaker(this);
+    this._postfixMaker = new PostfixListMaker(this);
+    this._binaryTreeMaker = new BinaryTreeMaker(this);
   }
 
   get cursor(): Cursor {
@@ -30,6 +38,18 @@ export default class Formula {
 
   get symbols(): MathSymbol[] {
     return this._list;
+  }
+
+  get infixMaker(): InfixListMaker {
+    return this._infixMaker;
+  }
+
+  get postfixMaker(): PostfixListMaker {
+    return this._postfixMaker;
+  }
+
+  get binaryTreeMaker(): BinaryTreeMaker {
+    return this._binaryTreeMaker;
   }
 
   get(pos: number): MathSymbol | undefined {
@@ -175,9 +195,9 @@ export default class Formula {
   }
 
   toLatex(): string {
-    const infix = new InfixExpression(this._list);
-    const postfix = new PostfixExpression(infix);
-    const tree = new ExpressionBinaryTree(postfix);
+    const infix = this._infixMaker.make(this._list);
+    const postfix = this._postfixMaker.make(infix);
+    const tree = this._binaryTreeMaker.make(postfix);
     return tree.renderLatex();
   }
 

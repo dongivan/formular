@@ -1,16 +1,16 @@
 import { LeftParen, RightParen } from "../operator-symbols";
-import ExpressionBinaryTree from "./ExpressionBinaryTree";
-import InfixExpression from "./InfixExpression";
+import BinaryTree from "./BinaryTree";
 import Operator from "./Operator";
-import PostfixExpression from "./PostfixExpression";
 import SymbolGroup from "./SymbolGroup";
 
-export default class ExpressionNode {
+export default class TreeNode {
+  tree: BinaryTree;
   value: SymbolGroup;
-  leftChild: ExpressionNode | undefined;
-  rightChild: ExpressionNode | undefined;
+  leftChild: TreeNode | undefined;
+  rightChild: TreeNode | undefined;
 
-  constructor(value: SymbolGroup) {
+  constructor(tree: BinaryTree, value: SymbolGroup) {
+    this.tree = tree;
     this.value = value;
   }
 
@@ -44,9 +44,9 @@ export default class ExpressionNode {
         const params: string[] =
           symbol.paramsNumber > 0
             ? this.value.params.map<string>((param) => {
-                const infix = new InfixExpression(param);
-                const postfix = new PostfixExpression(infix);
-                const tree = new ExpressionBinaryTree(postfix);
+                const infix = this.tree.formula.infixMaker.make(param);
+                const postfix = this.tree.formula.postfixMaker.make(infix);
+                const tree = this.tree.formula.binaryTreeMaker.make(postfix);
                 return tree.renderLatex();
               })
             : [];
