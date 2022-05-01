@@ -7,7 +7,7 @@ import InfixExpression from "./expression-tree/InfixExpression";
 import PostfixExpression from "./expression-tree/PostfixExpression";
 import Config from "./Config";
 
-export default class SymbolContainer {
+export default class Formula {
   private _list: MathSymbol[] = [];
   private _steps: string[] = [];
   private _currentStep = -1;
