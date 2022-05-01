@@ -9,23 +9,27 @@ import InfixListMaker from "./expression-tree/InfixListMaker";
 
 export default class Formula {
   private _list: MathSymbol[] = [];
-  private _steps: string[] = [];
+  // private _steps: string[] = [];
+  private _steps: number[][] = [];
   private _currentStep = -1;
   private _cursor: Cursor;
 
+  private _symbolFactory: SymbolFactory;
   private _infixMaker: InfixListMaker;
   private _postfixMaker: PostfixListMaker;
   private _binaryTreeMaker: BinaryTreeMaker;
 
   constructor() {
     Config.init();
-    this._cursor = SymbolFactory.createCursor();
-    this._list.push(this._cursor);
-    this._pushStep();
 
+    this._symbolFactory = new SymbolFactory();
     this._infixMaker = new InfixListMaker(this);
     this._postfixMaker = new PostfixListMaker(this);
     this._binaryTreeMaker = new BinaryTreeMaker(this);
+
+    this._cursor = this._symbolFactory.createCursor();
+    this._list.push(this._cursor);
+    this._pushStep();
   }
 
   get cursor(): Cursor {
@@ -38,6 +42,10 @@ export default class Formula {
 
   get symbols(): MathSymbol[] {
     return this._list;
+  }
+
+  get symbolFactory(): SymbolFactory {
+    return this._symbolFactory;
   }
 
   get infixMaker(): InfixListMaker {
@@ -57,8 +65,14 @@ export default class Formula {
   }
 
   insertAtCursor(value: number | string) {
+    if (this._currentStep < this._steps.length - 1) {
+      this._symbolFactory.clearSymbolsAfterSequenceNumber(
+        Math.max(...this._steps[this._currentStep])
+      );
+    }
+
     const cursorPos = this._list.indexOf(this._cursor),
-      symbols = SymbolFactory.create(value);
+      symbols = this._symbolFactory.create(value);
     this._list.splice(cursorPos, 0, ...symbols);
     if (symbols.length > 1) {
       this.moveCursorTo(cursorPos + 1);
@@ -141,7 +155,7 @@ export default class Formula {
 
   private _pushStep(): void {
     this._steps.splice(this._currentStep + 1);
-    this._steps.push(JSON.stringify(this._list));
+    this._steps.push(this._list.map<number>((symbol) => symbol.sequenceNumber));
     this._currentStep = this._steps.length - 1;
   }
 
@@ -169,20 +183,10 @@ export default class Formula {
     this._list = this._rebuildStep(step);
   }
 
-  private _rebuildStep(step: string): MathSymbol[] {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const list: MathSymbol[] = JSON.parse(step, (k: string, v: any) => {
-      if (/[0-9]+/.test(k)) {
-        const { type, value }: { type: string; value: string } = v;
-        if (type == Cursor.name) {
-          return this._cursor;
-        } else {
-          return SymbolFactory.createSymbol(type, value);
-        }
-      } else {
-        return v;
-      }
-    });
+  private _rebuildStep(step: number[]): MathSymbol[] {
+    const list: MathSymbol[] = step.map<MathSymbol>((sn) =>
+      this._symbolFactory.findSymbolBySequenceNumber(sn)
+    );
     return list;
   }
 
@@ -198,7 +202,8 @@ export default class Formula {
     const infix = this._infixMaker.make(this._list);
     const postfix = this._postfixMaker.make(infix);
     const tree = this._binaryTreeMaker.make(postfix);
-    return tree.renderLatex();
+    const latex = tree.renderLatex();
+    return latex;
   }
 
   toString(): string {

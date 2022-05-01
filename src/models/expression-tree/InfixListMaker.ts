@@ -1,4 +1,3 @@
-import SymbolFactory from "../SymbolFactory";
 import MathSymbol from "../MathSymbol";
 import OperatorSymbol from "../OperatorSymbol";
 import OperandSymbol from "../OperandSymbol";
@@ -22,15 +21,6 @@ export default class InfixListMaker {
 
   private _generateInfixList(symbols: MathSymbol[]): InfixList {
     const infixList: InfixList = [];
-
-    if (symbols.length == 0) {
-      /* symbols list HAS NO members, just push a "placeholder" and return */
-      this._pushOperand(
-        infixList,
-        new Operand(SymbolFactory.createPlaceholder())
-      );
-      return infixList;
-    }
 
     let pos = 0,
       operandCache: Operand = new Operand();
@@ -88,7 +78,9 @@ export default class InfixListMaker {
           push a placeholder into the infix expression */
         this._pushOperand(
           infixList,
-          new Operand(SymbolFactory.createPlaceholder())
+          new Operand(
+            this._formula.symbolFactory.createPlaceholder(symbol, "right")
+          )
         );
       }
     }
@@ -110,6 +102,12 @@ export default class InfixListMaker {
 
       if (item instanceof ParamSeparator && opLvl == 1) {
         /* current item is param separator ("|") and operator level is 1, so push param into params */
+        if (param.length == 0) {
+          /* param is empty, push a placeholder into it */
+          param.push(
+            this._formula.symbolFactory.createPlaceholder(item, "left")
+          );
+        }
         params.push(param);
         param = [];
         /* continue */
@@ -119,6 +117,12 @@ export default class InfixListMaker {
         opLvl -= 1;
         if (opLvl == 0) {
           /* operator level == 0 means all params of current operator have been pushed */
+          if (param.length == 0) {
+            /* param is empty, push a placeholder into it */
+            param.push(
+              this._formula.symbolFactory.createPlaceholder(item, "left")
+            );
+          }
           params.push(param);
           param = [];
           /* break */
@@ -139,24 +143,42 @@ export default class InfixListMaker {
       if (operator.hasLeftOperand) {
         /* the previous item DOES NOT exist, and the current operator HAS the left operand
         push a operand with "placeholder" into inputs */
-        infixList.push(new Operand(SymbolFactory.createPlaceholder()));
+        infixList.push(
+          new Operand(
+            this._formula.symbolFactory.createPlaceholder(
+              operator.symbol,
+              "left"
+            )
+          )
+        );
       }
     } else {
       if (prevItem instanceof Operand) {
         if (!operator.hasLeftOperand) {
           /* the previous item is an Operand object, and the current operator DOES NOT HAVE
           the left operand, push a "hidden" into inputs */
-          infixList.push(new Operator(SymbolFactory.createHiddenTimes()));
+          infixList.push(
+            new Operator(this._formula.symbolFactory.createHiddenTimes())
+          );
         }
       } else if (prevItem instanceof Operator) {
         if (prevItem.hasRightOperand && operator.hasLeftOperand) {
           /* the previous item is an operator which has right operand, and the current operator
           has left operand, push a "placeholder" into inputs */
-          infixList.push(new Operand(SymbolFactory.createPlaceholder()));
+          infixList.push(
+            new Operand(
+              this._formula.symbolFactory.createPlaceholder(
+                operator.symbol,
+                "left"
+              )
+            )
+          );
         } else if (!prevItem.hasRightOperand && !operator.hasLeftOperand) {
           /* the previous item is an operator which DOES NOT HAVE right operand, and the
           current operator DOES NOT HAVE left operand, push a "hidden" into inputs */
-          infixList.push(new Operator(SymbolFactory.createHiddenTimes()));
+          infixList.push(
+            new Operator(this._formula.symbolFactory.createHiddenTimes())
+          );
         }
       }
     }
@@ -175,7 +197,9 @@ export default class InfixListMaker {
     ) {
       /* previous item of inputs is an Operand object, or it is an Operator object and
       it HAS NOT the right operand, push a "hidden" operator into inputs */
-      infixList.push(new Operator(SymbolFactory.createHiddenTimes()));
+      infixList.push(
+        new Operator(this._formula.symbolFactory.createHiddenTimes())
+      );
     }
     infixList.push(operand);
   }

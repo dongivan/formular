@@ -1,10 +1,18 @@
 export default class MathSymbol {
+  private static _SEQUENCE_NUMBER = 0;
+
+  private _sequenceNumber: number;
   protected _value: string;
   protected _paramsNumber = 0;
   protected _latexTemplate: string | undefined;
 
   constructor(value: string | number) {
     this._value = value.toString();
+    this._sequenceNumber = ++MathSymbol._SEQUENCE_NUMBER;
+  }
+
+  get sequenceNumber(): number {
+    return this._sequenceNumber;
   }
 
   get paramsNumber(): number {
