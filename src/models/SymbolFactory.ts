@@ -2,7 +2,6 @@ import MathSymbol from "./MathSymbol";
 import OperandSymbol from "./OperandSymbol";
 import * as OperandSymbols from "./operand-symbols";
 import * as OperatorSymbols from "./operator-symbols";
-import Formula from "./Formula";
 
 export default class SymbolFactory {
   private static _SYMBOL_CLASSES: {
