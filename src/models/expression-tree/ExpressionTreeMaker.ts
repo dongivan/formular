@@ -1,11 +1,10 @@
 import Formula from "../Formula";
-import TreeNode from "./TreeNode";
+import { ExpressionTree, ExpressionNode } from "./ExpressionTree";
 import Operand from "./Operand";
 import Operator from "./Operator";
 import PostfixList from "./PostfixList";
-import BinaryTree from "./BinaryTree";
 
-export default class BinaryTreeMaker {
+export default class ExpressionTreeMaker {
   private _formula: Formula;
 
   constructor(formula: Formula) {
@@ -16,15 +15,15 @@ export default class BinaryTreeMaker {
     return this._parsePostfixToBinaryTree(postfix);
   }
 
-  private _parsePostfixToBinaryTree(postfix: PostfixList): BinaryTree {
-    const tree = new BinaryTree(this._formula);
-    let root: TreeNode | undefined = undefined;
+  private _parsePostfixToBinaryTree(postfix: PostfixList): ExpressionTree {
+    const tree = new ExpressionTree(this._formula);
+    let root: ExpressionNode | undefined = undefined;
 
-    const stack: TreeNode[] = [];
+    const stack: ExpressionNode[] = [];
     let pos = 0;
     while (pos < postfix.length) {
       const oper = postfix[pos];
-      const node = new TreeNode(tree, oper);
+      const node = new ExpressionNode(tree, oper);
       if (oper instanceof Operand) {
         stack.push(node);
       } else if (oper instanceof Operator) {
