@@ -10,10 +10,12 @@
   "dependencies": {
     "core-js": "^3.8.3",
     "katex": "^0.15.3",
+    "mathjax-full": "^3.2.0",
     "vue": "^3.2.13"
   },
   "devDependencies": {
     "@types/katex": "^0.14.0",
+    "@types/mathjax": "^0.0.37",
     "@typescript-eslint/eslint-plugin": "^5.4.0",
     "@typescript-eslint/parser": "^5.4.0",
     "@vue/cli-plugin-babel": "~5.0.0",
