@@ -44,6 +44,25 @@ const isMountedRef = ref(false);
 onMounted(() => {
   isMountedRef.value = true;
   // window.katex = katex;
+  (symbolLatexEleRef.value as HTMLElement).onclick = (evt) => {
+    if (!evt.target) {
+      return;
+    }
+    let ele: HTMLElement = evt.target as HTMLElement;
+    while (ele) {
+      if (ele.dataset.formularSymbolSn || !ele.parentElement) {
+        break;
+      }
+      ele = ele.parentElement;
+    }
+    const symbolSn = ele.dataset.formularSymbolSn;
+    if (!symbolSn) {
+      return;
+    }
+    console.log("symbol clicked", symbolSn);
+    formula.moveCursorBeforeSymbol(parseInt(symbolSn));
+    // console.log(evt.target);
+  };
 });
 
 /* */
@@ -69,7 +88,27 @@ watch(
       // displayMode: true,
     });
 
-    console.log(symbolLatexEleRef.value);
+    // console.log(symbolLatexEleRef.value);
+    // symbolLatexEleRef.value
+    //   .querySelectorAll("[data-formular-symbol-id]")
+    //   .forEach((ele: HTMLElement) => {
+    //     if (ele) {
+    //       console.log(
+    //         "add listener",
+    //         ele.dataset.formularSymbolId,
+    //         ele.onclick
+    //       );
+    //       ele.onclick = (ev) => {
+    //         const symbolId = ele.dataset.formularSymbolId;
+    //         if (!symbolId) {
+    //           return;
+    //         }
+    //         console.log("symbol clicked", symbolId);
+    //         formula.moveCursorBeforeSymbol(parseInt(symbolId));
+    //         ev.stopPropagation();
+    //       };
+    //     }
+    //   });
   },
   {
     immediate: true,
@@ -91,6 +130,19 @@ watch(
 
   .latex-ele {
     display: inline-block;
+    user-select: none;
+
+    /* \mathstrut will add a transparent ")" after the leading symbol("A" in "A\mathstrut" for
+    example), and then the latter symbol will be blocked by this transparent ")". */
+    .katex .clap > .inner,
+    .katex .rlap > .inner {
+      z-index: -1;
+    }
+
+    /* \frac will have a "span.vlist" at the bottom of its dom, and block the denominator. */
+    .katex .mfrac span.vlist-r:last-child > .vlist {
+      z-index: -1;
+    }
   }
 }
 .formular-cursor {

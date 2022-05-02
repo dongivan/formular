@@ -3,20 +3,19 @@ import MathSymbol from "../MathSymbol";
 import OperandSymbol from "../OperandSymbol";
 
 export default class Placeholder extends OperandSymbol {
-  _masterSymbol: MathSymbol | undefined;
-  _masterOffset: -1 | 1 = -1;
+  protected _clickable = true;
 
-  constructor() {
+  private _masterSymbol: MathSymbol;
+  private _masterOffset: -1 | 1 = -1;
+
+  constructor(master: MathSymbol, offset: -1 | 1) {
     super("placeholder");
     this._latexTemplate = Config.getConfig().placeholderLatex;
-  }
-
-  setMasterSymbol(master: MathSymbol, offset: -1 | 1) {
     this._masterSymbol = master;
     this._masterOffset = offset;
   }
 
-  get masterSymbol(): MathSymbol | undefined {
+  get masterSymbol(): MathSymbol {
     return this._masterSymbol;
   }
 

@@ -74,8 +74,9 @@ export default class SymbolFactory {
   ): OperandSymbols.Placeholder {
     let symbol = (this._placeholders[master.sequenceNumber] || {})[leftOrRight];
     if (!symbol) {
-      symbol = this._afterCreate(new OperandSymbols.Placeholder());
-      symbol.setMasterSymbol(master, leftOrRight == "left" ? -1 : 1);
+      symbol = this._afterCreate(
+        new OperandSymbols.Placeholder(master, leftOrRight == "left" ? -1 : 1)
+      );
       this._placeholders[master.sequenceNumber] = Object.assign(
         {},
         this._placeholders[master.sequenceNumber] || {},

@@ -5,6 +5,7 @@ export default class MathSymbol {
   protected _value: string;
   protected _paramsNumber = 0;
   protected _latexTemplate: string | undefined;
+  protected _clickable = false;
 
   constructor(value: string | number) {
     this._value = value.toString();
@@ -40,6 +41,9 @@ export default class MathSymbol {
       for (let i = 0; i < params.length; i++) {
         result = result.replace(new RegExp(`<${i + 1}>`, "g"), params[i] || "");
       }
+    }
+    if (this._clickable) {
+      result = `\\htmlData{formular-symbol-sn=${this._sequenceNumber}}{${result}}`;
     }
     return result;
   }

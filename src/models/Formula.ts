@@ -6,6 +6,7 @@ import BinaryTreeMaker from "./expression-tree/BinaryTreeMaker";
 import PostfixListMaker from "./expression-tree/PostfixListMaker";
 import Config from "./Config";
 import InfixListMaker from "./expression-tree/InfixListMaker";
+import { Placeholder } from "./operand-symbols";
 
 export default class Formula {
   private _list: MathSymbol[] = [];
@@ -121,6 +122,24 @@ export default class Formula {
       this._list.splice(cursorPos - 1, 1);
     }
     this._pushStep();
+  }
+
+  moveCursorBeforeSymbol(sequenceNumber: number) {
+    const symbol =
+      this.symbolFactory.findSymbolBySequenceNumber(sequenceNumber);
+    if (!symbol) {
+      return;
+    }
+    let pos;
+    if (symbol instanceof Placeholder) {
+      pos = this._list.indexOf(symbol.masterSymbol);
+    } else {
+      pos = this._list.indexOf(symbol);
+    }
+    if (pos > -1) {
+      const cursorPos = this._list.indexOf(this._cursor);
+      this.moveCursorTo(cursorPos < pos - 1 ? pos - 1 : pos);
+    }
   }
 
   moveCursorTo(pos: number) {
