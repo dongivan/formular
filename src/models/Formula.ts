@@ -2,7 +2,7 @@ import MathSymbol from "./MathSymbol";
 import Cursor from "./operand-symbols/Cursor";
 import SymbolFactory from "./SymbolFactory";
 import { ParamEnd, ParamSeparator } from "./operator-symbols";
-import BinaryTreeMaker from "./expression-tree/BinaryTreeMaker";
+import ExpressionTreeMaker from "./expression-tree/ExpressionTreeMaker";
 import PostfixListMaker from "./expression-tree/PostfixListMaker";
 import Config from "./Config";
 import InfixListMaker from "./expression-tree/InfixListMaker";
@@ -18,7 +18,7 @@ export default class Formula {
   private _symbolFactory: SymbolFactory;
   private _infixMaker: InfixListMaker;
   private _postfixMaker: PostfixListMaker;
-  private _binaryTreeMaker: BinaryTreeMaker;
+  private _binaryTreeMaker: ExpressionTreeMaker;
 
   constructor() {
     Config.init();
@@ -26,7 +26,7 @@ export default class Formula {
     this._symbolFactory = new SymbolFactory();
     this._infixMaker = new InfixListMaker(this);
     this._postfixMaker = new PostfixListMaker(this);
-    this._binaryTreeMaker = new BinaryTreeMaker(this);
+    this._binaryTreeMaker = new ExpressionTreeMaker(this);
 
     this._cursor = this._symbolFactory.createCursor();
     this._list.push(this._cursor);
@@ -57,7 +57,7 @@ export default class Formula {
     return this._postfixMaker;
   }
 
-  get binaryTreeMaker(): BinaryTreeMaker {
+  get binaryTreeMaker(): ExpressionTreeMaker {
     return this._binaryTreeMaker;
   }
 
