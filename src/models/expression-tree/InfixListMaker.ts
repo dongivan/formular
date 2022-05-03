@@ -3,8 +3,8 @@ import OperatorChar from "../OperatorChar";
 import OperandChar from "../OperandChar";
 import ParamSeparator from "../operator-chars/ParamSeparator";
 import ParamEnd from "../operator-chars/ParamEnd";
-import Operand from "./Operand";
-import Operator from "./Operator";
+import OperandSymbol from "./OperandSymbol";
+import OperatorSymbol from "./OperatorSymbol";
 import Formula from "../Formula";
 import InfixList from "./InfixList";
 
@@ -23,7 +23,7 @@ export default class InfixListMaker {
     const infixList: InfixList = [];
 
     let pos = 0,
-      operandCache: Operand = new Operand();
+      operandCache: OperandSymbol = new OperandSymbol();
     while (pos < chars.length) {
       const char = chars[pos];
       let operatorParams = undefined;
@@ -40,7 +40,7 @@ export default class InfixListMaker {
           OR the first member of operand cache IS NOT a NumberChar object */
           /* push the operand cache into the infix expression and clear the cache */
           this._pushOperand(infixList, operandCache);
-          operandCache = new Operand();
+          operandCache = new OperandSymbol();
 
           /* push the OperandChar object into the operand cache */
           operandCache.push(char);
@@ -55,11 +55,11 @@ export default class InfixListMaker {
         if (operandCache.length > 0) {
           /* the operand cache is not empty, push it into infix expression and clear cache */
           this._pushOperand(infixList, operandCache);
-          operandCache = new Operand();
+          operandCache = new OperandSymbol();
         }
 
         /* create Operator object with current char (which is an OperatorChar object) and params */
-        const operator = new Operator(char, operatorParams);
+        const operator = new OperatorSymbol(char, operatorParams);
 
         /* push the operator into the infix expression */
         this._pushOperator(infixList, operator);
@@ -78,7 +78,7 @@ export default class InfixListMaker {
           push a placeholder into the infix expression */
         this._pushOperand(
           infixList,
-          new Operand(
+          new OperandSymbol(
             this._formula.charFactory.createPlaceholder(char, "right")
           )
         );
@@ -135,33 +135,33 @@ export default class InfixListMaker {
     return { params, endPos: pos };
   }
 
-  private _pushOperator(infixList: InfixList, operator: Operator) {
+  private _pushOperator(infixList: InfixList, operator: OperatorSymbol) {
     const prevItem = infixList[infixList.length - 1];
     if (!prevItem) {
       if (operator.hasLeftOperand) {
         /* the previous item DOES NOT exist, and the current operator HAS the left operand
         push a operand with "placeholder" into inputs */
         infixList.push(
-          new Operand(
+          new OperandSymbol(
             this._formula.charFactory.createPlaceholder(operator.char, "left")
           )
         );
       }
     } else {
-      if (prevItem instanceof Operand) {
+      if (prevItem instanceof OperandSymbol) {
         if (!operator.hasLeftOperand) {
           /* the previous item is an Operand object, and the current operator DOES NOT HAVE
           the left operand, push a "hidden" into inputs */
           infixList.push(
-            new Operator(this._formula.charFactory.createHiddenTimes())
+            new OperatorSymbol(this._formula.charFactory.createHiddenTimes())
           );
         }
-      } else if (prevItem instanceof Operator) {
+      } else if (prevItem instanceof OperatorSymbol) {
         if (prevItem.hasRightOperand && operator.hasLeftOperand) {
           /* the previous item is an operator which has right operand, and the current operator
           has left operand, push a "placeholder" into inputs */
           infixList.push(
-            new Operand(
+            new OperandSymbol(
               this._formula.charFactory.createPlaceholder(operator.char, "left")
             )
           );
@@ -169,7 +169,7 @@ export default class InfixListMaker {
           /* the previous item is an operator which DOES NOT HAVE right operand, and the
           current operator DOES NOT HAVE left operand, push a "hidden" into inputs */
           infixList.push(
-            new Operator(this._formula.charFactory.createHiddenTimes())
+            new OperatorSymbol(this._formula.charFactory.createHiddenTimes())
           );
         }
       }
@@ -178,19 +178,19 @@ export default class InfixListMaker {
     infixList.push(operator);
   }
 
-  private _pushOperand(infixList: InfixList, operand: Operand) {
+  private _pushOperand(infixList: InfixList, operand: OperandSymbol) {
     if (operand.length == 0) {
       return;
     }
     const prevItem = infixList[infixList.length - 1];
     if (
-      prevItem instanceof Operand ||
-      (prevItem instanceof Operator && !prevItem.hasRightOperand)
+      prevItem instanceof OperandSymbol ||
+      (prevItem instanceof OperatorSymbol && !prevItem.hasRightOperand)
     ) {
       /* previous item of inputs is an Operand object, or it is an Operator object and
       it HAS NOT the right operand, push a "hidden" operator into inputs */
       infixList.push(
-        new Operator(this._formula.charFactory.createHiddenTimes())
+        new OperatorSymbol(this._formula.charFactory.createHiddenTimes())
       );
     }
     infixList.push(operand);

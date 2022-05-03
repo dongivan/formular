@@ -1,3 +1,3 @@
-import SymbolGroup from "./SymbolGroup";
+import MathSymbol from "./MathSymbol";
 
-export default class PofixList extends Array<SymbolGroup> {}
+export default class PofixList extends Array<MathSymbol> {}

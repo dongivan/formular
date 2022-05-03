@@ -1,8 +1,8 @@
 import Formula from "../Formula";
 import { LeftParen, RightParen } from "../operator-chars";
 import { BinaryNode, BinaryTree } from "./BinaryTree";
-import Operator from "./Operator";
-import SymbolGroup from "./SymbolGroup";
+import OperatorSymbol from "./OperatorSymbol";
+import MathSymbol from "./MathSymbol";
 
 const SetParenLevel = function (
   node: ExpressionNode,
@@ -13,12 +13,12 @@ const SetParenLevel = function (
     Math.max(leftResult[0], rightResult[0]),
     Math.max(leftResult[1], rightResult[1]),
   ];
-  if (node.value instanceof Operator) {
-    if (node.value.char instanceof LeftParen) {
-      node.value.char.level = parenCounts[0];
+  if (node.symbol instanceof OperatorSymbol) {
+    if (node.symbol.char instanceof LeftParen) {
+      node.symbol.char.level = parenCounts[0];
       parenCounts[0] += 1;
-    } else if (node.value.char instanceof RightParen) {
-      node.value.char.level = parenCounts[1];
+    } else if (node.symbol.char instanceof RightParen) {
+      node.symbol.char.level = parenCounts[1];
       parenCounts[1] += 1;
     }
   }
@@ -33,12 +33,12 @@ const RenderLatex = function (
   let latex = "";
   if (leftResult) {
     latex +=
-      node.value instanceof Operator
-        ? node.value.char.renderLatexOfLeftOperand(leftResult)
+      node.symbol instanceof OperatorSymbol
+        ? node.symbol.char.renderLatexOfLeftOperand(leftResult)
         : leftResult;
   }
 
-  const chars = node.value.chars;
+  const chars = node.symbol.chars;
   if (chars.length > 1) {
     latex += chars.map<string>((number) => number.renderLatex()).join("");
   } else {
@@ -46,7 +46,7 @@ const RenderLatex = function (
     if (char) {
       const params: string[] =
         char.paramsNumber > 0
-          ? node.value.params.map<string>((param) => {
+          ? node.symbol.params.map<string>((param) => {
               const infix = node.tree.formula.infixMaker.make(param);
               const postfix = node.tree.formula.postfixMaker.make(infix);
               const tree = node.tree.formula.binaryTreeMaker.make(postfix);
@@ -60,14 +60,18 @@ const RenderLatex = function (
 
   if (rightResult) {
     latex +=
-      node.value instanceof Operator
-        ? node.value.char.renderLatexOfRightOperand(rightResult)
+      node.symbol instanceof OperatorSymbol
+        ? node.symbol.char.renderLatexOfRightOperand(rightResult)
         : rightResult;
   }
   return latex;
 };
 
-class ExpressionNode extends BinaryNode<SymbolGroup, ExpressionTree> {
+class ExpressionNode extends BinaryNode<MathSymbol, ExpressionTree> {
+  get symbol(): MathSymbol {
+    return this.value;
+  }
+
   setParenLevelRecursively(): [number, number] {
     return this.traverse(SetParenLevel);
   }

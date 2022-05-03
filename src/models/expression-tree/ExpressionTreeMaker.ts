@@ -1,7 +1,7 @@
 import Formula from "../Formula";
 import { ExpressionTree, ExpressionNode } from "./ExpressionTree";
-import Operand from "./Operand";
-import Operator from "./Operator";
+import OperandSymbol from "./OperandSymbol";
+import OperatorSymbol from "./OperatorSymbol";
 import PostfixList from "./PostfixList";
 
 export default class ExpressionTreeMaker {
@@ -24,9 +24,9 @@ export default class ExpressionTreeMaker {
     while (pos < postfix.length) {
       const oper = postfix[pos];
       const node = new ExpressionNode(tree, oper);
-      if (oper instanceof Operand) {
+      if (oper instanceof OperandSymbol) {
         stack.push(node);
-      } else if (oper instanceof Operator) {
+      } else if (oper instanceof OperatorSymbol) {
         if (oper.hasRightOperand) {
           const rightChild = stack.pop();
           if (rightChild) {

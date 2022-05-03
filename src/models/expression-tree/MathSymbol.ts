@@ -1,6 +1,6 @@
 import MathChar from "../MathChar";
 
-export default abstract class SymbolGroup {
+export default abstract class MathSymbol {
   protected _params: MathChar[][];
 
   constructor(params: MathChar[][] | undefined) {

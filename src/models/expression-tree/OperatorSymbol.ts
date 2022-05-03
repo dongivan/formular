@@ -1,8 +1,8 @@
 import MathChar from "../MathChar";
 import OperatorChar from "../OperatorChar";
-import SymbolGroup from "./SymbolGroup";
+import MathSymbol from "./MathSymbol";
 
-export default class Operator extends SymbolGroup {
+export default class OperatorSymbol extends MathSymbol {
   private _operator: OperatorChar;
 
   constructor(operator: OperatorChar, params?: MathChar[][]) {

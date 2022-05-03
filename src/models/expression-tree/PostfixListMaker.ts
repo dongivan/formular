@@ -1,7 +1,7 @@
-import Operand from "./Operand";
+import OperandSymbol from "./OperandSymbol";
 import LeftParen from "../operator-chars/LeftParen";
 import RightParen from "../operator-chars/RightParen";
-import Operator from "./Operator";
+import OperatorSymbol from "./OperatorSymbol";
 import Formula from "../Formula";
 import InfixList from "./InfixList";
 import PostfixList from "./PostfixList";
@@ -20,14 +20,14 @@ export default class PostfixListMaker {
   private _generatePostfixList(infix: InfixList): PostfixList {
     /* use shunting yard algorithm to parse infix expression to postfix expression */
     const postfixList: PostfixList = [],
-      operatorStack: Operator[] = [];
+      operatorStack: OperatorSymbol[] = [];
 
     let pos = 0;
     while (pos < infix.length) {
       const item = infix[pos];
-      if (item instanceof Operand) {
+      if (item instanceof OperandSymbol) {
         postfixList.push(item);
-      } else if (item instanceof Operator) {
+      } else if (item instanceof OperatorSymbol) {
         /* directly use `item` which is an Operator object here will cause prettier error */
         if (item.char instanceof RightParen) {
           /* the current char is a ")", so push it into stack(top operators of the stack will pop to the output 
@@ -61,8 +61,8 @@ export default class PostfixListMaker {
   }
 
   private _pushOperatorIntoStack(
-    operator: Operator,
-    operatorStack: Operator[],
+    operator: OperatorSymbol,
+    operatorStack: OperatorSymbol[],
     postfixList: PostfixList
   ) {
     /* pop operators from the operator stack until the priority of the top operator is less than the operator's

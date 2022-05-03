@@ -1,9 +1,9 @@
 import MathChar from "../MathChar";
 import NumberChar from "../operand-chars/NumberChar";
 import OperandChar from "../OperandChar";
-import SymbolGroup from "./SymbolGroup";
+import MathSymbol from "./MathSymbol";
 
-export default class Operand extends SymbolGroup {
+export default class OperandSymbol extends MathSymbol {
   private _chars: OperandChar[] = [];
 
   constructor(...chars: OperandChar[]) {
