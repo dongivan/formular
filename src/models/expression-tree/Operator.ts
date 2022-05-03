@@ -1,11 +1,11 @@
-import MathSymbol from "../MathSymbol";
-import OperatorSymbol from "../OperatorSymbol";
+import MathChar from "../MathChar";
+import OperatorChar from "../OperatorChar";
 import SymbolGroup from "./SymbolGroup";
 
 export default class Operator extends SymbolGroup {
-  private _operator: OperatorSymbol;
+  private _operator: OperatorChar;
 
-  constructor(operator: OperatorSymbol, params?: MathSymbol[][]) {
+  constructor(operator: OperatorChar, params?: MathChar[][]) {
     super(params);
     this._operator = operator;
   }
@@ -26,11 +26,11 @@ export default class Operator extends SymbolGroup {
     return this._operator.priority;
   }
 
-  get symbol(): OperatorSymbol {
+  get char(): OperatorChar {
     return this._operator;
   }
 
-  get symbols(): MathSymbol[] {
+  get chars(): MathChar[] {
     return [this._operator];
   }
 

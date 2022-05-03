@@ -1,4 +1,4 @@
-import Operator from "../OperatorSymbol";
+import Operator from "../OperatorChar";
 
 export default abstract class AbstractParen extends Operator {
   protected _latexTemplate = "<1><2>";

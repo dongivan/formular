@@ -1,7 +1,7 @@
 import Config from "../Config";
-import OperandSymbol from "../OperandSymbol";
+import OperandChar from "../OperandChar";
 
-export default class Cursor extends OperandSymbol {
+export default class Cursor extends OperandChar {
   constructor() {
     super("cursor");
     this._latexTemplate = Config.getConfig().cursorLatex;

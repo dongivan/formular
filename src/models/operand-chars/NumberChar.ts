@@ -1,13 +1,13 @@
-import OperandSymbol from "../OperandSymbol";
+import OperandChar from "../OperandChar";
 
-export default class NumberSymbol extends OperandSymbol {
+export default class NumberChar extends OperandChar {
   protected _clickable = true;
 
   constructor(value: number) {
     super(value.toString());
   }
 
-  concat(number: NumberSymbol) {
+  concat(number: NumberChar) {
     this._value += number._value;
   }
 }

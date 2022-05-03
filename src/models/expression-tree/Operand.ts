@@ -1,23 +1,23 @@
-import MathSymbol from "../MathSymbol";
-import NumberSymbol from "../operand-symbols/NumberSymbol";
-import OperandSymbol from "../OperandSymbol";
+import MathChar from "../MathChar";
+import NumberChar from "../operand-chars/NumberChar";
+import OperandChar from "../OperandChar";
 import SymbolGroup from "./SymbolGroup";
 
 export default class Operand extends SymbolGroup {
-  private _list: OperandSymbol[] = [];
+  private _chars: OperandChar[] = [];
 
-  constructor(...symbols: OperandSymbol[]) {
+  constructor(...chars: OperandChar[]) {
     super(undefined);
-    symbols.forEach((symbol) => this._list.push(symbol));
+    chars.forEach((char) => this._chars.push(char));
   }
 
-  push(symbol: OperandSymbol): boolean {
+  push(char: OperandChar): boolean {
     if (
-      this._list.length == 0 ||
-      (symbol instanceof NumberSymbol &&
-        this._list[this._list.length - 1] instanceof NumberSymbol)
+      this._chars.length == 0 ||
+      (char instanceof NumberChar &&
+        this._chars[this._chars.length - 1] instanceof NumberChar)
     ) {
-      this._list.push(symbol);
+      this._chars.push(char);
       return true;
     } else {
       return false;
@@ -25,14 +25,14 @@ export default class Operand extends SymbolGroup {
   }
 
   get length(): number {
-    return this._list.length;
+    return this._chars.length;
   }
 
-  get symbols(): MathSymbol[] {
-    return this._list;
+  get chars(): MathChar[] {
+    return this._chars;
   }
 
   toString(): string {
-    return this._list.map<string>((symbol) => symbol.toString()).join("");
+    return this._chars.map<string>((char) => char.toString()).join("");
   }
 }

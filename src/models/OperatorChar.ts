@@ -1,6 +1,6 @@
-import MathSymbol from "./MathSymbol";
+import MathChar from "./MathChar";
 
-export default abstract class OperatorSymbol extends MathSymbol {
+export default abstract class OperatorChar extends MathChar {
   /* 
     for the reason that parentheses will render in result, the reverse polish notation should
     have them. so "(" has a big positive priority and right and ")" has a negative one ( just

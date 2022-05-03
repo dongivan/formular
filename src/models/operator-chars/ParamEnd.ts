@@ -1,4 +1,4 @@
-import Operator from "../OperatorSymbol";
+import Operator from "../OperatorChar";
 
 export default class ParamEnd extends Operator {
   constructor() {

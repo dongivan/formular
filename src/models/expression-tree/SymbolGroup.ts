@@ -1,17 +1,17 @@
-import MathSymbol from "../MathSymbol";
+import MathChar from "../MathChar";
 
 export default abstract class SymbolGroup {
-  protected _params: MathSymbol[][];
+  protected _params: MathChar[][];
 
-  constructor(params: MathSymbol[][] | undefined) {
+  constructor(params: MathChar[][] | undefined) {
     this._params = params || [];
   }
 
-  set params(groups: MathSymbol[][]) {
+  set params(groups: MathChar[][]) {
     this._params = groups;
   }
 
-  get params(): MathSymbol[][] {
+  get params(): MathChar[][] {
     return this._params;
   }
 
@@ -19,5 +19,5 @@ export default abstract class SymbolGroup {
     return this._params.length > 0;
   }
 
-  abstract get symbols(): MathSymbol[];
+  abstract get chars(): MathChar[];
 }

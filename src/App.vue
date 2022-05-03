@@ -60,7 +60,7 @@ onMounted(() => {
       return;
     }
     console.log("symbol clicked", symbolSn);
-    formula.moveCursorBeforeSymbol(parseInt(symbolSn));
+    formula.moveCursorBeforeChar(parseInt(symbolSn));
     // console.log(evt.target);
   };
 });

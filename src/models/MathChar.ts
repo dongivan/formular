@@ -1,4 +1,4 @@
-export default class MathSymbol {
+export default class MathChar {
   private static _SEQUENCE_NUMBER = 0;
 
   private _sequenceNumber: number;
@@ -9,7 +9,7 @@ export default class MathSymbol {
 
   constructor(value: string | number) {
     this._value = value.toString();
-    this._sequenceNumber = ++MathSymbol._SEQUENCE_NUMBER;
+    this._sequenceNumber = ++MathChar._SEQUENCE_NUMBER;
   }
 
   get sequenceNumber(): number {
@@ -43,7 +43,7 @@ export default class MathSymbol {
       }
     }
     if (this._clickable) {
-      result = `\\htmlData{formular-symbol-sn=${this._sequenceNumber}}{${result}}`;
+      result = `\\htmlData{formular-char-sn=${this._sequenceNumber}}{${result}}`;
     }
     return result;
   }

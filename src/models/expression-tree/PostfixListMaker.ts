@@ -1,6 +1,6 @@
 import Operand from "./Operand";
-import LeftParen from "../operator-symbols/LeftParen";
-import RightParen from "../operator-symbols/RightParen";
+import LeftParen from "../operator-chars/LeftParen";
+import RightParen from "../operator-chars/RightParen";
 import Operator from "./Operator";
 import Formula from "../Formula";
 import InfixList from "./InfixList";
@@ -29,8 +29,8 @@ export default class PostfixListMaker {
         postfixList.push(item);
       } else if (item instanceof Operator) {
         /* directly use `item` which is an Operator object here will cause prettier error */
-        if (item.symbol instanceof RightParen) {
-          /* the current symbol is a ")", so push it into stack(top operators of the stack will pop to the output 
+        if (item.char instanceof RightParen) {
+          /* the current char is a ")", so push it into stack(top operators of the stack will pop to the output 
             list one by one until the stack is empty or the top one is a ")" ). */
           this._pushOperatorIntoStack(item, operatorStack, postfixList);
           /* now the top operator of the stack is ")", pop it to the output list. */
@@ -38,12 +38,12 @@ export default class PostfixListMaker {
           operatorStack.shift();
           /* if the top operator (after pop ")") is "(", pop it to the output list. */
           const leftParen = operatorStack[0];
-          if (leftParen?.symbol instanceof LeftParen) {
+          if (leftParen?.char instanceof LeftParen) {
             postfixList.push(leftParen);
             operatorStack.shift();
           }
         } else {
-          /* push the OperatorSymbol object into operator stack */
+          /* push the OperatorChar object into operator stack */
           this._pushOperatorIntoStack(item, operatorStack, postfixList);
         }
       }
@@ -69,7 +69,7 @@ export default class PostfixListMaker {
      and push them into the output list */
     while (
       operatorStack.length > 0 &&
-      !(operatorStack[0].symbol instanceof LeftParen) &&
+      !(operatorStack[0].char instanceof LeftParen) &&
       operatorStack[0].priority >= operator.priority
     ) {
       postfixList.push(operatorStack[0]);

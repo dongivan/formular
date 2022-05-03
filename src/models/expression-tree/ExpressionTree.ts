@@ -1,5 +1,5 @@
 import Formula from "../Formula";
-import { LeftParen, RightParen } from "../operator-symbols";
+import { LeftParen, RightParen } from "../operator-chars";
 import { BinaryNode, BinaryTree } from "./BinaryTree";
 import Operator from "./Operator";
 import SymbolGroup from "./SymbolGroup";
@@ -14,11 +14,11 @@ const SetParenLevel = function (
     Math.max(leftResult[1], rightResult[1]),
   ];
   if (node.value instanceof Operator) {
-    if (node.value.symbol instanceof LeftParen) {
-      node.value.symbol.level = parenCounts[0];
+    if (node.value.char instanceof LeftParen) {
+      node.value.char.level = parenCounts[0];
       parenCounts[0] += 1;
-    } else if (node.value.symbol instanceof RightParen) {
-      node.value.symbol.level = parenCounts[1];
+    } else if (node.value.char instanceof RightParen) {
+      node.value.char.level = parenCounts[1];
       parenCounts[1] += 1;
     }
   }
@@ -34,18 +34,18 @@ const RenderLatex = function (
   if (leftResult) {
     latex +=
       node.value instanceof Operator
-        ? node.value.symbol.renderLatexOfLeftOperand(leftResult)
+        ? node.value.char.renderLatexOfLeftOperand(leftResult)
         : leftResult;
   }
 
-  const symbols = node.value.symbols;
-  if (symbols.length > 1) {
-    latex += symbols.map<string>((number) => number.renderLatex()).join("");
+  const chars = node.value.chars;
+  if (chars.length > 1) {
+    latex += chars.map<string>((number) => number.renderLatex()).join("");
   } else {
-    const symbol = symbols[0];
-    if (symbol) {
+    const char = chars[0];
+    if (char) {
       const params: string[] =
-        symbol.paramsNumber > 0
+        char.paramsNumber > 0
           ? node.value.params.map<string>((param) => {
               const infix = node.tree.formula.infixMaker.make(param);
               const postfix = node.tree.formula.postfixMaker.make(infix);
@@ -53,7 +53,7 @@ const RenderLatex = function (
               return tree.renderLatex();
             })
           : [];
-      latex += symbol.renderLatex(params);
+      latex += char.renderLatex(params);
     }
     latex += "";
   }
@@ -61,7 +61,7 @@ const RenderLatex = function (
   if (rightResult) {
     latex +=
       node.value instanceof Operator
-        ? node.value.symbol.renderLatexOfRightOperand(rightResult)
+        ? node.value.char.renderLatexOfRightOperand(rightResult)
         : rightResult;
   }
   return latex;

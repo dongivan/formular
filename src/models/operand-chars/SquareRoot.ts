@@ -1,6 +1,6 @@
-import OperandSymbol from "../OperandSymbol";
+import OperandChar from "../OperandChar";
 
-export default class SquareRoot extends OperandSymbol {
+export default class SquareRoot extends OperandChar {
   protected _latexTemplate = "\\sqrt{<1>}";
 
   constructor() {

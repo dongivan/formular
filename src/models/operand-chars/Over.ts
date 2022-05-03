@@ -1,6 +1,6 @@
-import OperandSymbol from "../OperandSymbol";
+import OperandChar from "../OperandChar";
 
-export default class Over extends OperandSymbol {
+export default class Over extends OperandChar {
   protected _latexTemplate = "\\frac{<1>}{<2>}";
 
   constructor() {
