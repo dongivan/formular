@@ -28,7 +28,7 @@
     <button @click="formula.insertAtCursor('sqrt')">sqrt</button>
     <button @click="formula.moveCursorLeft()">&lt;-</button>
     <button @click="formula.moveCursorRight()">-&gt;</button>
-    <button @click="formula.deleteSymbolBeforeCursor()">Backspace!</button>
+    <button @click="formula.deleteCharBeforeCursor()">Backspace!</button>
     <button @click="formula.undo()" :disabled="!formula.couldUndo">UNDO</button>
     <button @click="formula.redo()" :disabled="!formula.couldRedo">REDO</button>
   </div>
@@ -50,17 +50,17 @@ onMounted(() => {
     }
     let ele: HTMLElement = evt.target as HTMLElement;
     while (ele) {
-      if (ele.dataset.formularSymbolSn || !ele.parentElement) {
+      if (ele.dataset.formularCharSn || !ele.parentElement) {
         break;
       }
       ele = ele.parentElement;
     }
-    const symbolSn = ele.dataset.formularSymbolSn;
-    if (!symbolSn) {
+    const charSn = ele.dataset.formularCharSn;
+    if (!charSn) {
       return;
     }
-    console.log("symbol clicked", symbolSn);
-    formula.moveCursorBeforeChar(parseInt(symbolSn));
+    console.log("symbol clicked", charSn);
+    formula.moveCursorBeforeChar(parseInt(charSn));
     // console.log(evt.target);
   };
 });
