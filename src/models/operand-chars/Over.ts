@@ -1,7 +1,7 @@
 import OperandChar from "../OperandChar";
 
 export default class Over extends OperandChar {
-  protected _latexTemplate = "\\frac{<1>}{<2>}";
+  protected _latexTemplate = "\\frac{<0>}{<1>}";
 
   constructor() {
     super("over");

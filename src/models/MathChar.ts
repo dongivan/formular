@@ -6,6 +6,7 @@ export default class MathChar {
   protected _paramsNumber = 0;
   protected _latexTemplate: string | undefined;
   protected _clickable = false;
+  protected _clickableLatexTemplate = `\\htmlData{formular-char-sn=<SN>}{<LATEX>}`;
 
   constructor(value: string | number) {
     this._value = value.toString();
@@ -30,6 +31,10 @@ export default class MathChar {
 
   get clickable(): boolean {
     return this._clickable;
+  }
+
+  get clickableLatexTemplate(): string {
+    return this._clickableLatexTemplate;
   }
 
   toString(): string {

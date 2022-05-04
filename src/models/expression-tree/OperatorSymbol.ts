@@ -1,5 +1,6 @@
 import MathChar from "../MathChar";
 import OperatorChar from "../OperatorChar";
+import { replace } from "../utils";
 import MathSymbol from "./MathSymbol";
 
 export default class OperatorSymbol extends MathSymbol<OperatorChar> {
@@ -43,8 +44,6 @@ export default class OperatorSymbol extends MathSymbol<OperatorChar> {
     template: string,
     operandLatex: string | undefined
   ) {
-    return operandLatex
-      ? template.replace(new RegExp(`<1>`, "g"), operandLatex)
-      : "";
+    return operandLatex ? replace(template, operandLatex) : "";
   }
 }

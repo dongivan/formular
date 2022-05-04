@@ -1,8 +1,8 @@
 import OperatorChar from "../OperatorChar";
 
 export default class Power extends OperatorChar {
-  protected _latexTemplate = "^{<1>}";
-  protected _leftOperandLatexTemplate = "{<1>}";
+  protected _latexTemplate = "^{<0>}";
+  protected _leftOperandLatexTemplate = "{<0>}";
 
   constructor() {
     super("^");

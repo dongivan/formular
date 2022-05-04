@@ -1,4 +1,5 @@
 import MathChar from "../MathChar";
+import { replace } from "../utils";
 
 export default abstract class MathSymbol<M extends MathChar> {
   protected _char: M;
@@ -34,15 +35,13 @@ export default abstract class MathSymbol<M extends MathChar> {
     let result = this._char.latexTemplate;
     const latexParams = renderParamsFn ? renderParamsFn(this.params) : [];
     if (latexParams) {
-      for (let i = 0; i < latexParams.length; i++) {
-        result = result.replace(
-          new RegExp(`<${i + 1}>`, "g"),
-          latexParams[i] || ""
-        );
-      }
+      result = replace(result, latexParams);
     }
     if (this._char.clickable) {
-      result = `\\htmlData{formular-char-sn=${this._char.sequenceNumber}}{${result}}`;
+      result = replace(this._char.clickableLatexTemplate, {
+        SN: this._char.sequenceNumber.toString(),
+        LATEX: result,
+      });
     }
     return result;
   }

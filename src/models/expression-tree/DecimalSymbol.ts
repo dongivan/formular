@@ -1,8 +1,8 @@
 import { NumberChar } from "../operand-chars";
 import DecimalPoint from "../operand-chars/DecimalPoint";
-import OperandSymbol from "./OperandSymbol";
+import NumberSymbol from "./NumberSymbol";
 
-export default class DecimalSymbol extends OperandSymbol<DecimalPoint> {
+export default class DecimalSymbol extends NumberSymbol<DecimalPoint> {
   private _integers: NumberChar[];
   private _decimals: NumberChar[];
 
@@ -18,9 +18,9 @@ export default class DecimalSymbol extends OperandSymbol<DecimalPoint> {
 
   renderLatex(): string {
     return (
-      this._integers.map<string>((char) => char.value).join("") +
-      "." +
-      this._decimals.map<string>((char) => char.value).join("")
+      this._integers.map<string>(this._renderClickableLatex).join("") +
+      this._renderClickableLatex(this._char as DecimalPoint) +
+      this._decimals.map<string>(this._renderClickableLatex).join("")
     );
   }
 

@@ -9,8 +9,8 @@ export default abstract class OperatorChar extends MathChar {
   protected _priority = 1;
   protected _hasLeftOperand = true;
   protected _hasRightOperand = true;
-  protected _leftOperandLatexTemplate = "<1>";
-  protected _rightOperandLatexTemplate = "<1>";
+  protected _leftOperandLatexTemplate = "<0>";
+  protected _rightOperandLatexTemplate = "<0>";
 
   constructor(value: string) {
     super(value);

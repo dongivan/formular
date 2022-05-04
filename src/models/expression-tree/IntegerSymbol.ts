@@ -1,7 +1,7 @@
 import { NumberChar } from "../operand-chars";
-import OperandSymbol from "./OperandSymbol";
+import NumberSymbol from "./NumberSymbol";
 
-export default class IntegerSymbol extends OperandSymbol<NumberChar> {
+export default class IntegerSymbol extends NumberSymbol<NumberChar> {
   private _integers: NumberChar[];
 
   constructor(integers: [NumberChar, ...NumberChar[]]) {
@@ -10,7 +10,7 @@ export default class IntegerSymbol extends OperandSymbol<NumberChar> {
   }
 
   renderLatex(): string {
-    return this._integers.map<string>((char) => char.value).join("");
+    return this._integers.map<string>(this._renderClickableLatex).join("");
   }
 
   toString(): string {
