@@ -4,6 +4,7 @@ import { BinaryNode, BinaryTree } from "./BinaryTree";
 import OperatorSymbol from "./OperatorSymbol";
 import MathSymbol from "./MathSymbol";
 import NumberSymbol from "./NumberSymbol";
+import MathChar from "../MathChar";
 
 const SetParenLevel = function (
   node: ExpressionNode,
@@ -67,8 +68,8 @@ const RenderLatex = function (
   return latex;
 };
 
-class ExpressionNode extends BinaryNode<MathSymbol<any>, ExpressionTree> {
-  get symbol(): MathSymbol<any> {
+class ExpressionNode extends BinaryNode<MathSymbol<MathChar>, ExpressionTree> {
+  get symbol(): MathSymbol<MathChar> {
     return this.value;
   }
 
