@@ -27,8 +27,6 @@ export default class InfixListMaker {
     const infixList: InfixList = [];
 
     let pos = 0;
-    // let pos = 0,
-    //   operandCache: OperandSymbol = new OperandSymbol();
     while (pos < chars.length) {
       const char = chars[pos];
       let operatorParams = undefined;
@@ -72,8 +70,6 @@ export default class InfixListMaker {
         )
       );
     }
-
-    console.log(infixList.toString());
 
     return infixList;
   }
@@ -170,18 +166,6 @@ export default class InfixListMaker {
       pos += 1;
     }
 
-    // const numberChars: [NumberChar, ...NumberChar[]] = [lead];
-    // let pos = startPos;
-    // while (pos < chars.length) {
-    //   const item = chars[pos];
-    //   if (item instanceof NumberChar) {
-    //     numberChars.push(item);
-    //   } else {
-    //     pos -= 1;
-    //     break;
-    //   }
-    //   pos += 1;
-    // }
     return { integers, decimals, decimalPoint, endPos: pos };
   }
 
