@@ -57,7 +57,6 @@ export default class PostfixListMaker {
       operatorStack.shift();
     }
 
-    // console.log(postfixList);
     return postfixList;
   }
 
