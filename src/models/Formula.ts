@@ -10,7 +10,6 @@ import { Placeholder } from "./operand-chars";
 
 export default class Formula {
   private _chars: MathChar[] = [];
-  // private _steps: string[] = [];
   private _steps: number[][] = [];
   private _currentStep = -1;
   private _cursor: Cursor;
