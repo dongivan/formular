@@ -8,7 +8,9 @@ import OperatorSymbol from "./OperatorSymbol";
 import Formula from "../Formula";
 import InfixList from "./InfixList";
 import { NumberChar } from "../operand-chars";
-import NumberSymbol from "./NumberSymbol";
+import IntegerSymbol from "./IntegerSymbol";
+import DecimalPoint from "../operand-chars/DecimalPoint";
+import DecimalSymbol from "./DecimalSymbol";
 
 export default class InfixListMaker {
   private _formula: Formula;
@@ -37,14 +39,13 @@ export default class InfixListMaker {
         pos = endPos;
       }
 
-      if (char instanceof NumberChar) {
+      if (char instanceof NumberChar || char instanceof DecimalPoint) {
         /* current char is a NumberChar, generate a NumberSymbol and push it into infix expression */
-        const { numberChars, endPos } = this._generateNumberChars(
-          char,
-          chars,
-          pos + 1
-        );
-        const symbol = new NumberSymbol(numberChars);
+        const { integers, decimals, decimalPoint, endPos } =
+          this._generateNumberChars(char, chars, pos + 1);
+        const symbol = decimalPoint
+          ? new DecimalSymbol(integers, decimalPoint, decimals)
+          : new IntegerSymbol(integers as [NumberChar, ...NumberChar[]]);
         this._pushOperand(infixList, symbol);
         pos = endPos;
       } else if (char instanceof OperandChar) {
@@ -71,6 +72,8 @@ export default class InfixListMaker {
         )
       );
     }
+
+    console.log(infixList.toString());
 
     return infixList;
   }
@@ -124,23 +127,62 @@ export default class InfixListMaker {
   }
 
   private _generateNumberChars(
-    lead: NumberChar,
+    lead: NumberChar | DecimalPoint,
     chars: MathChar[],
     startPos: number
-  ): { numberChars: [NumberChar, ...NumberChar[]]; endPos: number } {
-    const numberChars: [NumberChar, ...NumberChar[]] = [lead];
+  ): {
+    integers: NumberChar[];
+    decimals: NumberChar[];
+    decimalPoint: DecimalPoint | undefined;
+    endPos: number;
+  } {
+    const integers = new Array<NumberChar>();
+    const decimals = new Array<NumberChar>();
+    let decimalPoint: DecimalPoint | undefined = undefined;
+
+    if (lead instanceof DecimalPoint) {
+      decimalPoint = lead;
+    } else {
+      integers.push(lead);
+    }
+
     let pos = startPos;
     while (pos < chars.length) {
       const item = chars[pos];
-      if (item instanceof NumberChar) {
-        numberChars.push(item);
+      if (decimalPoint) {
+        if (item instanceof NumberChar) {
+          decimals.push(item);
+        } else {
+          pos -= 1;
+          break;
+        }
       } else {
-        pos -= 1;
-        break;
+        if (item instanceof NumberChar) {
+          integers.push(item);
+        } else if (item instanceof DecimalPoint) {
+          decimalPoint = item;
+        } else {
+          pos -= 1;
+          break;
+        }
       }
+
       pos += 1;
     }
-    return { numberChars, endPos: pos };
+
+    // const numberChars: [NumberChar, ...NumberChar[]] = [lead];
+    // let pos = startPos;
+    // while (pos < chars.length) {
+    //   const item = chars[pos];
+    //   if (item instanceof NumberChar) {
+    //     numberChars.push(item);
+    //   } else {
+    //     pos -= 1;
+    //     break;
+    //   }
+    //   pos += 1;
+    // }
+    return { integers, decimals, decimalPoint, endPos: pos };
   }
 
   private _pushOperator(infixList: InfixList, operator: OperatorSymbol) {

@@ -12,6 +12,7 @@ export default class MathCharFactory {
     hidden: OperatorChars.HiddenTimes,
     sqrt: OperandChars.SquareRoot,
     over: OperandChars.Over,
+    ".": OperandChars.DecimalPoint,
 
     /* operator chars */
     "+": OperatorChars.Plus,

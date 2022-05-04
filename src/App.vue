@@ -17,6 +17,7 @@
     >
       {{ partName - 1 }}
     </button>
+    <button @click="formula.insertAtCursor('.')">.</button>
     <button @click="formula.insertAtCursor('+')">+</button>
     <button @click="formula.insertAtCursor('(')">(</button>
     <button @click="formula.insertAtCursor(')')">)</button>

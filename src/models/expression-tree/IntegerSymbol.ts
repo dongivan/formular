@@ -1,7 +1,7 @@
 import { NumberChar } from "../operand-chars";
 import OperandSymbol from "./OperandSymbol";
 
-export default class NumberSymbol extends OperandSymbol<NumberChar> {
+export default class IntegerSymbol extends OperandSymbol<NumberChar> {
   private _integers: NumberChar[];
 
   constructor(integers: [NumberChar, ...NumberChar[]]) {
