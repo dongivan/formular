@@ -3,6 +3,7 @@ import { LeftParen, RightParen } from "../operator-chars";
 import { BinaryNode, BinaryTree } from "./BinaryTree";
 import OperatorSymbol from "./OperatorSymbol";
 import MathSymbol from "./MathSymbol";
+import NumberSymbol from "./NumberSymbol";
 
 const SetParenLevel = function (
   node: ExpressionNode,
@@ -38,11 +39,10 @@ const RenderLatex = function (
         : leftResult;
   }
 
-  const chars = node.symbol.chars;
-  if (chars.length > 1) {
-    latex += chars.map<string>((number) => number.renderLatex()).join("");
+  if (node.symbol instanceof NumberSymbol) {
+    latex += node.symbol.renderLatex();
   } else {
-    const char = chars[0];
+    const char = node.symbol.char;
     if (char) {
       const params: string[] =
         char.paramsNumber > 0
@@ -67,8 +67,8 @@ const RenderLatex = function (
   return latex;
 };
 
-class ExpressionNode extends BinaryNode<MathSymbol, ExpressionTree> {
-  get symbol(): MathSymbol {
+class ExpressionNode extends BinaryNode<MathSymbol<any>, ExpressionTree> {
+  get symbol(): MathSymbol<any> {
     return this.value;
   }
 

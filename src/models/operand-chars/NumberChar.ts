@@ -6,8 +6,4 @@ export default class NumberChar extends OperandChar {
   constructor(value: number) {
     super(value.toString());
   }
-
-  concat(number: NumberChar) {
-    this._value += number._value;
-  }
 }

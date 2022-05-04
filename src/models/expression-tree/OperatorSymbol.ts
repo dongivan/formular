@@ -2,48 +2,28 @@ import MathChar from "../MathChar";
 import OperatorChar from "../OperatorChar";
 import MathSymbol from "./MathSymbol";
 
-export default class OperatorSymbol extends MathSymbol {
-  private _operator: OperatorChar;
-
-  constructor(operator: OperatorChar, params?: MathChar[][]) {
-    super(params);
-    this._operator = operator;
-  }
-
+export default class OperatorSymbol extends MathSymbol<OperatorChar> {
   get hasLeftOperand(): boolean {
-    return this._operator.hasLeftOperand;
+    return this._char.hasLeftOperand;
   }
 
   get hasRightOperand(): boolean {
-    return this._operator.hasRightOperand;
+    return this._char.hasRightOperand;
   }
 
   get hasParams(): boolean {
-    return !!this._operator.paramsNumber;
+    return !!this._char.paramsNumber;
   }
 
   get priority(): number {
-    return this._operator.priority;
+    return this._char.priority;
   }
 
   get char(): OperatorChar {
-    return this._operator;
+    return this._char;
   }
 
   get chars(): MathChar[] {
-    return [this._operator];
-  }
-
-  toString(): string {
-    return (
-      this._operator.toString() +
-      (this._params.length > 0
-        ? "(" +
-          this.params.map<string>((param) =>
-            param.map<string>((group) => group.toString()).join(", ")
-          ) +
-          ")"
-        : "")
-    );
+    return [this._char];
   }
 }
