@@ -3,7 +3,6 @@ import { LeftParen, RightParen } from "../operator-chars";
 import { BinaryNode, BinaryTree } from "./BinaryTree";
 import OperatorSymbol from "./OperatorSymbol";
 import MathSymbol from "./MathSymbol";
-import NumberSymbol from "./NumberSymbol";
 import MathChar from "../MathChar";
 
 const SetParenLevel = function (
@@ -32,40 +31,17 @@ const RenderLatex = function (
   leftResult: string | undefined,
   rightResult: string | undefined
 ): string {
-  let latex = "";
-  if (leftResult) {
-    latex +=
-      node.symbol instanceof OperatorSymbol
-        ? node.symbol.char.renderLatexOfLeftOperand(leftResult)
-        : leftResult;
-  }
-
-  if (node.symbol instanceof NumberSymbol) {
-    latex += node.symbol.renderLatex();
-  } else {
-    const char = node.symbol.char;
-    if (char) {
-      const params: string[] =
-        char.paramsNumber > 0
-          ? node.symbol.params.map<string>((param) => {
-              const infix = node.tree.formula.infixMaker.make(param);
-              const postfix = node.tree.formula.postfixMaker.make(infix);
-              const tree = node.tree.formula.binaryTreeMaker.make(postfix);
-              return tree.renderLatex();
-            })
-          : [];
-      latex += char.renderLatex(params);
-    }
-    latex += "";
-  }
-
-  if (rightResult) {
-    latex +=
-      node.symbol instanceof OperatorSymbol
-        ? node.symbol.char.renderLatexOfRightOperand(rightResult)
-        : rightResult;
-  }
-  return latex;
+  return node.symbol.renderLatex(
+    (params) =>
+      params.map<string>((param) => {
+        const infix = node.tree.formula.infixMaker.make(param);
+        const postfix = node.tree.formula.postfixMaker.make(infix);
+        const tree = node.tree.formula.binaryTreeMaker.make(postfix);
+        return tree.renderLatex();
+      }),
+    leftResult,
+    rightResult
+  );
 };
 
 class ExpressionNode extends BinaryNode<MathSymbol<MathChar>, ExpressionTree> {

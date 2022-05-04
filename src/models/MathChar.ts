@@ -20,6 +20,18 @@ export default class MathChar {
     return this._paramsNumber;
   }
 
+  get latexTemplate(): string {
+    return this._latexTemplate == undefined ? this._value : this._latexTemplate;
+  }
+
+  get value(): string {
+    return this._value;
+  }
+
+  get clickable(): boolean {
+    return this._clickable;
+  }
+
   toString(): string {
     return this._value;
   }
@@ -32,19 +44,5 @@ export default class MathChar {
       type: this.constructor.name,
       value: this.toString(),
     };
-  }
-
-  renderLatex(params?: string[]): string {
-    let result =
-      this._latexTemplate == undefined ? this._value : this._latexTemplate;
-    if (params) {
-      for (let i = 0; i < params.length; i++) {
-        result = result.replace(new RegExp(`<${i + 1}>`, "g"), params[i] || "");
-      }
-    }
-    if (this._clickable) {
-      result = `\\htmlData{formular-char-sn=${this._sequenceNumber}}{${result}}`;
-    }
-    return result;
   }
 }

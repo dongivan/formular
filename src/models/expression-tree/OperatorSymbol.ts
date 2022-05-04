@@ -26,4 +26,25 @@ export default class OperatorSymbol extends MathSymbol<OperatorChar> {
   get chars(): MathChar[] {
     return [this._char];
   }
+
+  renderLatex(
+    renderParamsFn?: (params: MathChar[][]) => string[],
+    leftLatex?: string,
+    rightLatex?: string
+  ): string {
+    return (
+      this._renderOperandLatex(this._char.leftOperandLatexTemplate, leftLatex) +
+      super.renderLatex(renderParamsFn) +
+      this._renderOperandLatex(this._char.rightOperandLatexTemplate, rightLatex)
+    );
+  }
+
+  private _renderOperandLatex(
+    template: string,
+    operandLatex: string | undefined
+  ) {
+    return operandLatex
+      ? template.replace(new RegExp(`<1>`, "g"), operandLatex)
+      : "";
+  }
 }

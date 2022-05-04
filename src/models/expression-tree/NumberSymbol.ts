@@ -10,10 +10,10 @@ export default class NumberSymbol extends OperandSymbol<NumberChar> {
   }
 
   renderLatex(): string {
-    return this._integers.map<string>((number) => number.toString()).join("");
+    return this._integers.map<string>((char) => char.value).join("");
   }
 
   toString(): string {
-    return this._integers.map<string>((number) => number.toString()).join("");
+    return this._integers.map<string>((char) => char.toString()).join("");
   }
 }

@@ -25,6 +25,28 @@ export default abstract class MathSymbol<M extends MathChar> {
     return this._params.length > 0;
   }
 
+  renderLatex(
+    renderParamsFn?: (params: MathChar[][]) => string[],
+    leftLatex?: string,
+    rightLatex?: string
+  ): string;
+  renderLatex(renderParamsFn?: (params: MathChar[][]) => string[]): string {
+    let result = this._char.latexTemplate;
+    const latexParams = renderParamsFn ? renderParamsFn(this.params) : [];
+    if (latexParams) {
+      for (let i = 0; i < latexParams.length; i++) {
+        result = result.replace(
+          new RegExp(`<${i + 1}>`, "g"),
+          latexParams[i] || ""
+        );
+      }
+    }
+    if (this._char.clickable) {
+      result = `\\htmlData{formular-char-sn=${this._char.sequenceNumber}}{${result}}`;
+    }
+    return result;
+  }
+
   toString(): string {
     return (
       this._char.toString() +

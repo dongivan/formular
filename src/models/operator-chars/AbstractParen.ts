@@ -1,8 +1,7 @@
 import Operator from "../OperatorChar";
 
 export default abstract class AbstractParen extends Operator {
-  protected _latexTemplate = "<1><2>";
-  protected static readonly _PREFIXES = [
+  protected static readonly _LATEX_PREFIXES = [
     "",
     "\\big",
     "\\Big",
@@ -11,9 +10,10 @@ export default abstract class AbstractParen extends Operator {
   ];
   level = 0;
 
-  renderLatex(): string {
-    const prefix =
-      AbstractParen._PREFIXES[Math.min(Math.max(this.level, 0), 4)] || "";
-    return super.renderLatex([prefix, this._value]);
+  get latexTemplate(): string {
+    return (
+      (AbstractParen._LATEX_PREFIXES[Math.min(Math.max(this.level, 0), 4)] ||
+        "") + this._value
+    );
   }
 }
