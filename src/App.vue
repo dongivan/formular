@@ -20,95 +20,49 @@
     <button @click="formula.moveCursorLeft()">&lt;-</button>
     <button @click="formula.moveCursorRight()">-&gt;</button>
     <button @click="formula.deleteCharBeforeCursor()">Backspace!</button>
-    <button @click="formula.undo()" :disabled="!formula.couldUndo">UNDO</button>
-    <button @click="formula.redo()" :disabled="!formula.couldRedo">REDO</button>
+    <button :disabled="!formula.couldUndo" @click="formula.undo()">UNDO</button>
+    <button :disabled="!formula.couldRedo" @click="formula.redo()">REDO</button>
   </div>
 
-  <div class="jax-container" style="width: 100%" ref="jaxEleRef"></div>
+  <MathMLViewer
+    class="jax-container"
+    :math-jax-script-src="scriptUrlOfMathJax"
+    :content="mmlText"
+    @click="onViewerClick"
+  />
 
   <pre>{{ mmlText }}</pre>
 </template>
 
-<script lang="ts">
-declare const window: {
-  MathJax: {
-    mathml2chtml: (mml: string) => void;
-    startup: {
-      document: {
-        clear: () => void;
-        updateDocument: () => void;
-      };
-    };
-  };
-};
-</script>
-
 <script setup lang="ts">
-import { computed, onMounted, reactive, ref, watch } from "vue";
+import MathMLViewer from "./components/MathMLViewer.vue";
+import { computed, reactive } from "vue";
 import Formula from "./models/Formula";
-import { loadScript } from "./models/utils";
-
-const isMountedRef = ref(false);
-
-onMounted(() => {
-  isMountedRef.value = true;
-});
-
-/* */
 
 const formula = reactive(new Formula());
 const scriptUrlOfMathJax = "mathjax/es5/mml-chtml.js";
 
-const isMathJaxLoadedRef = ref(false);
-if (!window.MathJax) {
-  loadScript(scriptUrlOfMathJax).then(() => {
-    isMathJaxLoadedRef.value = true;
-  });
-}
-
-const jaxEleRef = ref();
 const mmlText = computed(() => {
   return formula.toMML().render();
 });
 
-onMounted(() => {
-  (jaxEleRef.value as HTMLElement).onclick = (evt) => {
-    if (!evt.target) {
-      return;
-    }
-    let ele: HTMLElement = evt.target as HTMLElement;
-    while (ele) {
-      if (ele.dataset.formularCharSn || !ele.parentElement) {
-        break;
-      }
-      ele = ele.parentElement;
-    }
-    const charSn = ele.dataset.formularCharSn;
-    if (!charSn) {
-      return;
-    }
-    formula.moveCursorBeforeChar(parseInt(charSn));
-  };
-});
-
-watch(
-  [mmlText, isMountedRef, isMathJaxLoadedRef],
-  ([text, isMounted, isMathJaxLoaded]) => {
-    if (!isMounted || !isMathJaxLoaded) {
-      return;
-    }
-
-    const MathJax = window.MathJax;
-    const ele = jaxEleRef.value;
-    ele.innerHTML = "";
-    ele.appendChild(MathJax.mathml2chtml(text));
-    MathJax.startup.document.clear();
-    MathJax.startup.document.updateDocument();
-  },
-  {
-    immediate: true,
+const onViewerClick = (evt: Event) => {
+  if (!evt.target) {
+    return;
   }
-);
+  let ele: HTMLElement = evt.target as HTMLElement;
+  while (ele) {
+    if (ele.dataset.formularCharSn || !ele.parentElement) {
+      break;
+    }
+    ele = ele.parentElement;
+  }
+  const charSn = ele.dataset.formularCharSn;
+  if (!charSn) {
+    return;
+  }
+  formula.moveCursorBeforeChar(parseInt(charSn));
+};
 </script>
 
 <style lang="scss">
