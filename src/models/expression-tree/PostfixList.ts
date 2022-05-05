@@ -1,4 +1,4 @@
-import MathChar from "../MathChar";
-import MathSymbol from "./MathSymbol";
+import { MathChar } from "../math-char";
+import { MathSymbol } from "../math-symbol";
 
 export default class PofixList extends Array<MathSymbol<MathChar>> {}

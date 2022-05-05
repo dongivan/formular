@@ -1,4 +1,4 @@
-import { NumberChar } from "../operand-chars";
+import { NumberChar } from "../math-char";
 import NumberSymbol from "./NumberSymbol";
 
 export default class IntegerSymbol extends NumberSymbol<NumberChar> {
