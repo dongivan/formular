@@ -1,8 +1,7 @@
 import Formula from "../Formula";
-import { LeftParen, RightParen } from "../math-char/operator-chars";
+import { LeftParen, RightParen, MathChar } from "../math-char";
 import { BinaryNode, BinaryTree } from "./BinaryTree";
 import { OperatorSymbol, MathSymbol } from "../math-symbol";
-import { MathChar } from "../math-char";
 
 const SetParenLevel = function (
   node: ExpressionNode,
@@ -30,14 +29,8 @@ const RenderLatex = function (
   leftResult: string | undefined,
   rightResult: string | undefined
 ): string {
-  return node.symbol.renderLatex(
-    (params) =>
-      params.map<string>((param) => {
-        const infix = node.tree.formula.infixMaker.make(param);
-        const postfix = node.tree.formula.postfixMaker.make(infix);
-        const tree = node.tree.formula.binaryTreeMaker.make(postfix);
-        return tree.renderLatex();
-      }),
+  return node.symbol.render(
+    new node.symbol.char.latexRenderer(node.tree.formula),
     leftResult,
     rightResult
   );

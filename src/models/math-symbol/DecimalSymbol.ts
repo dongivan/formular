@@ -5,6 +5,14 @@ export default class DecimalSymbol extends NumberSymbol<DecimalPoint> {
   private _integers: NumberChar[];
   private _decimals: NumberChar[];
 
+  get integers(): readonly NumberChar[] {
+    return Object.freeze(this._integers);
+  }
+
+  get decimals(): readonly NumberChar[] {
+    return Object.freeze(this._decimals);
+  }
+
   constructor(
     integers: NumberChar[],
     decimalPoint: DecimalPoint,
@@ -13,14 +21,6 @@ export default class DecimalSymbol extends NumberSymbol<DecimalPoint> {
     super(decimalPoint);
     this._integers = integers;
     this._decimals = decimals;
-  }
-
-  renderLatex(): string {
-    return (
-      this._integers.map<string>(this._renderClickableLatex).join("") +
-      this._renderClickableLatex(this._char as DecimalPoint) +
-      this._decimals.map<string>(this._renderClickableLatex).join("")
-    );
   }
 
   toString(): string {

@@ -1,5 +1,8 @@
+import { LatexDefaultRenderer } from "../renderer";
+
 export default class MathChar {
   private static _SEQUENCE_NUMBER = 0;
+  readonly latexRenderer: typeof LatexDefaultRenderer = LatexDefaultRenderer;
 
   private _sequenceNumber: number;
   protected _value: string;
