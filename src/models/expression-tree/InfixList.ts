@@ -1,4 +1,4 @@
-import MathChar from "../MathChar";
-import MathSymbol from "./MathSymbol";
+import MathChar from "../math-char/MathChar";
+import MathSymbol from "../math-symbol/MathSymbol";
 
 export default class InfixList extends Array<MathSymbol<MathChar>> {}

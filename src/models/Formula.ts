@@ -1,12 +1,12 @@
-import MathChar from "./MathChar";
-import Cursor from "./operand-chars/Cursor";
-import MathCharFactory from "./MathCharFactory";
-import { ParamEnd, ParamSeparator } from "./operator-chars";
+import MathChar from "./math-char/MathChar";
+import Cursor from "./math-char/operand-chars/Cursor";
+import MathCharFactory from "./math-char/MathCharFactory";
+import { ParamEnd, ParamSeparator } from "./math-char/operator-chars";
 import ExpressionTreeMaker from "./expression-tree/ExpressionTreeMaker";
 import PostfixListMaker from "./expression-tree/PostfixListMaker";
 import Config from "./Config";
 import InfixListMaker from "./expression-tree/InfixListMaker";
-import { Placeholder } from "./operand-chars";
+import { Placeholder } from "./math-char/operand-chars";
 
 export default class Formula {
   private _chars: MathChar[] = [];

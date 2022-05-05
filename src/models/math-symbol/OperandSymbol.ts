@@ -1,5 +1,5 @@
-import MathChar from "../MathChar";
-import OperandChar from "../OperandChar";
+import MathChar from "../math-char/MathChar";
+import OperandChar from "../math-char/OperandChar";
 import MathSymbol from "./MathSymbol";
 
 export default class OperandSymbol<

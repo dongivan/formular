@@ -1,5 +1,5 @@
-import { NumberChar } from "../operand-chars";
-import DecimalPoint from "../operand-chars/DecimalPoint";
+import { NumberChar } from "../math-char/operand-chars";
+import DecimalPoint from "../math-char/operand-chars/DecimalPoint";
 import NumberSymbol from "./NumberSymbol";
 
 export default class DecimalSymbol extends NumberSymbol<DecimalPoint> {

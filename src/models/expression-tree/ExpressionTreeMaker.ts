@@ -1,7 +1,7 @@
 import Formula from "../Formula";
 import { ExpressionTree, ExpressionNode } from "./ExpressionTree";
-import OperandSymbol from "./OperandSymbol";
-import OperatorSymbol from "./OperatorSymbol";
+import OperandSymbol from "../math-symbol/OperandSymbol";
+import OperatorSymbol from "../math-symbol/OperatorSymbol";
 import PostfixList from "./PostfixList";
 
 export default class ExpressionTreeMaker {

@@ -1,4 +1,4 @@
-import Config from "../Config";
+import Config from "../../Config";
 import MathChar from "../MathChar";
 import OperandChar from "../OperandChar";
 

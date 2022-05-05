@@ -1,4 +1,4 @@
-import MathChar from "../MathChar";
+import MathChar from "../math-char/MathChar";
 import { replace } from "../utils";
 
 export default abstract class MathSymbol<M extends MathChar> {
