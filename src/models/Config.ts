@@ -7,8 +7,8 @@ export default class Config {
     cursorLatex: "{\\htmlClass{<0>}{{\\phantom{O}\\mathstrut}}}",
     placeholderLatex: "\\htmlClass{<0>}{\\ ?\\ \\mathstrut}",
 
-    cursorMML: `<mtext>&#xA0;&#xA0;&#xA0;</mtext><mrow data-mjx-texclass="ORD"><mpadded width="0"><mphantom><mo stretchy="false">(</mo></mphantom></mpadded></mrow>`,
-    placeholderMML: `<mtext>&#xA0;?&#xA0;</mtext><mrow data-mjx-texclass="ORD"><mpadded width="0"><mphantom><mo stretchy="false">(</mo></mphantom></mpadded></mrow>`,
+    cursorMML: `<mtext>&#xA0;&#xA0;&#xA0;</mtext><mrow><mpadded width="0"><mphantom><mo stretchy="false">(</mo></mphantom></mpadded></mrow>`,
+    placeholderMML: `<mtext>&#xA0;?&#xA0;</mtext><mrow><mpadded width="0"><mphantom><mo stretchy="false">(</mo></mphantom></mpadded></mrow>`,
     cursorCssClass: "formular-cursor",
     placeholderCssClass: "formular-placeholder",
   };
