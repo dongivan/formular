@@ -77,13 +77,11 @@ const mmlRef = computed(() => props.content);
 watch(
   [mmlRef, isMountedRef, isMathJaxLoadedRef],
   ([mmlContent, isMounted, isMathJaxLoaded]) => {
-    console.log(mmlContent, isMounted, isMathJaxLoaded);
     if (!isMounted || !isMathJaxLoaded) {
       return;
     }
     const MathJax = window.MathJax;
     const el = containerRef.value;
-    console.log(containerRef);
     el.innerHTML = "";
     el.appendChild(MathJax.mathml2chtml(mmlContent));
     MathJax.startup.document.clear();
