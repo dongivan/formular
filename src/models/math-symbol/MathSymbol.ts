@@ -1,5 +1,5 @@
 import { MathChar } from "../math-char";
-import { replace } from "../utils";
+import { Renderer } from "../renderer";
 
 export default abstract class MathSymbol<M extends MathChar> {
   protected _char: M;
@@ -26,24 +26,12 @@ export default abstract class MathSymbol<M extends MathChar> {
     return this._params.length > 0;
   }
 
-  renderLatex(
-    renderParamsFn?: (params: MathChar[][]) => string[],
-    leftLatex?: string,
-    rightLatex?: string
-  ): string;
-  renderLatex(renderParamsFn?: (params: MathChar[][]) => string[]): string {
-    let result = this._char.latexTemplate;
-    const latexParams = renderParamsFn ? renderParamsFn(this.params) : [];
-    if (latexParams) {
-      result = replace(result, latexParams);
-    }
-    if (this._char.clickable) {
-      result = replace(this._char.clickableLatexTemplate, {
-        SN: this._char.sequenceNumber.toString(),
-        LATEX: result,
-      });
-    }
-    return result;
+  render<R>(
+    renderer: Renderer<R>,
+    leftOperand: R | undefined,
+    rightOperand: R | undefined
+  ): R {
+    return renderer.render(this, leftOperand, rightOperand);
   }
 
   toString(): string {
