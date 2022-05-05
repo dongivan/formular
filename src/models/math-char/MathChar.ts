@@ -9,7 +9,7 @@ export default class MathChar {
   readonly mmlRenderer: typeof MMLDefaultRenderer = MMLDefaultRenderer;
   readonly mmlTag: string = "mtext";
   readonly mmlAttrs: Record<string, string> = {};
-  readonly clickableDataKey = "formular-char-sn";
+  readonly clickableDataKey = "data-formular-char-sn";
   protected _mmlValueTemplate: string | undefined;
 
   private _sequenceNumber: number;

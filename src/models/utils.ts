@@ -16,3 +16,24 @@ export function replace(
   }
   return result;
 }
+
+export async function loadScript(src: string) {
+  return new Promise<void>((resolve, reject) => {
+    const script = document.createElement("script");
+    script.type = "text/javascript";
+    script.async = true;
+    script.src = src;
+
+    const el = document.getElementsByTagName("script")[0];
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    el.parentNode!.insertBefore(script, el);
+
+    script.addEventListener("load", () => {
+      resolve();
+    });
+
+    script.addEventListener("error", () => {
+      reject(new Error(`${src} failed to load.`));
+    });
+  });
+}

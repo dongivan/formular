@@ -4,6 +4,8 @@ import MathChar from "../MathChar";
 import OperandChar from "../OperandChar";
 
 export default class Placeholder extends OperandChar {
+  readonly mmlTag = "mrow";
+
   protected _clickable = true;
 
   private _masterChar: MathChar;

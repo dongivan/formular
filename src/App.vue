@@ -1,15 +1,5 @@
 <template>
   <div>
-    <textarea v-model="symbolLatexTextRef" style="width: 100%"></textarea>
-  </div>
-  <div>symbol list: {{ formula }}</div>
-  <!-- <div>symbol rpn: {{ symbolContainer.toRPNList() }}</div> -->
-  <div class="latex-container" style="width: 100%">
-    <div class="latex-ele" ref="symbolLatexEleRef"></div>
-  </div>
-  <!--HelloWorld msg="Welcome to Your Vue.js App12"/-->
-
-  <div>
     <button
       v-for="partName of 10"
       :key="`key-value-${partName - 1}`"
@@ -33,20 +23,56 @@
     <button @click="formula.undo()" :disabled="!formula.couldUndo">UNDO</button>
     <button @click="formula.redo()" :disabled="!formula.couldRedo">REDO</button>
   </div>
+
+  <div class="jax-container" style="width: 100%" ref="jaxEleRef"></div>
+
   <pre>{{ mmlText }}</pre>
 </template>
 
+<script lang="ts">
+declare const window: {
+  MathJax: {
+    mathml2chtml: (mml: string) => void;
+    startup: {
+      document: {
+        clear: () => void;
+        updateDocument: () => void;
+      };
+    };
+  };
+};
+</script>
+
 <script setup lang="ts">
 import { computed, onMounted, reactive, ref, watch } from "vue";
-import katex from "katex";
 import Formula from "./models/Formula";
+import { loadScript } from "./models/utils";
 
 const isMountedRef = ref(false);
 
 onMounted(() => {
   isMountedRef.value = true;
-  // window.katex = katex;
-  (symbolLatexEleRef.value as HTMLElement).onclick = (evt) => {
+});
+
+/* */
+
+const formula = reactive(new Formula());
+const scriptUrlOfMathJax = "mathjax/es5/mml-chtml.js";
+
+const isMathJaxLoadedRef = ref(false);
+if (!window.MathJax) {
+  loadScript(scriptUrlOfMathJax).then(() => {
+    isMathJaxLoadedRef.value = true;
+  });
+}
+
+const jaxEleRef = ref();
+const mmlText = computed(() => {
+  return formula.toMML().render();
+});
+
+onMounted(() => {
+  (jaxEleRef.value as HTMLElement).onclick = (evt) => {
     if (!evt.target) {
       return;
     }
@@ -61,60 +87,24 @@ onMounted(() => {
     if (!charSn) {
       return;
     }
-    console.log("symbol clicked", charSn);
     formula.moveCursorBeforeChar(parseInt(charSn));
-    // console.log(evt.target);
   };
 });
 
-/* */
-
-const formula = reactive(new Formula());
-const symbolLatexTextRef = computed(() => {
-  return formula.toLatex();
-});
-const symbolLatexEleRef = ref();
-
-const mmlText = computed(() => {
-  return formula.toMML().render();
-});
-
 watch(
-  [symbolLatexTextRef, isMountedRef],
-  ([text, isMounted]) => {
-    if (!isMounted) {
+  [mmlText, isMountedRef, isMathJaxLoadedRef],
+  ([text, isMounted, isMathJaxLoaded]) => {
+    console.log([isMounted, isMathJaxLoaded]);
+    if (!isMounted || !isMathJaxLoaded) {
       return;
     }
 
-    katex.render(text, symbolLatexEleRef.value, {
-      throwOnError: false,
-      strict: false,
-      trust: true,
-      output: "html",
-      // displayMode: true,
-    });
-
-    // console.log(symbolLatexEleRef.value);
-    // symbolLatexEleRef.value
-    //   .querySelectorAll("[data-formular-symbol-id]")
-    //   .forEach((ele: HTMLElement) => {
-    //     if (ele) {
-    //       console.log(
-    //         "add listener",
-    //         ele.dataset.formularSymbolId,
-    //         ele.onclick
-    //       );
-    //       ele.onclick = (ev) => {
-    //         const symbolId = ele.dataset.formularSymbolId;
-    //         if (!symbolId) {
-    //           return;
-    //         }
-    //         console.log("symbol clicked", symbolId);
-    //         formula.moveCursorBeforeSymbol(parseInt(symbolId));
-    //         ev.stopPropagation();
-    //       };
-    //     }
-    //   });
+    const MathJax = window.MathJax;
+    const ele = jaxEleRef.value;
+    ele.innerHTML = "";
+    ele.appendChild(MathJax.mathml2chtml(text));
+    MathJax.startup.document.clear();
+    MathJax.startup.document.updateDocument();
   },
   {
     immediate: true,
@@ -129,27 +119,10 @@ watch(
   -moz-osx-font-smoothing: grayscale;
   color: #2c3e50;
 }
-.latex-container {
+.jax-container {
   border: 1px solid black;
   min-height: 50px;
   width: 100%;
-
-  .latex-ele {
-    display: inline-block;
-    user-select: none;
-
-    /* \mathstrut will add a transparent ")" after the leading symbol("A" in "A\mathstrut" for
-    example), and then the latter symbol will be blocked by this transparent ")". */
-    .katex .clap > .inner,
-    .katex .rlap > .inner {
-      z-index: -1;
-    }
-
-    /* \frac will have a "span.vlist" at the bottom of its dom, and block the denominator. */
-    .katex .mfrac span.vlist-r:last-child > .vlist {
-      z-index: -1;
-    }
-  }
 }
 .formular-cursor {
   background: skyblue;
