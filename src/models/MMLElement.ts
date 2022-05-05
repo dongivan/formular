@@ -14,6 +14,7 @@ export default class MMLElement {
     Object.keys(attrs).forEach((key) => {
       this._attrs[key] = attrs[key];
     });
+    return this;
   }
 
   render(level = 0): string {
