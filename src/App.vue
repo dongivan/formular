@@ -94,7 +94,6 @@ onMounted(() => {
 watch(
   [mmlText, isMountedRef, isMathJaxLoadedRef],
   ([text, isMounted, isMathJaxLoaded]) => {
-    console.log([isMounted, isMathJaxLoaded]);
     if (!isMounted || !isMathJaxLoaded) {
       return;
     }
