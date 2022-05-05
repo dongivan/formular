@@ -1,6 +1,8 @@
+import { MMLParenRenderer } from "../../renderer";
 import Operator from "../OperatorChar";
 
 export default abstract class AbstractParen extends Operator {
+  readonly mmlRenderer = MMLParenRenderer;
   protected static readonly _LATEX_PREFIXES = [
     "",
     "\\big",

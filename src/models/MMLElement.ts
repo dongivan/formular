@@ -1,7 +1,7 @@
 export default class MMLElement {
   private _pad = 4;
   private _tag: string;
-  private _attrs: { [key: string]: string };
+  private _attrs: { [key: string]: string | undefined };
   value = "";
   children: MMLElement[] = [];
 
@@ -10,7 +10,7 @@ export default class MMLElement {
     this._attrs = attrs;
   }
 
-  setAttr(attrs: { [key: string]: string }) {
+  setAttr(attrs: { [key: string]: string | undefined }) {
     Object.keys(attrs).forEach((key) => {
       this._attrs[key] = attrs[key];
     });
@@ -19,6 +19,7 @@ export default class MMLElement {
 
   render(level = 0): string {
     const attrs = Object.keys(this._attrs)
+      .filter((key) => this._attrs[key] !== undefined)
       .map<string>((key) => ` ${key}="${this._attrs[key]}"`)
       .join("");
     const content =

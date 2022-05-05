@@ -7,3 +7,4 @@ export { default as MMLDefaultRenderer } from "./mml/DefaultRenderer";
 export { default as MMLHiddenRenderer } from "./mml/HiddenRenderer";
 export { default as MMLNumberRenderer } from "./mml/NumberRenderer";
 export { default as MMLPowerRenderer } from "./mml/PowerRenderer";
+export { default as MMLParenRenderer } from "./mml/ParenRenderer";

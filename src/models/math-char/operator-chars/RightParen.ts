@@ -1,6 +1,8 @@
 import AbstractParen from "./AbstractParen";
 
 export default class RightParen extends AbstractParen {
+  protected _mmlValueTemplate = ")";
+
   constructor() {
     super("\\rparen");
     this._priority = -10;
