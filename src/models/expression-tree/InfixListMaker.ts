@@ -1,12 +1,16 @@
-import MathSymbol from "../MathSymbol";
-import OperatorSymbol from "../OperatorSymbol";
-import OperandSymbol from "../OperandSymbol";
-import ParamSeparator from "../operator-symbols/ParamSeparator";
-import ParamEnd from "../operator-symbols/ParamEnd";
-import Operand from "./Operand";
-import Operator from "./Operator";
+import MathChar from "../MathChar";
+import OperatorChar from "../OperatorChar";
+import OperandChar from "../OperandChar";
+import ParamSeparator from "../operator-chars/ParamSeparator";
+import ParamEnd from "../operator-chars/ParamEnd";
+import OperandSymbol from "./OperandSymbol";
+import OperatorSymbol from "./OperatorSymbol";
 import Formula from "../Formula";
 import InfixList from "./InfixList";
+import { NumberChar } from "../operand-chars";
+import IntegerSymbol from "./IntegerSymbol";
+import DecimalPoint from "../operand-chars/DecimalPoint";
+import DecimalSymbol from "./DecimalSymbol";
 
 export default class InfixListMaker {
   private _formula: Formula;
@@ -15,102 +19,82 @@ export default class InfixListMaker {
     this._formula = formula;
   }
 
-  make(symbols: MathSymbol[]): InfixList {
-    return this._generateInfixList(symbols);
+  make(chars: MathChar[]): InfixList {
+    return this._generateInfixList(chars);
   }
 
-  private _generateInfixList(symbols: MathSymbol[]): InfixList {
+  private _generateInfixList(chars: MathChar[]): InfixList {
     const infixList: InfixList = [];
 
-    let pos = 0,
-      operandCache: Operand = new Operand();
-    while (pos < symbols.length) {
-      const symbol = symbols[pos];
+    let pos = 0;
+    while (pos < chars.length) {
+      const char = chars[pos];
       let operatorParams = undefined;
-      if (symbol.paramsNumber > 0) {
-        /* current symbol has params, fetch them from symbols */
-        const { params, endPos } = this._generateParams(pos, symbols);
+      if (char.paramsNumber > 0) {
+        /* current char has params, fetch them from chars */
+        const { params, endPos } = this._generateParams(chars, pos + 1);
         operatorParams = params;
         pos = endPos;
       }
-      if (symbol instanceof OperandSymbol) {
-        /* current symbol is an OperandSymbol, try to push it in the operand cache */
-        if (!operandCache.push(symbol)) {
-          /* push failed for the reason that the operand cache IS NOT empty, AND the symbol
-          OR the first member of operand cache IS NOT a NumberSymbol object */
-          /* push the operand cache into the infix expression and clear the cache */
-          this._pushOperand(infixList, operandCache);
-          operandCache = new Operand();
 
-          /* push the OperandSymbol object into the operand cache */
-          operandCache.push(symbol);
-        }
-        /* now operandCache has current symbol */
-        if (operatorParams) {
-          /* current symbol has params, set them to operandCache because it has current symbol */
-          operandCache.params = operatorParams;
-        }
-      } else if (symbol instanceof OperatorSymbol) {
-        /* the symbol is an OperatorSymbol, check the operand cache */
-        if (operandCache.length > 0) {
-          /* the operand cache is not empty, push it into infix expression and clear cache */
-          this._pushOperand(infixList, operandCache);
-          operandCache = new Operand();
-        }
-
-        /* create Operator object with current symbol (which is an OperatorSymbol object) and params */
-        const operator = new Operator(symbol, operatorParams);
-
-        /* push the operator into the infix expression */
-        this._pushOperator(infixList, operator);
+      if (char instanceof NumberChar || char instanceof DecimalPoint) {
+        /* current char is a NumberChar, generate a NumberSymbol and push it into infix expression */
+        const { integers, decimals, decimalPoint, endPos } =
+          this._generateNumberChars(char, chars, pos + 1);
+        const symbol = decimalPoint
+          ? new DecimalSymbol(integers, decimalPoint, decimals)
+          : new IntegerSymbol(integers as [NumberChar, ...NumberChar[]]);
+        this._pushOperand(infixList, symbol);
+        pos = endPos;
+      } else if (char instanceof OperandChar) {
+        /* current char is an OperandChar (and IS NOT a NumberChar), push it */
+        const symbol = new OperandSymbol(char, operatorParams);
+        this._pushOperand(infixList, symbol);
+      } else if (char instanceof OperatorChar) {
+        /* current char is an OperatorChar, push it */
+        const symbol = new OperatorSymbol(char, operatorParams);
+        this._pushOperator(infixList, symbol);
       }
 
       pos += 1;
     }
 
-    if (operandCache.length > 0) {
-      /* operand cache IS NOT empty, push the operand cache into the infix expression if it is not empty */
-      this._pushOperand(infixList, operandCache);
-    } else {
-      const symbol = symbols[pos - 1];
-      if (symbol instanceof OperatorSymbol && symbol.hasRightOperand) {
-        /* the last member of infix expression is an OperatorSymbol object which HAS right operand,
-          push a placeholder into the infix expression */
-        this._pushOperand(
-          infixList,
-          new Operand(
-            this._formula.symbolFactory.createPlaceholder(symbol, "right")
-          )
-        );
-      }
+    const char = chars[pos - 1];
+    if (char instanceof OperatorChar && char.hasRightOperand) {
+      /* the last member of infix expression is an OperatorChar object which HAS right operand,
+        push a placeholder into the infix expression */
+      this._pushOperand(
+        infixList,
+        new OperandSymbol(
+          this._formula.charFactory.createPlaceholder(char, "right")
+        )
+      );
     }
 
     return infixList;
   }
 
   private _generateParams(
-    startPos: number,
-    symbols: MathSymbol[]
-  ): { params: MathSymbol[][]; endPos: number } {
+    chars: MathChar[],
+    startPos: number
+  ): { params: MathChar[][]; endPos: number } {
     let opLvl = 1,
       pos = startPos,
-      param: MathSymbol[] = [];
-    const params: MathSymbol[][] = [];
-    while (pos < symbols.length) {
-      pos += 1;
-      const item = symbols[pos];
+      param: MathChar[] = [];
+    const params: MathChar[][] = [];
+    while (pos < chars.length) {
+      const item = chars[pos];
 
       if (item instanceof ParamSeparator && opLvl == 1) {
         /* current item is param separator ("|") and operator level is 1, so push param into params */
         if (param.length == 0) {
           /* param is empty, push a placeholder into it */
-          param.push(
-            this._formula.symbolFactory.createPlaceholder(item, "left")
-          );
+          param.push(this._formula.charFactory.createPlaceholder(item, "left"));
         }
         params.push(param);
         param = [];
         /* continue */
+        pos += 1;
         continue;
       } else if (item instanceof ParamEnd) {
         /* current item is paran end ("]"), operator level -= 1 */
@@ -120,7 +104,7 @@ export default class InfixListMaker {
           if (param.length == 0) {
             /* param is empty, push a placeholder into it */
             param.push(
-              this._formula.symbolFactory.createPlaceholder(item, "left")
+              this._formula.charFactory.createPlaceholder(item, "left")
             );
           }
           params.push(param);
@@ -132,52 +116,94 @@ export default class InfixListMaker {
         /* item has params, so operator level += 1 */
         opLvl += 1;
       }
+      pos += 1;
       param.push(item);
     }
     return { params, endPos: pos };
   }
 
-  private _pushOperator(infixList: InfixList, operator: Operator) {
+  private _generateNumberChars(
+    lead: NumberChar | DecimalPoint,
+    chars: MathChar[],
+    startPos: number
+  ): {
+    integers: NumberChar[];
+    decimals: NumberChar[];
+    decimalPoint: DecimalPoint | undefined;
+    endPos: number;
+  } {
+    const integers = new Array<NumberChar>();
+    const decimals = new Array<NumberChar>();
+    let decimalPoint: DecimalPoint | undefined = undefined;
+
+    if (lead instanceof DecimalPoint) {
+      decimalPoint = lead;
+    } else {
+      integers.push(lead);
+    }
+
+    let pos = startPos;
+    while (pos < chars.length) {
+      const item = chars[pos];
+      if (decimalPoint) {
+        if (item instanceof NumberChar) {
+          decimals.push(item);
+        } else {
+          pos -= 1;
+          break;
+        }
+      } else {
+        if (item instanceof NumberChar) {
+          integers.push(item);
+        } else if (item instanceof DecimalPoint) {
+          decimalPoint = item;
+        } else {
+          pos -= 1;
+          break;
+        }
+      }
+
+      pos += 1;
+    }
+
+    return { integers, decimals, decimalPoint, endPos: pos };
+  }
+
+  private _pushOperator(infixList: InfixList, operator: OperatorSymbol) {
     const prevItem = infixList[infixList.length - 1];
     if (!prevItem) {
       if (operator.hasLeftOperand) {
         /* the previous item DOES NOT exist, and the current operator HAS the left operand
         push a operand with "placeholder" into inputs */
         infixList.push(
-          new Operand(
-            this._formula.symbolFactory.createPlaceholder(
-              operator.symbol,
-              "left"
-            )
+          new OperandSymbol(
+            this._formula.charFactory.createPlaceholder(operator.char, "left")
           )
         );
       }
     } else {
-      if (prevItem instanceof Operand) {
+      if (prevItem instanceof OperandSymbol) {
         if (!operator.hasLeftOperand) {
           /* the previous item is an Operand object, and the current operator DOES NOT HAVE
           the left operand, push a "hidden" into inputs */
           infixList.push(
-            new Operator(this._formula.symbolFactory.createHiddenTimes())
+            new OperatorSymbol(this._formula.charFactory.createHiddenTimes())
           );
         }
-      } else if (prevItem instanceof Operator) {
+      } else if (prevItem instanceof OperatorSymbol) {
         if (prevItem.hasRightOperand && operator.hasLeftOperand) {
           /* the previous item is an operator which has right operand, and the current operator
           has left operand, push a "placeholder" into inputs */
           infixList.push(
-            new Operand(
-              this._formula.symbolFactory.createPlaceholder(
-                operator.symbol,
-                "left"
-              )
+            new OperandSymbol(
+              this._formula.charFactory.createPlaceholder(operator.char, "left")
             )
           );
         } else if (!prevItem.hasRightOperand && !operator.hasLeftOperand) {
           /* the previous item is an operator which DOES NOT HAVE right operand, and the
           current operator DOES NOT HAVE left operand, push a "hidden" into inputs */
           infixList.push(
-            new Operator(this._formula.symbolFactory.createHiddenTimes())
+            new OperatorSymbol(this._formula.charFactory.createHiddenTimes())
           );
         }
       }
@@ -186,19 +212,19 @@ export default class InfixListMaker {
     infixList.push(operator);
   }
 
-  private _pushOperand(infixList: InfixList, operand: Operand) {
-    if (operand.length == 0) {
-      return;
-    }
+  private _pushOperand(
+    infixList: InfixList,
+    operand: OperandSymbol<OperandChar>
+  ) {
     const prevItem = infixList[infixList.length - 1];
     if (
-      prevItem instanceof Operand ||
-      (prevItem instanceof Operator && !prevItem.hasRightOperand)
+      prevItem instanceof OperandSymbol ||
+      (prevItem instanceof OperatorSymbol && !prevItem.hasRightOperand)
     ) {
       /* previous item of inputs is an Operand object, or it is an Operator object and
       it HAS NOT the right operand, push a "hidden" operator into inputs */
       infixList.push(
-        new Operator(this._formula.symbolFactory.createHiddenTimes())
+        new OperatorSymbol(this._formula.charFactory.createHiddenTimes())
       );
     }
     infixList.push(operand);

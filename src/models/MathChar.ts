@@ -1,4 +1,4 @@
-export default class MathSymbol {
+export default class MathChar {
   private static _SEQUENCE_NUMBER = 0;
 
   private _sequenceNumber: number;
@@ -6,10 +6,11 @@ export default class MathSymbol {
   protected _paramsNumber = 0;
   protected _latexTemplate: string | undefined;
   protected _clickable = false;
+  protected _clickableLatexTemplate = `\\htmlData{formular-char-sn=<SN>}{<LATEX>}`;
 
   constructor(value: string | number) {
     this._value = value.toString();
-    this._sequenceNumber = ++MathSymbol._SEQUENCE_NUMBER;
+    this._sequenceNumber = ++MathChar._SEQUENCE_NUMBER;
   }
 
   get sequenceNumber(): number {
@@ -18,6 +19,22 @@ export default class MathSymbol {
 
   get paramsNumber(): number {
     return this._paramsNumber;
+  }
+
+  get latexTemplate(): string {
+    return this._latexTemplate == undefined ? this._value : this._latexTemplate;
+  }
+
+  get value(): string {
+    return this._value;
+  }
+
+  get clickable(): boolean {
+    return this._clickable;
+  }
+
+  get clickableLatexTemplate(): string {
+    return this._clickableLatexTemplate;
   }
 
   toString(): string {
@@ -32,19 +49,5 @@ export default class MathSymbol {
       type: this.constructor.name,
       value: this.toString(),
     };
-  }
-
-  renderLatex(params?: string[]): string {
-    let result =
-      this._latexTemplate == undefined ? this._value : this._latexTemplate;
-    if (params) {
-      for (let i = 0; i < params.length; i++) {
-        result = result.replace(new RegExp(`<${i + 1}>`, "g"), params[i] || "");
-      }
-    }
-    if (this._clickable) {
-      result = `\\htmlData{formular-symbol-sn=${this._sequenceNumber}}{${result}}`;
-    }
-    return result;
   }
 }

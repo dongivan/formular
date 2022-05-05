@@ -1,21 +1,20 @@
-import MathSymbol from "./MathSymbol";
-import Cursor from "./operand-symbols/Cursor";
-import SymbolFactory from "./SymbolFactory";
-import { ParamEnd, ParamSeparator } from "./operator-symbols";
+import MathChar from "./MathChar";
+import Cursor from "./operand-chars/Cursor";
+import MathCharFactory from "./MathCharFactory";
+import { ParamEnd, ParamSeparator } from "./operator-chars";
 import ExpressionTreeMaker from "./expression-tree/ExpressionTreeMaker";
 import PostfixListMaker from "./expression-tree/PostfixListMaker";
 import Config from "./Config";
 import InfixListMaker from "./expression-tree/InfixListMaker";
-import { Placeholder } from "./operand-symbols";
+import { Placeholder } from "./operand-chars";
 
 export default class Formula {
-  private _list: MathSymbol[] = [];
-  // private _steps: string[] = [];
+  private _chars: MathChar[] = [];
   private _steps: number[][] = [];
   private _currentStep = -1;
   private _cursor: Cursor;
 
-  private _symbolFactory: SymbolFactory;
+  private _charFactory: MathCharFactory;
   private _infixMaker: InfixListMaker;
   private _postfixMaker: PostfixListMaker;
   private _binaryTreeMaker: ExpressionTreeMaker;
@@ -23,13 +22,13 @@ export default class Formula {
   constructor() {
     Config.init();
 
-    this._symbolFactory = new SymbolFactory();
+    this._charFactory = new MathCharFactory();
     this._infixMaker = new InfixListMaker(this);
     this._postfixMaker = new PostfixListMaker(this);
     this._binaryTreeMaker = new ExpressionTreeMaker(this);
 
-    this._cursor = this._symbolFactory.createCursor();
-    this._list.push(this._cursor);
+    this._cursor = this._charFactory.createCursor();
+    this._chars.push(this._cursor);
     this._pushStep();
   }
 
@@ -38,15 +37,11 @@ export default class Formula {
   }
 
   get length(): number {
-    return this._list.length;
+    return this._chars.length;
   }
 
-  get symbols(): MathSymbol[] {
-    return this._list;
-  }
-
-  get symbolFactory(): SymbolFactory {
-    return this._symbolFactory;
+  get charFactory(): MathCharFactory {
+    return this._charFactory;
   }
 
   get infixMaker(): InfixListMaker {
@@ -61,107 +56,106 @@ export default class Formula {
     return this._binaryTreeMaker;
   }
 
-  get(pos: number): MathSymbol | undefined {
-    return this._list[pos];
+  get(pos: number): MathChar | undefined {
+    return this._chars[pos];
   }
 
   insertAtCursor(value: number | string) {
     if (this._currentStep < this._steps.length - 1) {
-      this._symbolFactory.clearSymbolsAfterSequenceNumber(
+      this._charFactory.clearCharsAfterSequenceNumber(
         Math.max(...this._steps[this._currentStep])
       );
     }
 
-    const cursorPos = this._list.indexOf(this._cursor),
-      symbols = this._symbolFactory.create(value);
-    this._list.splice(cursorPos, 0, ...symbols);
-    if (symbols.length > 1) {
+    const cursorPos = this._chars.indexOf(this._cursor),
+      chars = this._charFactory.create(value);
+    this._chars.splice(cursorPos, 0, ...chars);
+    if (chars.length > 1) {
       this.moveCursorTo(cursorPos + 1);
     }
 
     this._pushStep();
   }
 
-  deleteSymbolBeforeCursor() {
-    const cursorPos = this._list.indexOf(this._cursor);
+  deleteCharBeforeCursor() {
+    const cursorPos = this._chars.indexOf(this._cursor);
     if (cursorPos > 0) {
-      const symbol = this._list[cursorPos - 1];
-      if (symbol instanceof ParamSeparator || symbol instanceof ParamEnd) {
-        /* previous symbol is a param separator or a param end, just move left. */
+      const char = this._chars[cursorPos - 1];
+      if (char instanceof ParamSeparator || char instanceof ParamEnd) {
+        /* previous char is a param separator or a param end, just move left. */
         this.moveCursorLeft();
         return;
       }
-      if (symbol.paramsNumber > 0) {
-        /* previous symbol has params */
+      if (char.paramsNumber > 0) {
+        /* previous char has params */
         let nextPos = cursorPos + 1,
           paramsEmpty = true;
-        while (nextPos < this._list.length) {
-          const nextSymbol = this._list[nextPos];
-          if (nextSymbol instanceof ParamSeparator) {
-            /* next symbol is a param separator, go next pos */
+        while (nextPos < this._chars.length) {
+          const nextChar = this._chars[nextPos];
+          if (nextChar instanceof ParamSeparator) {
+            /* next char is a param separator, go next pos */
             nextPos += 1;
-          } else if (nextSymbol instanceof ParamEnd) {
-            /* next symbol is a param end, AND symbols between `symbol` and `nextSymbol` ARE
+          } else if (nextChar instanceof ParamEnd) {
+            /* next char is a param end, AND chars between `char` and `nextChar` ARE
               ALL ParamSeparator objects.*/
             break;
           } else {
-            /* next symbol IS NOT ParamSeparator OR ParamEnd, which means params are not empty. */
+            /* next char IS NOT ParamSeparator OR ParamEnd, which means params are not empty. */
             paramsEmpty = false;
             break;
           }
         }
         if (paramsEmpty) {
-          /* params ARE empty, remove all symbols from `cursorPos + 1` to `nextPos` */
-          this._list.splice(cursorPos + 1, nextPos - cursorPos);
+          /* params ARE empty, remove all chars from `cursorPos + 1` to `nextPos` */
+          this._chars.splice(cursorPos + 1, nextPos - cursorPos);
         } else {
           /* params ARE NOT empty, just move left. */
           this.moveCursorLeft();
           return;
         }
       }
-      this._list.splice(cursorPos - 1, 1);
+      this._chars.splice(cursorPos - 1, 1);
     }
     this._pushStep();
   }
 
-  moveCursorBeforeSymbol(sequenceNumber: number) {
-    const symbol =
-      this.symbolFactory.findSymbolBySequenceNumber(sequenceNumber);
-    if (!symbol) {
+  moveCursorBeforeChar(sequenceNumber: number) {
+    const char = this.charFactory.findCharBySequenceNumber(sequenceNumber);
+    if (!char) {
       return;
     }
     let pos;
-    if (symbol instanceof Placeholder) {
-      pos = this._list.indexOf(symbol.masterSymbol);
+    if (char instanceof Placeholder) {
+      pos = this._chars.indexOf(char.masterChar);
     } else {
-      pos = this._list.indexOf(symbol);
+      pos = this._chars.indexOf(char);
     }
     if (pos > -1) {
-      const cursorPos = this._list.indexOf(this._cursor);
+      const cursorPos = this._chars.indexOf(this._cursor);
       this.moveCursorTo(cursorPos < pos - 1 ? pos - 1 : pos);
     }
   }
 
   moveCursorTo(pos: number) {
-    if (pos < 0 || pos >= this._list.length) {
+    if (pos < 0 || pos >= this._chars.length) {
       return;
     }
-    const cursorPos = this._list.indexOf(this._cursor);
+    const cursorPos = this._chars.indexOf(this._cursor);
     if (cursorPos == pos) {
       return;
     }
-    this._list.splice(cursorPos, 1);
-    this._list.splice(pos, 0, this._cursor);
+    this._chars.splice(cursorPos, 1);
+    this._chars.splice(pos, 0, this._cursor);
   }
 
   moveCursor(direction: number) {
-    const cursorPos = this._list.indexOf(this._cursor),
+    const cursorPos = this._chars.indexOf(this._cursor),
       newPos = direction + cursorPos;
-    if (newPos < 0 || newPos >= this._list.length) {
+    if (newPos < 0 || newPos >= this._chars.length) {
       return;
     }
-    this._list.splice(cursorPos, 1);
-    this._list.splice(newPos, 0, this._cursor);
+    this._chars.splice(cursorPos, 1);
+    this._chars.splice(newPos, 0, this._cursor);
   }
 
   moveCursorLeft() {
@@ -174,7 +168,7 @@ export default class Formula {
 
   private _pushStep(): void {
     this._steps.splice(this._currentStep + 1);
-    this._steps.push(this._list.map<number>((symbol) => symbol.sequenceNumber));
+    this._steps.push(this._chars.map<number>((char) => char.sequenceNumber));
     this._currentStep = this._steps.length - 1;
   }
 
@@ -187,7 +181,7 @@ export default class Formula {
     if (!step) {
       return;
     }
-    this._list = this._rebuildStep(step);
+    this._chars = this._rebuildStep(step);
   }
 
   redo(): void {
@@ -199,12 +193,12 @@ export default class Formula {
     if (!step) {
       return;
     }
-    this._list = this._rebuildStep(step);
+    this._chars = this._rebuildStep(step);
   }
 
-  private _rebuildStep(step: number[]): MathSymbol[] {
-    const list: MathSymbol[] = step.map<MathSymbol>((sn) =>
-      this._symbolFactory.findSymbolBySequenceNumber(sn)
+  private _rebuildStep(step: number[]): MathChar[] {
+    const list: MathChar[] = step.map<MathChar>((sn) =>
+      this._charFactory.findCharBySequenceNumber(sn)
     );
     return list;
   }
@@ -218,7 +212,7 @@ export default class Formula {
   }
 
   toLatex(): string {
-    const infix = this._infixMaker.make(this._list);
+    const infix = this._infixMaker.make(this._chars);
     const postfix = this._postfixMaker.make(infix);
     const tree = this._binaryTreeMaker.make(postfix);
     const latex = tree.renderLatex();
@@ -226,6 +220,6 @@ export default class Formula {
   }
 
   toString(): string {
-    return "[" + this._list.toString() + "]";
+    return "[" + this._chars.toString() + "]";
   }
 }

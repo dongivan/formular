@@ -1,8 +1,9 @@
 import Formula from "../Formula";
-import { LeftParen, RightParen } from "../operator-symbols";
+import { LeftParen, RightParen } from "../operator-chars";
 import { BinaryNode, BinaryTree } from "./BinaryTree";
-import Operator from "./Operator";
-import SymbolGroup from "./SymbolGroup";
+import OperatorSymbol from "./OperatorSymbol";
+import MathSymbol from "./MathSymbol";
+import MathChar from "../MathChar";
 
 const SetParenLevel = function (
   node: ExpressionNode,
@@ -13,12 +14,12 @@ const SetParenLevel = function (
     Math.max(leftResult[0], rightResult[0]),
     Math.max(leftResult[1], rightResult[1]),
   ];
-  if (node.value instanceof Operator) {
-    if (node.value.symbol instanceof LeftParen) {
-      node.value.symbol.level = parenCounts[0];
+  if (node.symbol instanceof OperatorSymbol) {
+    if (node.symbol.char instanceof LeftParen) {
+      node.symbol.char.level = parenCounts[0];
       parenCounts[0] += 1;
-    } else if (node.value.symbol instanceof RightParen) {
-      node.value.symbol.level = parenCounts[1];
+    } else if (node.symbol.char instanceof RightParen) {
+      node.symbol.char.level = parenCounts[1];
       parenCounts[1] += 1;
     }
   }
@@ -30,44 +31,24 @@ const RenderLatex = function (
   leftResult: string | undefined,
   rightResult: string | undefined
 ): string {
-  let latex = "";
-  if (leftResult) {
-    latex +=
-      node.value instanceof Operator
-        ? node.value.symbol.renderLatexOfLeftOperand(leftResult)
-        : leftResult;
-  }
-
-  const symbols = node.value.symbols;
-  if (symbols.length > 1) {
-    latex += symbols.map<string>((number) => number.renderLatex()).join("");
-  } else {
-    const symbol = symbols[0];
-    if (symbol) {
-      const params: string[] =
-        symbol.paramsNumber > 0
-          ? node.value.params.map<string>((param) => {
-              const infix = node.tree.formula.infixMaker.make(param);
-              const postfix = node.tree.formula.postfixMaker.make(infix);
-              const tree = node.tree.formula.binaryTreeMaker.make(postfix);
-              return tree.renderLatex();
-            })
-          : [];
-      latex += symbol.renderLatex(params);
-    }
-    latex += "";
-  }
-
-  if (rightResult) {
-    latex +=
-      node.value instanceof Operator
-        ? node.value.symbol.renderLatexOfRightOperand(rightResult)
-        : rightResult;
-  }
-  return latex;
+  return node.symbol.renderLatex(
+    (params) =>
+      params.map<string>((param) => {
+        const infix = node.tree.formula.infixMaker.make(param);
+        const postfix = node.tree.formula.postfixMaker.make(infix);
+        const tree = node.tree.formula.binaryTreeMaker.make(postfix);
+        return tree.renderLatex();
+      }),
+    leftResult,
+    rightResult
+  );
 };
 
-class ExpressionNode extends BinaryNode<SymbolGroup, ExpressionTree> {
+class ExpressionNode extends BinaryNode<MathSymbol<MathChar>, ExpressionTree> {
+  get symbol(): MathSymbol<MathChar> {
+    return this.value;
+  }
+
   setParenLevelRecursively(): [number, number] {
     return this.traverse(SetParenLevel);
   }
