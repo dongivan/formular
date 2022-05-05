@@ -1,7 +1,5 @@
-import OperandSymbol from "../math-symbol/OperandSymbol";
-import LeftParen from "../math-char/operator-chars/LeftParen";
-import RightParen from "../math-char/operator-chars/RightParen";
-import OperatorSymbol from "../math-symbol/OperatorSymbol";
+import { OperandSymbol, OperatorSymbol } from "../math-symbol";
+import { LeftParen, RightParen } from "../math-char";
 import Formula from "../Formula";
 import InfixList from "./InfixList";
 import PostfixList from "./PostfixList";

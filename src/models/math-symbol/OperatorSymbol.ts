@@ -1,5 +1,4 @@
-import MathChar from "../math-char/MathChar";
-import OperatorChar from "../math-char/OperatorChar";
+import { MathChar, OperatorChar } from "../math-char";
 import { replace } from "../utils";
 import MathSymbol from "./MathSymbol";
 

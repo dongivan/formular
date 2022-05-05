@@ -1,16 +1,18 @@
-import MathChar from "../math-char/MathChar";
-import OperatorChar from "../math-char/OperatorChar";
-import OperandChar from "../math-char/OperandChar";
-import ParamSeparator from "../math-char/operator-chars/ParamSeparator";
-import ParamEnd from "../math-char/operator-chars/ParamEnd";
-import OperandSymbol from "../math-symbol/OperandSymbol";
-import OperatorSymbol from "../math-symbol/OperatorSymbol";
+import { MathChar, OperatorChar, OperandChar } from "../math-char";
+import {
+  ParamSeparator,
+  ParamEnd,
+  NumberChar,
+  DecimalPoint,
+} from "../math-char";
+import {
+  OperandSymbol,
+  OperatorSymbol,
+  IntegerSymbol,
+  DecimalSymbol,
+} from "../math-symbol";
 import Formula from "../Formula";
 import InfixList from "./InfixList";
-import { NumberChar } from "../math-char/operand-chars";
-import IntegerSymbol from "../math-symbol/IntegerSymbol";
-import DecimalPoint from "../math-char/operand-chars/DecimalPoint";
-import DecimalSymbol from "../math-symbol/DecimalSymbol";
 
 export default class InfixListMaker {
   private _formula: Formula;

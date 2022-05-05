@@ -1,9 +1,8 @@
 import Formula from "../Formula";
 import { LeftParen, RightParen } from "../math-char/operator-chars";
 import { BinaryNode, BinaryTree } from "./BinaryTree";
-import OperatorSymbol from "../math-symbol/OperatorSymbol";
-import MathSymbol from "../math-symbol/MathSymbol";
-import MathChar from "../math-char/MathChar";
+import { OperatorSymbol, MathSymbol } from "../math-symbol";
+import { MathChar } from "../math-char";
 
 const SetParenLevel = function (
   node: ExpressionNode,

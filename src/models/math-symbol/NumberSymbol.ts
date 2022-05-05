@@ -1,6 +1,4 @@
-import MathChar from "../math-char/MathChar";
-import { DecimalPoint, NumberChar } from "../math-char/operand-chars";
-import OperandChar from "../math-char/OperandChar";
+import { MathChar, OperandChar, DecimalPoint, NumberChar } from "../math-char";
 import { replace } from "../utils";
 import OperandSymbol from "./OperandSymbol";
 
