@@ -1,4 +1,4 @@
-import { MMLHiddenRenderer } from "@/models/renderer";
+import { MMLHiddenRenderer } from "../../renderer";
 import OperatorChar from "../OperatorChar";
 
 export default class HiddenTimes extends OperatorChar {

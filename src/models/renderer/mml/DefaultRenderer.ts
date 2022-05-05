@@ -2,7 +2,7 @@ import { MathChar } from "../../math-char";
 import { MathSymbol, OperatorSymbol } from "../../math-symbol";
 import Renderer from "../Renderer";
 import MMLElement from "../../MMLElement";
-import { replace } from "@/models/utils";
+import { replace } from "../../utils";
 
 export default class DefaultRenderer extends Renderer<MMLElement[]> {
   renderOperand(symbol: MathSymbol<MathChar>): MMLElement[] {

@@ -1,4 +1,4 @@
-import { replace } from "@/models/utils";
+import { replace } from "../../utils";
 import Config from "../../Config";
 import OperandChar from "../OperandChar";
 
