@@ -11,6 +11,7 @@ export default abstract class OperatorChar extends MathChar {
   protected _hasRightOperand = true;
   protected _leftOperandLatexTemplate = "<0>";
   protected _rightOperandLatexTemplate = "<0>";
+  readonly mmlTag: string = "mo";
 
   constructor(value: string) {
     super(value);

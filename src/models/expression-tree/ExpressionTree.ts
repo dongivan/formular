@@ -2,6 +2,7 @@ import Formula from "../Formula";
 import { LeftParen, RightParen, MathChar } from "../math-char";
 import { BinaryNode, BinaryTree } from "./BinaryTree";
 import { OperatorSymbol, MathSymbol } from "../math-symbol";
+import MMLElement from "../MMLElement";
 
 const SetParenLevel = function (
   node: ExpressionNode,
@@ -36,6 +37,18 @@ const RenderLatex = function (
   );
 };
 
+const MMLLatex = function (
+  node: ExpressionNode,
+  leftResult: Array<MMLElement> | undefined,
+  rightResult: Array<MMLElement> | undefined
+): Array<MMLElement> {
+  return node.symbol.render(
+    new node.symbol.char.mmlRenderer(node.tree.formula),
+    leftResult,
+    rightResult
+  );
+};
+
 class ExpressionNode extends BinaryNode<MathSymbol<MathChar>, ExpressionTree> {
   get symbol(): MathSymbol<MathChar> {
     return this.value;
@@ -56,6 +69,12 @@ class ExpressionTree extends BinaryTree<ExpressionNode> {
 
   renderLatex(): string {
     return this.root?.traverse(RenderLatex) || "";
+  }
+
+  renderMML(): MMLElement {
+    const rootEle = new MMLElement("math");
+    rootEle.children = this.root?.traverse(MMLLatex) || [];
+    return rootEle;
   }
 }
 

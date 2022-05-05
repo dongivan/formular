@@ -1,15 +1,21 @@
-import { LatexDefaultRenderer } from "../renderer";
+import { LatexDefaultRenderer, MMLDefaultRenderer } from "../renderer";
 
 export default class MathChar {
   private static _SEQUENCE_NUMBER = 0;
   readonly latexRenderer: typeof LatexDefaultRenderer = LatexDefaultRenderer;
+  protected _latexTemplate: string | undefined;
+  protected _clickableLatexTemplate = `\\htmlData{formular-char-sn=<SN>}{<LATEX>}`;
+
+  readonly mmlRenderer: typeof MMLDefaultRenderer = MMLDefaultRenderer;
+  readonly mmlTag: string = "mtext";
+  readonly mmlAttrs: Record<string, string> = {};
+  readonly clickableDataKey = "formular-char-sn";
+  protected _mmlValueTemplate: string | undefined;
 
   private _sequenceNumber: number;
   protected _value: string;
   protected _paramsNumber = 0;
-  protected _latexTemplate: string | undefined;
   protected _clickable = false;
-  protected _clickableLatexTemplate = `\\htmlData{formular-char-sn=<SN>}{<LATEX>}`;
 
   constructor(value: string | number) {
     this._value = value.toString();
@@ -26,6 +32,12 @@ export default class MathChar {
 
   get latexTemplate(): string {
     return this._latexTemplate == undefined ? this._value : this._latexTemplate;
+  }
+
+  get mmlValueTemplate(): string {
+    return this._mmlValueTemplate == undefined
+      ? this._value
+      : this._mmlValueTemplate;
   }
 
   get value(): string {

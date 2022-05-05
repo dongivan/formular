@@ -1,3 +1,4 @@
+import { replace } from "@/models/utils";
 import Config from "../../Config";
 import MathChar from "../MathChar";
 import OperandChar from "../OperandChar";
@@ -10,7 +11,12 @@ export default class Placeholder extends OperandChar {
 
   constructor(master: MathChar, offset: -1 | 1) {
     super("placeholder");
-    this._latexTemplate = Config.getConfig().placeholderLatex;
+    this._latexTemplate = replace(
+      Config.getConfig().placeholderLatex || "",
+      Config.getConfig().placeholderCssClass || ""
+    );
+    this._mmlValueTemplate = Config.getConfig().placeholderMML;
+    this.mmlAttrs.class = Config.getConfig().placeholderCssClass || "";
     this._masterChar = master;
     this._masterOffset = offset;
   }

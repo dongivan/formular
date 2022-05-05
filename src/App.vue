@@ -33,6 +33,7 @@
     <button @click="formula.undo()" :disabled="!formula.couldUndo">UNDO</button>
     <button @click="formula.redo()" :disabled="!formula.couldRedo">REDO</button>
   </div>
+  <pre>{{ mmlText }}</pre>
 </template>
 
 <script setup lang="ts">
@@ -73,6 +74,10 @@ const symbolLatexTextRef = computed(() => {
   return formula.toLatex();
 });
 const symbolLatexEleRef = ref();
+
+const mmlText = computed(() => {
+  return formula.toMML().render();
+});
 
 watch(
   [symbolLatexTextRef, isMountedRef],
