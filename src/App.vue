@@ -1,5 +1,11 @@
 <template>
   <div>
+    <MathMLViewer
+      class="jax-container"
+      math-jax-function-name="tex2chtml"
+      :content="latexText"
+    />
+    <div>{{ latexText }}</div>
     <button
       v-for="partName of 10"
       :key="`key-value-${partName - 1}`"
@@ -27,7 +33,8 @@
 
   <MathMLViewer
     class="jax-container"
-    :math-jax-script-src="scriptUrlOfMathJax"
+    math-jax-src="mathjax/es5/tex-mml-chtml.js"
+    math-jax-function-name="mathml2chtml"
     :content="mmlText"
     @click="onViewerClick"
   />
@@ -41,10 +48,13 @@ import { computed, reactive } from "vue";
 import Formula from "./models/Formula";
 
 const formula = reactive(new Formula());
-const scriptUrlOfMathJax = "mathjax/es5/mml-chtml.js";
 
 const mmlText = computed(() => {
   return formula.toMML().render();
+});
+
+const latexText = computed(() => {
+  return formula.toLatex();
 });
 
 const onViewerClick = (evt: Event) => {

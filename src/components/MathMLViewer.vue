@@ -1,21 +1,14 @@
 <template>
-  <div ref="containerRef" class="math-ml-viewer"></div>
+  <div ref="containerRef" class="mathjax-viewer"></div>
 </template>
 
 <script lang="ts">
-import { computed, onMounted, ref, watch } from "vue";
+import { onMounted, ref, watch } from "vue";
 
 declare global {
   interface Window {
-    MathJax: {
-      mathml2chtml: (mml: string) => void;
-      startup: {
-        document: {
-          clear: () => void;
-          updateDocument: () => void;
-        };
-      };
-    };
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    MathJax: any;
   }
 }
 
@@ -38,33 +31,46 @@ const loadScript = async function (src: string) {
     });
   });
 };
+
+const isMathJaxLoadedRef = ref(false);
 </script>
 
 <script setup lang="ts">
 const props = defineProps({
-  mathJaxScriptSrc: { type: String, default: "" },
+  mathJaxSrc: { type: String, default: "" },
+  mathJaxFunctionName: {
+    type: String,
+    validator(val: string) {
+      return ["mathml2chtml", "tex2chtml"].includes(val);
+    },
+    required: true,
+  },
   content: { type: String, required: true },
 });
 const emit = defineEmits(["math-jax-loaded"]);
 
-const isMathJaxLoadedRef = ref(false);
-const setMathJaxLoaded = () => {
-  isMathJaxLoadedRef.value = true;
-  emit("math-jax-loaded");
-};
-if (window.MathJax) {
-  setMathJaxLoaded();
-} else if (props.mathJaxScriptSrc) {
-  loadScript(props.mathJaxScriptSrc).then(() => {
-    setMathJaxLoaded();
-  });
-} else {
-  const interval = setInterval(() => {
-    if (window.MathJax) {
-      setMathJaxLoaded();
-      clearInterval(interval);
-    }
-  }, 500);
+if (
+  !(window.MathJax && window.MathJax[props.mathJaxFunctionName]) &&
+  props.mathJaxSrc
+) {
+  loadScript(props.mathJaxSrc);
+  window.MathJax = {
+    ...window.MathJax,
+    ...{
+      loader: {
+        load: ["[tex]/html"],
+      },
+      startup: {
+        ready() {
+          if (window.MathJax.startup?.defaultReady) {
+            window.MathJax.startup?.defaultReady();
+          }
+          isMathJaxLoadedRef.value = true;
+          emit("math-jax-loaded");
+        },
+      },
+    },
+  };
 }
 
 const isMountedRef = ref(false);
@@ -73,19 +79,21 @@ onMounted(() => {
   isMountedRef.value = true;
 });
 
-const mmlRef = computed(() => props.content);
 watch(
-  [mmlRef, isMountedRef, isMathJaxLoadedRef],
-  ([mmlContent, isMounted, isMathJaxLoaded]) => {
+  [() => props.content, isMountedRef, isMathJaxLoadedRef],
+  ([content, isMounted, isMathJaxLoaded]) => {
     if (!isMounted || !isMathJaxLoaded) {
       return;
     }
-    const MathJax = window.MathJax;
-    const el = containerRef.value;
-    el.innerHTML = "";
-    el.appendChild(MathJax.mathml2chtml(mmlContent));
-    MathJax.startup.document.clear();
-    MathJax.startup.document.updateDocument();
+    const MathJax = window.MathJax,
+      MathJaxFunction = MathJax[props.mathJaxFunctionName];
+    if (typeof MathJaxFunction == "function") {
+      const el = containerRef.value;
+      el.innerHTML = "";
+      el.appendChild(MathJaxFunction(content));
+      MathJax.startup?.document?.clear();
+      MathJax.startup?.document?.updateDocument();
+    }
   }
 );
 </script>
