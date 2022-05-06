@@ -17,6 +17,7 @@
     <button @click="formula.insertAtCursor('over')">over</button>
     <button @click="formula.insertAtCursor('^')">^</button>
     <button @click="formula.insertAtCursor('sqrt')">sqrt</button>
+    <button @click="formula.insertAtCursor('x')">x</button>
     <button @click="formula.moveCursorLeft()">&lt;-</button>
     <button @click="formula.moveCursorRight()">-&gt;</button>
     <button @click="formula.deleteCharBeforeCursor()">Backspace!</button>

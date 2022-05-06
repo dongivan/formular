@@ -1,5 +1,4 @@
 import MathChar from "./MathChar";
-import OperandChar from "./OperandChar";
 import * as OperandChars from "./operand-chars";
 import * as OperatorChars from "./operator-chars";
 
@@ -13,6 +12,7 @@ export default class MathCharFactory {
     sqrt: OperandChars.SquareRoot,
     over: OperandChars.Over,
     ".": OperandChars.DecimalPoint,
+    variable: OperandChars.Variable,
 
     /* operator chars */
     "+": OperatorChars.Plus,
@@ -46,7 +46,10 @@ export default class MathCharFactory {
     if (typeof name == "number") {
       cls = MathCharFactory._CHAR_CLASSES.digit;
     } else {
-      cls = MathCharFactory._CHAR_CLASSES[name] || OperandChar;
+      cls = MathCharFactory._CHAR_CLASSES[name];
+    }
+    if (!cls) {
+      cls = MathCharFactory._CHAR_CLASSES.variable;
     }
     const char = this._afterCreate(new cls(name)),
       chars = [char];
