@@ -1,5 +1,6 @@
-import Config from "@/models/Config";
-import MathMLNode from "@/models/MathMLNode";
+import Config from "../../Config";
+import MathMLNode from "../../MathMLNode";
+import { findByClass } from "../../utils";
 import { Cursor, MathChar, Placeholder } from "../../math-char";
 import BaseRenderer from "../CharRenderer";
 
@@ -44,18 +45,6 @@ export default class CharRenderer extends BaseRenderer<MathMLNode> {
     Times: { tag: "mo", value: "&#xD7;" },
   };
 
-  protected _findTemplates(char: MathChar): TemplateParam {
-    let cls = char.constructor;
-    do {
-      const template: TemplateParam = this._templates[cls.name];
-      if (template !== undefined) {
-        return template;
-      }
-      cls = Object.getPrototypeOf(cls);
-    } while (cls.name !== "");
-    return this._templates.MathChar;
-  }
-
   protected _render(char: MathChar, params: MathMLNode[]): MathMLNode {
     let template;
     if (
@@ -64,7 +53,7 @@ export default class CharRenderer extends BaseRenderer<MathMLNode> {
     ) {
       template = this._templates.MathChar;
     } else {
-      template = this._findTemplates(char);
+      template = findByClass(char, this._templates) || this._templates.MathChar;
     }
     const node = new MathMLNode(template.tag, template.attrs);
     if (params.length > 0) {

@@ -17,23 +17,20 @@ export function replace(
   return result;
 }
 
-export async function loadScript(src: string) {
-  return new Promise<void>((resolve, reject) => {
-    const script = document.createElement("script");
-    script.type = "text/javascript";
-    script.async = true;
-    script.src = src;
-
-    const el = document.getElementsByTagName("script")[0];
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    el.parentNode!.insertBefore(script, el);
-
-    script.addEventListener("load", () => {
-      resolve();
-    });
-
-    script.addEventListener("error", () => {
-      reject(new Error(`${src} failed to load.`));
-    });
-  });
+export function findByClass<
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  T extends Object,
+  R extends Record<string, unknown> | string
+>(t: T, map: Record<string, R | (() => R) | undefined>): R | undefined {
+  let cls = t.constructor;
+  do {
+    const template: R | (() => R) | undefined = map[cls.name];
+    if (typeof template == "function") {
+      return template();
+    } else if (template !== undefined) {
+      return template;
+    }
+    cls = Object.getPrototypeOf(cls);
+  } while (cls.name !== "");
+  return undefined;
 }
