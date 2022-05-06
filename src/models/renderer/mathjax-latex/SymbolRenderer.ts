@@ -1,11 +1,15 @@
 import { MathChar } from "../../math-char";
 import { MathSymbol, OperatorSymbol } from "../../math-symbol";
 import { replace } from "../../utils";
-import SymbolRenderer from "../SymbolRenderer";
-import LatexCharRenderer from "./LatexCharRenderer";
+import BaseSymbolRenderer from "../SymbolRenderer";
+import CharRenderer from "./CharRenderer";
 
-export default class DefaultRenderer extends SymbolRenderer<string> {
-  protected _charRenderer = new LatexCharRenderer();
+export default class SymbolRenderer extends BaseSymbolRenderer<string> {
+  protected _charRenderer = new CharRenderer();
+
+  get charRenderer(): CharRenderer {
+    return this._charRenderer;
+  }
 
   renderOperand(symbol: MathSymbol<MathChar>): string {
     const latexParams = symbol.params.map<string>((param) => {

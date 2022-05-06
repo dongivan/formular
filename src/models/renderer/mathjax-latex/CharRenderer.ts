@@ -2,12 +2,10 @@ import { Cursor, MathChar, Placeholder } from "../../math-char";
 import { findByClass, replace } from "../../utils";
 import CharRenderer from "../CharRenderer";
 
-type TemplateFunction = () => string;
-
 const parenPrefixes = ["", "\\big", "\\Big", "\\bigg", "\\Bigg"];
 
 export default class LatexCharRenderer extends CharRenderer<string> {
-  protected _templates: Record<string, string | TemplateFunction> = {
+  protected _templates: Record<string, string> = {
     MathChar: "<0>",
     Cursor: "⬚",
     Placeholder: "⍰",

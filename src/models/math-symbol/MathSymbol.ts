@@ -1,5 +1,5 @@
 import { MathChar } from "../math-char";
-import { Renderer } from "../renderer";
+import { SymbolRenderer } from "../renderer";
 
 export default abstract class MathSymbol<M extends MathChar> {
   protected _char: M;
@@ -27,7 +27,7 @@ export default abstract class MathSymbol<M extends MathChar> {
   }
 
   render<R>(
-    renderer: Renderer<R>,
+    renderer: SymbolRenderer<R>,
     leftOperand: R | undefined,
     rightOperand: R | undefined
   ): R {

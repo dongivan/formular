@@ -1,10 +1,6 @@
-import { LatexDefaultRenderer, MathMLDefaultRenderer } from "../renderer";
-
 export default class MathChar {
   private static _SEQUENCE_NUMBER = 0;
-  readonly latexRenderer: typeof LatexDefaultRenderer = LatexDefaultRenderer;
 
-  readonly mathMLRenderer: typeof MathMLDefaultRenderer = MathMLDefaultRenderer;
   readonly clickableDataKey = "data-formular-char-sn";
 
   private _sequenceNumber: number;

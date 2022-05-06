@@ -20,14 +20,12 @@ export function replace(
 export function findByClass<
   // eslint-disable-next-line @typescript-eslint/ban-types
   T extends Object,
-  R extends Record<string, unknown> | string
->(t: T, map: Record<string, R | (() => R) | undefined>): R | undefined {
+  R
+>(t: T, map: Record<string, R | undefined>): R | undefined {
   let cls = t.constructor;
   do {
-    const template: R | (() => R) | undefined = map[cls.name];
-    if (typeof template == "function") {
-      return template();
-    } else if (template !== undefined) {
+    const template: R | undefined = map[cls.name];
+    if (template !== undefined) {
       return template;
     }
     cls = Object.getPrototypeOf(cls);

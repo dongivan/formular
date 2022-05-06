@@ -3,6 +3,7 @@ import { LeftParen, RightParen, MathChar } from "../math-char";
 import { BinaryNode, BinaryTree } from "./BinaryTree";
 import { OperatorSymbol, MathSymbol } from "../math-symbol";
 import MathMLNode from "../MathMLNode";
+import { LatexSymbolRenderer, MathMLSymbolRenderer } from "../renderer";
 
 const SetParenLevel = function (
   node: ExpressionNode,
@@ -31,7 +32,7 @@ const RenderLatex = function (
   rightResult: string | undefined
 ): string {
   return node.symbol.render(
-    new node.symbol.char.latexRenderer(node.tree.formula),
+    new LatexSymbolRenderer(node.tree.formula),
     leftResult,
     rightResult
   );
@@ -43,7 +44,7 @@ const RenderMathML = function (
   rightResult: Array<MathMLNode> | undefined
 ): Array<MathMLNode> {
   return node.symbol.render(
-    new node.symbol.char.mathMLRenderer(node.tree.formula),
+    new MathMLSymbolRenderer(node.tree.formula),
     leftResult,
     rightResult
   );
