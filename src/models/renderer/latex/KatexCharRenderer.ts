@@ -2,7 +2,7 @@ import Config from "../../Config";
 import { replace } from "../../utils";
 import LatexCharRenderer from "./LatexCharRenderer";
 
-const clickableTemplate = "\\htmlData{formular-char-sn=<0>}{<1>}";
+const clickableTemplate = "\\htmlData{<0>=<1>}{<2>}";
 
 export default class KatexCharRenderer extends LatexCharRenderer {
   protected _templates: Record<string, string | (() => string)> = {
@@ -20,6 +20,10 @@ export default class KatexCharRenderer extends LatexCharRenderer {
   };
 
   protected addClickableMark(latex: string, sn: number): string {
-    return replace(clickableTemplate, [sn.toString(), latex]);
+    return replace(clickableTemplate, [
+      Config.getConfig().clickableDataKey || "",
+      sn.toString(),
+      latex,
+    ]);
   }
 }

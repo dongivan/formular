@@ -7,6 +7,8 @@ export default interface ConfigInterface {
   placeholderMML?: string;
   cursorCssClass?: string;
   placeholderCssClass?: string;
+
+  clickableDataKey?: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: string]: any;
 }

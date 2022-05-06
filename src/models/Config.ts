@@ -15,6 +15,8 @@ export default class Config {
 
     cursorCssClass: "formular-cursor",
     placeholderCssClass: "formular-placeholder",
+
+    clickableDataKey: "formular-char-sn",
   };
 
   static getConfig(): ConfigInterface {
