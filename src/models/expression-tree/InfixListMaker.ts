@@ -1,10 +1,5 @@
 import { MathChar, OperatorChar, OperandChar, Minus } from "../math-char";
-import {
-  ParamSeparator,
-  ParamEnd,
-  NumberChar,
-  DecimalPoint,
-} from "../math-char";
+import { ParamSeparator, ParamEnd, Digit, DecimalPoint } from "../math-char";
 import {
   OperandSymbol,
   OperatorSymbol,
@@ -39,17 +34,17 @@ export default class InfixListMaker {
         pos = endPos;
       }
 
-      if (char instanceof NumberChar || char instanceof DecimalPoint) {
-        /* current char is a NumberChar, generate a NumberSymbol and push it into infix expression */
+      if (char instanceof Digit || char instanceof DecimalPoint) {
+        /* current char is a Digit, generate a NumberSymbol and push it into infix expression */
         const { integers, decimals, decimalPoint, endPos } =
-          this._generateNumberChars(char, chars, pos + 1);
+          this._generateDigits(char, chars, pos + 1);
         const symbol = decimalPoint
           ? new DecimalSymbol(integers, decimalPoint, decimals)
-          : new IntegerSymbol(integers as [NumberChar, ...NumberChar[]]);
+          : new IntegerSymbol(integers as [Digit, ...Digit[]]);
         this._pushOperand(infixList, symbol);
         pos = endPos;
       } else if (char instanceof OperandChar) {
-        /* current char is an OperandChar (and IS NOT a NumberChar), push it */
+        /* current char is an OperandChar (and IS NOT a Digit), push it */
         const symbol = new OperandSymbol(char, operatorParams);
         this._pushOperand(infixList, symbol);
       } else if (char instanceof OperatorChar) {
@@ -128,18 +123,18 @@ export default class InfixListMaker {
     return { params, endPos: pos };
   }
 
-  private _generateNumberChars(
-    lead: NumberChar | DecimalPoint,
+  private _generateDigits(
+    lead: Digit | DecimalPoint,
     chars: MathChar[],
     startPos: number
   ): {
-    integers: NumberChar[];
-    decimals: NumberChar[];
+    integers: Digit[];
+    decimals: Digit[];
     decimalPoint: DecimalPoint | undefined;
     endPos: number;
   } {
-    const integers: NumberChar[] = [];
-    const decimals: NumberChar[] = [];
+    const integers: Digit[] = [];
+    const decimals: Digit[] = [];
     let decimalPoint: DecimalPoint | undefined = undefined;
 
     if (lead instanceof DecimalPoint) {
@@ -152,14 +147,14 @@ export default class InfixListMaker {
     while (pos < chars.length) {
       const item = chars[pos];
       if (decimalPoint) {
-        if (item instanceof NumberChar) {
+        if (item instanceof Digit) {
           decimals.push(item);
         } else {
           pos -= 1;
           break;
         }
       } else {
-        if (item instanceof NumberChar) {
+        if (item instanceof Digit) {
           integers.push(item);
         } else if (item instanceof DecimalPoint) {
           decimalPoint = item;

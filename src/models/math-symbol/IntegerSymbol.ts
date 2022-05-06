@@ -1,14 +1,14 @@
-import { NumberChar } from "../math-char";
+import { Digit } from "../math-char";
 import NumberSymbol from "./NumberSymbol";
 
-export default class IntegerSymbol extends NumberSymbol<NumberChar> {
-  private _integers: NumberChar[];
+export default class IntegerSymbol extends NumberSymbol<Digit> {
+  private _integers: Digit[];
 
-  get integers(): readonly NumberChar[] {
+  get integers(): readonly Digit[] {
     return Object.freeze(this._integers);
   }
 
-  constructor(integers: [NumberChar, ...NumberChar[]]) {
+  constructor(integers: [Digit, ...Digit[]]) {
     super(integers[0]);
     this._integers = integers;
   }

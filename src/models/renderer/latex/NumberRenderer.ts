@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { DecimalPoint, NumberChar } from "../../math-char";
+import { DecimalPoint, Digit } from "../../math-char";
 import {
   DecimalSymbol,
   IntegerSymbol,
@@ -29,7 +29,7 @@ export default class NumberRenderer extends DefaultRenderer {
     return "";
   }
 
-  protected _renderClickableLatex = (char: NumberChar | DecimalPoint) => {
+  protected _renderClickableLatex = (char: Digit | DecimalPoint) => {
     const val = char.value;
     return char.clickable
       ? replace(char.clickableLatexTemplate, {

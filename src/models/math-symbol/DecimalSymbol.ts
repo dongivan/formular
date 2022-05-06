@@ -1,22 +1,22 @@
-import { NumberChar, DecimalPoint } from "../math-char";
+import { Digit, DecimalPoint } from "../math-char";
 import NumberSymbol from "./NumberSymbol";
 
 export default class DecimalSymbol extends NumberSymbol<DecimalPoint> {
-  private _integers: NumberChar[];
-  private _decimals: NumberChar[];
+  private _integers: Digit[];
+  private _decimals: Digit[];
 
-  get integers(): readonly NumberChar[] {
+  get integers(): readonly Digit[] {
     return Object.freeze(this._integers);
   }
 
-  get decimals(): readonly NumberChar[] {
+  get decimals(): readonly Digit[] {
     return Object.freeze(this._decimals);
   }
 
   constructor(
-    integers: NumberChar[],
+    integers: Digit[],
     decimalPoint: DecimalPoint,
-    decimals: NumberChar[]
+    decimals: Digit[]
   ) {
     super(decimalPoint);
     this._integers = integers;

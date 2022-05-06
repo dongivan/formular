@@ -8,7 +8,7 @@ export default class MathCharFactory {
     [key: string]: typeof MathChar;
   } = {
     /* operand chars */
-    number: OperandChars.NumberChar,
+    digit: OperandChars.Digit,
     hidden: OperatorChars.HiddenTimes,
     sqrt: OperandChars.SquareRoot,
     over: OperandChars.Over,
@@ -44,7 +44,7 @@ export default class MathCharFactory {
   create(name: string | number): MathChar[] {
     let cls;
     if (typeof name == "number") {
-      cls = MathCharFactory._CHAR_CLASSES["number"];
+      cls = MathCharFactory._CHAR_CLASSES.digit;
     } else {
       cls = MathCharFactory._CHAR_CLASSES[name] || OperandChar;
     }

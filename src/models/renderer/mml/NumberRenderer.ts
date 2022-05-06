@@ -1,4 +1,4 @@
-import { DecimalPoint, NumberChar } from "../../math-char";
+import { DecimalPoint, Digit } from "../../math-char";
 import { DecimalSymbol, IntegerSymbol } from "../../math-symbol";
 import MMLElement from "../../MMLElement";
 import DefaultRenderer from "./DefaultRenderer";
@@ -17,7 +17,7 @@ export default class NumberRenderer extends DefaultRenderer {
     return result;
   }
 
-  protected _renderChar = (char: NumberChar | DecimalPoint) => {
+  protected _renderChar = (char: Digit | DecimalPoint) => {
     const ele = new MMLElement(char.mmlTag, char.mmlAttrs);
     if (char.clickable) {
       ele.setAttr({ [char.clickableDataKey]: char.sequenceNumber.toString() });
