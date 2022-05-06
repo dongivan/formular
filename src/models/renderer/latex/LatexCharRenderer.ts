@@ -15,6 +15,8 @@ export default class LatexCharRenderer extends CharRenderer<string> {
     SquareRoot: "\\sqrt{<1>}",
     HiddenTimes: "",
     Power: "^{<1>}",
+    Divide: "\\div",
+    Times: "\\times",
   };
 
   protected _findTemplates(char: MathChar): string {
