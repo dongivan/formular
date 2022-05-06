@@ -3,7 +3,6 @@ import OperatorChar from "../OperatorChar";
 
 export default class Power extends OperatorChar {
   protected _leftOperandLatexTemplate = "{<0>}";
-  readonly mmlTag = "msup";
 
   readonly mmlRenderer = MMLPowerRenderer;
 

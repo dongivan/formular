@@ -12,7 +12,7 @@ import {
   InfixListMaker,
 } from "./expression-tree";
 import Config from "./Config";
-import MMLElement from "./MMLElement";
+import MathMLNode from "./MathMLNode";
 
 export default class Formula {
   private _chars: MathChar[] = [];
@@ -225,12 +225,12 @@ export default class Formula {
     return latex;
   }
 
-  toMML(): MMLElement {
+  toMathMLNode(): MathMLNode {
     const infix = this._infixMaker.make(this._chars);
     const postfix = this._postfixMaker.make(infix);
     const tree = this._binaryTreeMaker.make(postfix);
-    const mml = tree.renderMML();
-    return mml;
+    const node = tree.renderMathML();
+    return node;
   }
 
   toString(): string {

@@ -2,8 +2,6 @@ import MathChar from "../MathChar";
 import OperatorChar from "../OperatorChar";
 
 export default class Minus extends OperatorChar {
-  protected _mmlValueTemplate = "&#x2212;";
-
   constructor() {
     super("-");
   }

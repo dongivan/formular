@@ -1,13 +1,13 @@
-export default class MMLElement {
-  private _pad = 4;
+export default class MathMLNode {
+  private _pad = 2;
   private _tag: string;
   private _attrs: { [key: string]: string | undefined };
   value = "";
-  children: MMLElement[] = [];
+  children: MathMLNode[] = [];
 
-  constructor(tag: string, attrs: { [key: string]: string } = {}) {
+  constructor(tag: string, attrs?: { [key: string]: string | undefined }) {
     this._tag = tag;
-    this._attrs = attrs;
+    this._attrs = attrs || {};
   }
 
   setAttr(attrs: { [key: string]: string | undefined }) {
@@ -22,14 +22,14 @@ export default class MMLElement {
       .filter((key) => this._attrs[key] !== undefined)
       .map<string>((key) => ` ${key}="${this._attrs[key]}"`)
       .join("");
+    const padding = "".padStart(this._pad * level, " "),
+      lf = "\n";
     const content =
       this.children.length > 0
-        ? "\n" +
-          this.children.map<string>((ele) => ele.render(level + 1)).join("\n") +
-          `\n${"".padStart(this._pad * level, " ")}`
+        ? `${lf}${this.children
+            .map<string>((ele) => ele.render(level + 1))
+            .join(lf)}${lf}${padding}`
         : this.value;
-    return `${"".padStart(this._pad * level, " ")}<${
-      this._tag
-    }${attrs}>${content}</${this._tag}>`;
+    return `${padding}<${this._tag}${attrs}>${content}</${this._tag}>`;
   }
 }

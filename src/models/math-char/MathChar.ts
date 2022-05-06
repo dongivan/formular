@@ -5,8 +5,6 @@ export default class MathChar {
   readonly latexRenderer: typeof LatexDefaultRenderer = LatexDefaultRenderer;
 
   readonly mmlRenderer: typeof MMLDefaultRenderer = MMLDefaultRenderer;
-  readonly mmlTag: string = "mtext";
-  readonly mmlAttrs: Record<string, string> = {};
   readonly clickableDataKey = "data-formular-char-sn";
   protected _mmlValueTemplate: string | undefined;
 

@@ -1,10 +1,8 @@
 import OperandChar from "../OperandChar";
 
 export default class Fraction extends OperandChar {
-  readonly mmlTag = "mfrac";
-
   constructor() {
-    super("over");
+    super("frac");
     this._paramsNumber = 2;
   }
 }

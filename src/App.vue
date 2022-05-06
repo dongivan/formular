@@ -50,7 +50,7 @@ import Formula from "./models/Formula";
 const formula = reactive(new Formula());
 
 const mmlText = computed(() => {
-  return formula.toMML().render();
+  return formula.toMathMLNode().render();
 });
 
 const latexText = computed(() => {
