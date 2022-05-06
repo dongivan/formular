@@ -1,8 +1,33 @@
 import { MathChar } from "../../math-char";
 import { MathSymbol, OperatorSymbol } from "../../math-symbol";
-import { replace } from "../../utils";
+import { findByClass, replace } from "../../utils";
 import BaseSymbolRenderer from "../SymbolRenderer";
+import {
+  OperandRendererFunction,
+  OperatorRendererFunction,
+} from "../SymbolRendererTypes";
 import CharRenderer from "./CharRenderer";
+import MathCharRenderer from "./symbol-renderers/MathCharRenderer";
+import NumberRenderer from "./symbol-renderers/NumberRenderer";
+
+const operandRendererFunctions: Record<
+  string,
+  OperandRendererFunction<string> | undefined
+> = {
+  MathChar: MathCharRenderer.operandRenderer,
+  Digit: NumberRenderer.operandRenderer,
+  DecimalPoint: NumberRenderer.operandRenderer,
+  HiddenTimes: () => {
+    return "";
+  },
+};
+
+const operatorRendererFunctions: Record<
+  string,
+  OperatorRendererFunction<string> | undefined
+> = {
+  MathChar: MathCharRenderer.operatorRenderer,
+};
 
 export default class SymbolRenderer extends BaseSymbolRenderer<string> {
   protected _charRenderer = new CharRenderer();
@@ -12,13 +37,11 @@ export default class SymbolRenderer extends BaseSymbolRenderer<string> {
   }
 
   renderOperand(symbol: MathSymbol<MathChar>): string {
-    const latexParams = symbol.params.map<string>((param) => {
-      const infix = this._formula.infixMaker.make(param);
-      const postfix = this._formula.postfixMaker.make(infix);
-      const tree = this._formula.binaryTreeMaker.make(postfix);
-      return tree.renderLatex();
-    });
-    return this._charRenderer.render(symbol.char, latexParams);
+    const renderer = findByClass<MathChar, OperandRendererFunction<string>>(
+      symbol.char,
+      operandRendererFunctions
+    );
+    return renderer ? renderer(symbol, this) : "";
   }
 
   renderOperator(
@@ -26,17 +49,11 @@ export default class SymbolRenderer extends BaseSymbolRenderer<string> {
     leftOperand: string | undefined,
     rightOperand: string | undefined
   ): string {
-    return (
-      this._renderOperandLatex(
-        symbol.char.leftOperandLatexTemplate,
-        leftOperand
-      ) +
-      this.renderOperand(symbol) +
-      this._renderOperandLatex(
-        symbol.char.rightOperandLatexTemplate,
-        rightOperand
-      )
+    const renderer = findByClass<MathChar, OperatorRendererFunction<string>>(
+      symbol.char,
+      operatorRendererFunctions
     );
+    return renderer ? renderer(symbol, leftOperand, rightOperand, this) : "";
   }
 
   private _renderOperandLatex(
