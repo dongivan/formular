@@ -10,8 +10,8 @@ export default class Config {
     cursorKatex: "{\\htmlClass{<0>}{{\\phantom{O}\\mathstrut}}}",
     placeholderKatex: "\\htmlClass{<0>}{\\ ?\\ \\mathstrut}",
 
-    cursorMML: `<mtext>&#xA0;&#xA0;&#xA0;</mtext><mrow><mpadded width="0"><mphantom><mo stretchy="false">(</mo></mphantom></mpadded></mrow>`,
-    placeholderMML: `<mtext>&#xA0;?&#xA0;</mtext><mrow><mpadded width="0"><mphantom><mo stretchy="false">(</mo></mphantom></mpadded></mrow>`,
+    cursorMathML: `<mtext>&#xA0;&#xA0;&#xA0;</mtext><mrow><mpadded width="0"><mphantom><mo stretchy="false">(</mo></mphantom></mpadded></mrow>`,
+    placeholderMathML: `<mtext>&#xA0;?&#xA0;</mtext><mrow><mpadded width="0"><mphantom><mo stretchy="false">(</mo></mphantom></mpadded></mrow>`,
 
     cursorCssClass: "formular-cursor",
     placeholderCssClass: "formular-placeholder",

@@ -3,7 +3,7 @@ export { default as Renderer } from "./Renderer";
 export { default as LatexDefaultRenderer } from "./latex/DefaultRenderer";
 export { default as LatexNumberRenderer } from "./latex/NumberRenderer";
 
-export { default as MMLDefaultRenderer } from "./mml/DefaultRenderer";
-export { default as MMLHiddenRenderer } from "./mml/HiddenRenderer";
-export { default as MMLNumberRenderer } from "./mml/NumberRenderer";
-export { default as MMLPowerRenderer } from "./mml/PowerRenderer";
+export { default as MathMLDefaultRenderer } from "./math-ml/DefaultRenderer";
+export { default as MathMLHiddenRenderer } from "./math-ml/HiddenRenderer";
+export { default as MathMLNumberRenderer } from "./math-ml/NumberRenderer";
+export { default as MathMLPowerRenderer } from "./math-ml/PowerRenderer";

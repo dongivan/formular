@@ -3,8 +3,8 @@ export default interface ConfigInterface {
   placeholderKatex?: string;
   cursorLatex?: string;
   placeholderLatex?: string;
-  cursorMML?: string;
-  placeholderMML?: string;
+  cursorMathML?: string;
+  placeholderMathML?: string;
   cursorCssClass?: string;
   placeholderCssClass?: string;
 

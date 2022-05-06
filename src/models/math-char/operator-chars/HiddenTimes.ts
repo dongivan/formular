@@ -1,8 +1,8 @@
-import { MMLHiddenRenderer } from "../../renderer";
+import { MathMLHiddenRenderer } from "../../renderer";
 import OperatorChar from "../OperatorChar";
 
 export default class HiddenTimes extends OperatorChar {
-  readonly mmlRenderer = MMLHiddenRenderer;
+  readonly mathMLRenderer = MathMLHiddenRenderer;
 
   constructor() {
     super("·");

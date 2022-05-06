@@ -22,12 +22,12 @@ export default class CharRenderer extends BaseRenderer<MathMLNode> {
     MathChar: { tag: "mtext" },
     Cursor: {
       tag: "mrow",
-      value: Config.getConfig().cursorMML,
+      value: Config.getConfig().cursorMathML,
       attrs: { class: Config.getConfig().cursorCssClass },
     },
     Placeholder: {
       tag: "mrow",
-      value: Config.getConfig().placeholderMML,
+      value: Config.getConfig().placeholderMathML,
       attrs: { class: Config.getConfig().placeholderCssClass },
     },
     DecimalPoint: { tag: "mn" },

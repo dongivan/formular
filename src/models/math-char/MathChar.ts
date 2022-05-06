@@ -1,12 +1,11 @@
-import { LatexDefaultRenderer, MMLDefaultRenderer } from "../renderer";
+import { LatexDefaultRenderer, MathMLDefaultRenderer } from "../renderer";
 
 export default class MathChar {
   private static _SEQUENCE_NUMBER = 0;
   readonly latexRenderer: typeof LatexDefaultRenderer = LatexDefaultRenderer;
 
-  readonly mmlRenderer: typeof MMLDefaultRenderer = MMLDefaultRenderer;
+  readonly mathMLRenderer: typeof MathMLDefaultRenderer = MathMLDefaultRenderer;
   readonly clickableDataKey = "data-formular-char-sn";
-  protected _mmlValueTemplate: string | undefined;
 
   private _sequenceNumber: number;
   protected _value: string;
@@ -24,12 +23,6 @@ export default class MathChar {
 
   get paramsNumber(): number {
     return this._paramsNumber;
-  }
-
-  get mmlValueTemplate(): string {
-    return this._mmlValueTemplate == undefined
-      ? this._value
-      : this._mmlValueTemplate;
   }
 
   get value(): string {

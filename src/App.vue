@@ -35,11 +35,11 @@
     class="jax-container"
     math-jax-src="mathjax/es5/tex-mml-chtml.js"
     math-jax-function-name="mathml2chtml"
-    :content="mmlText"
+    :content="mathMlText"
     @click="onViewerClick"
   />
 
-  <pre>{{ mmlText }}</pre>
+  <pre>{{ mathMlText }}</pre>
 </template>
 
 <script setup lang="ts">
@@ -49,7 +49,7 @@ import Formula from "./models/Formula";
 
 const formula = reactive(new Formula());
 
-const mmlText = computed(() => {
+const mathMlText = computed(() => {
   return formula.toMathMLNode().render();
 });
 

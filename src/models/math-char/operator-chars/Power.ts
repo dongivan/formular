@@ -1,10 +1,10 @@
-import { MMLPowerRenderer } from "../../renderer";
+import { MathMLPowerRenderer } from "../../renderer";
 import OperatorChar from "../OperatorChar";
 
 export default class Power extends OperatorChar {
   protected _leftOperandLatexTemplate = "{<0>}";
 
-  readonly mmlRenderer = MMLPowerRenderer;
+  readonly mathMLRenderer = MathMLPowerRenderer;
 
   constructor() {
     super("^");

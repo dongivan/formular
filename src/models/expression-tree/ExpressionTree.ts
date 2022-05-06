@@ -43,7 +43,7 @@ const RenderMathML = function (
   rightResult: Array<MathMLNode> | undefined
 ): Array<MathMLNode> {
   return node.symbol.render(
-    new node.symbol.char.mmlRenderer(node.tree.formula),
+    new node.symbol.char.mathMLRenderer(node.tree.formula),
     leftResult,
     rightResult
   );
