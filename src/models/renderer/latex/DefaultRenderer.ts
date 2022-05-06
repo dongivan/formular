@@ -2,28 +2,19 @@ import { MathChar } from "../../math-char";
 import { MathSymbol, OperatorSymbol } from "../../math-symbol";
 import { replace } from "../../utils";
 import Renderer from "../Renderer";
+import LatexCharRenderer from "./LatexCharRenderer";
 
 export default class DefaultRenderer extends Renderer<string> {
+  protected _charRenderer = new LatexCharRenderer();
+
   renderOperand(symbol: MathSymbol<MathChar>): string {
-    let result = symbol.char.latexTemplate;
-    if (symbol.hasParams) {
-      const latexParams = symbol.params.map<string>((param) => {
-        const infix = this._formula.infixMaker.make(param);
-        const postfix = this._formula.postfixMaker.make(infix);
-        const tree = this._formula.binaryTreeMaker.make(postfix);
-        return tree.renderLatex();
-      });
-      if (latexParams) {
-        result = replace(result, latexParams);
-      }
-    }
-    if (symbol.char.clickable) {
-      result = replace(symbol.char.clickableLatexTemplate, {
-        SN: symbol.char.sequenceNumber.toString(),
-        LATEX: result,
-      });
-    }
-    return result;
+    const latexParams = symbol.params.map<string>((param) => {
+      const infix = this._formula.infixMaker.make(param);
+      const postfix = this._formula.postfixMaker.make(infix);
+      const tree = this._formula.binaryTreeMaker.make(postfix);
+      return tree.renderLatex();
+    });
+    return this._charRenderer.render(symbol.char, latexParams);
   }
 
   renderOperator(

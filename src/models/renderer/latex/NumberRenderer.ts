@@ -1,11 +1,5 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { DecimalPoint, Digit } from "../../math-char";
-import {
-  DecimalSymbol,
-  IntegerSymbol,
-  OperatorSymbol,
-} from "../../math-symbol";
-import { replace } from "../../utils";
+import { DecimalSymbol, IntegerSymbol } from "../../math-symbol";
 import DefaultRenderer from "./DefaultRenderer";
 
 export default class NumberRenderer extends DefaultRenderer {
@@ -21,21 +15,7 @@ export default class NumberRenderer extends DefaultRenderer {
     return result;
   }
 
-  renderOperator(
-    symbol: OperatorSymbol,
-    leftOperand: string | undefined,
-    rightOperand: string | undefined
-  ): string {
-    return "";
-  }
-
   protected _renderClickableLatex = (char: Digit | DecimalPoint) => {
-    const val = char.value;
-    return char.clickable
-      ? replace(char.clickableLatexTemplate, {
-          SN: char.sequenceNumber.toString(),
-          LATEX: val,
-        })
-      : val;
+    return this._charRenderer.render(char);
   };
 }

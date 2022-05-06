@@ -4,7 +4,7 @@ export default class RightParen extends AbstractParen {
   protected _mmlValueTemplate = ")";
 
   constructor() {
-    super("\\rparen");
+    super(")");
     this._priority = -AbstractParen.Priorities.Parenthese;
     this._hasRightOperand = false;
   }

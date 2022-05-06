@@ -1,4 +1,6 @@
 export default interface ConfigInterface {
+  cursorKatex?: string;
+  placeholderKatex?: string;
   cursorLatex?: string;
   placeholderLatex?: string;
   cursorMML?: string;

@@ -4,11 +4,15 @@ export default class Config {
   private static _instance: Config;
 
   private static _defaultConfig: ConfigInterface = {
-    cursorLatex: "{\\htmlClass{<0>}{{\\phantom{O}\\mathstrut}}}",
-    placeholderLatex: "\\htmlClass{<0>}{\\ ?\\ \\mathstrut}",
+    cursorLatex: "{\\class{<0>}{{\\phantom{O}\\mathstrut}}}",
+    placeholderLatex: "\\class{<0>}{\\ ?\\ \\mathstrut}",
+
+    cursorKatex: "{\\htmlClass{<0>}{{\\phantom{O}\\mathstrut}}}",
+    placeholderKatex: "\\htmlClass{<0>}{\\ ?\\ \\mathstrut}",
 
     cursorMML: `<mtext>&#xA0;&#xA0;&#xA0;</mtext><mrow><mpadded width="0"><mphantom><mo stretchy="false">(</mo></mphantom></mpadded></mrow>`,
     placeholderMML: `<mtext>&#xA0;?&#xA0;</mtext><mrow><mpadded width="0"><mphantom><mo stretchy="false">(</mo></mphantom></mpadded></mrow>`,
+
     cursorCssClass: "formular-cursor",
     placeholderCssClass: "formular-placeholder",
   };

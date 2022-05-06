@@ -1,4 +1,3 @@
-import { replace } from "../../utils";
 import Config from "../../Config";
 import OperandChar from "../OperandChar";
 
@@ -10,10 +9,6 @@ export default class Cursor extends OperandChar {
 
   constructor() {
     super("cursor");
-    this._latexTemplate = replace(
-      Config.getConfig().cursorLatex || "",
-      Config.getConfig().cursorCssClass || ""
-    );
     this._mmlValueTemplate = Config.getConfig().cursorMML;
     this.mmlAttrs.class = Config.getConfig().cursorCssClass || "";
   }

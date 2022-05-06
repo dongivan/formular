@@ -1,7 +1,6 @@
 import OperandChar from "../OperandChar";
 
 export default class Fraction extends OperandChar {
-  protected _latexTemplate = "\\frac{<0>}{<1>}";
   readonly mmlTag = "mfrac";
 
   constructor() {

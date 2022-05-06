@@ -3,8 +3,6 @@ import { LatexDefaultRenderer, MMLDefaultRenderer } from "../renderer";
 export default class MathChar {
   private static _SEQUENCE_NUMBER = 0;
   readonly latexRenderer: typeof LatexDefaultRenderer = LatexDefaultRenderer;
-  protected _latexTemplate: string | undefined;
-  protected _clickableLatexTemplate = `\\htmlData{formular-char-sn=<SN>}{<LATEX>}`;
 
   readonly mmlRenderer: typeof MMLDefaultRenderer = MMLDefaultRenderer;
   readonly mmlTag: string = "mtext";
@@ -30,10 +28,6 @@ export default class MathChar {
     return this._paramsNumber;
   }
 
-  get latexTemplate(): string {
-    return this._latexTemplate == undefined ? this._value : this._latexTemplate;
-  }
-
   get mmlValueTemplate(): string {
     return this._mmlValueTemplate == undefined
       ? this._value
@@ -46,10 +40,6 @@ export default class MathChar {
 
   get clickable(): boolean {
     return this._clickable;
-  }
-
-  get clickableLatexTemplate(): string {
-    return this._clickableLatexTemplate;
   }
 
   toString(): string {

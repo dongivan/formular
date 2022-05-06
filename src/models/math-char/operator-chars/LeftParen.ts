@@ -4,7 +4,7 @@ export default class LeftParen extends AbstractParen {
   protected _mmlValueTemplate = "(";
 
   constructor() {
-    super("\\lparen");
+    super("(");
     this._priority = AbstractParen.Priorities.Parenthese;
     this._hasLeftOperand = false;
   }
