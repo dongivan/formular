@@ -1,10 +1,10 @@
 import { MathChar } from "../../math-char";
 import { MathSymbol, OperatorSymbol } from "../../math-symbol";
-import Renderer from "../Renderer";
+import SymbolRenderer from "../SymbolRenderer";
 import MathMLNode from "../../MathMLNode";
 import CharRenderer from "./CharRenderer";
 
-export default class DefaultRenderer extends Renderer<MathMLNode[]> {
+export default class DefaultRenderer extends SymbolRenderer<MathMLNode[]> {
   protected _charRenderer = new CharRenderer();
 
   renderOperand(symbol: MathSymbol<MathChar>): MathMLNode[] {

@@ -2,7 +2,7 @@ import Formula from "../Formula";
 import { MathChar } from "../math-char";
 import { MathSymbol, OperandSymbol, OperatorSymbol } from "../math-symbol";
 
-export default abstract class Renderer<R> {
+export default abstract class SymbolRenderer<R> {
   protected _formula: Formula;
 
   constructor(formula: Formula) {
