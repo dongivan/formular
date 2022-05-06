@@ -7,6 +7,6 @@ export default class HiddenTimes extends OperatorChar {
 
   constructor() {
     super("·");
-    this._priority = 2;
+    this._priority = OperatorChar.Priorities.Multiplication;
   }
 }

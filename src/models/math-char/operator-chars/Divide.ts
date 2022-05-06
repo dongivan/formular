@@ -1,10 +1,10 @@
-import Operator from "../OperatorChar";
+import OperatorChar from "../OperatorChar";
 
-export default class Divide extends Operator {
+export default class Divide extends OperatorChar {
   protected _mmlValueTemplate = "&#xF7;";
 
   constructor() {
     super("\\div");
-    this._priority = 2;
+    this._priority = OperatorChar.Priorities.Multiplication;
   }
 }

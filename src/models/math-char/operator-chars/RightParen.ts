@@ -5,7 +5,7 @@ export default class RightParen extends AbstractParen {
 
   constructor() {
     super("\\rparen");
-    this._priority = -10;
+    this._priority = -AbstractParen.Priorities.Parenthese;
     this._hasRightOperand = false;
   }
 

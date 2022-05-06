@@ -6,7 +6,15 @@ export default abstract class OperatorChar extends MathChar {
     have them. so "(" has a big positive priority and right and ")" has a negative one ( just
     equals negative priority of "(" ).
   */
-  protected _priority = 1;
+  static readonly Priorities = {
+    Addition: 1,
+    Multiplication: 2,
+    Negative: 4,
+    Exponentiation: 8,
+    Parenthese: 16,
+  };
+
+  protected _priority = OperatorChar.Priorities.Addition;
   protected _hasLeftOperand = true;
   protected _hasRightOperand = true;
   protected _leftOperandLatexTemplate = "<0>";

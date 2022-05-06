@@ -1,4 +1,4 @@
-import { MathChar, OperatorChar, OperandChar } from "../math-char";
+import { MathChar, OperatorChar, OperandChar, Minus } from "../math-char";
 import {
   ParamSeparator,
   ParamEnd,
@@ -54,6 +54,10 @@ export default class InfixListMaker {
         this._pushOperand(infixList, symbol);
       } else if (char instanceof OperatorChar) {
         /* current char is an OperatorChar, push it */
+        if (char instanceof Minus) {
+          /* current char is a Minus, reset its priority & hasLeftOperand by previous char */
+          char.adapt(chars[pos - 1]);
+        }
         const symbol = new OperatorSymbol(char, operatorParams);
         this._pushOperator(infixList, symbol);
       }
@@ -134,8 +138,8 @@ export default class InfixListMaker {
     decimalPoint: DecimalPoint | undefined;
     endPos: number;
   } {
-    const integers = new Array<NumberChar>();
-    const decimals = new Array<NumberChar>();
+    const integers: NumberChar[] = [];
+    const decimals: NumberChar[] = [];
     let decimalPoint: DecimalPoint | undefined = undefined;
 
     if (lead instanceof DecimalPoint) {
