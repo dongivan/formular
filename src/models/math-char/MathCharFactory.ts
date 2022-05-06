@@ -10,7 +10,7 @@ export default class MathCharFactory {
     digit: OperandChars.Digit,
     hidden: OperatorChars.HiddenTimes,
     sqrt: OperandChars.SquareRoot,
-    over: OperandChars.Over,
+    frac: OperandChars.Fraction,
     ".": OperandChars.DecimalPoint,
     variable: OperandChars.Variable,
 

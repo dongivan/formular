@@ -14,7 +14,7 @@
     <button @click="formula.insertAtCursor('-')">-</button>
     <button @click="formula.insertAtCursor('*')">*</button>
     <button @click="formula.insertAtCursor('/')">/</button>
-    <button @click="formula.insertAtCursor('over')">over</button>
+    <button @click="formula.insertAtCursor('frac')">frac</button>
     <button @click="formula.insertAtCursor('^')">^</button>
     <button @click="formula.insertAtCursor('sqrt')">sqrt</button>
     <button @click="formula.insertAtCursor('x')">x</button>
