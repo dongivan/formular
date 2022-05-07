@@ -3,7 +3,7 @@
 </template>
 
 <script lang="ts">
-import { onMounted, ref, watch } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 
 declare global {
   interface Window {
@@ -36,43 +36,85 @@ const isMathJaxLoadedRef = ref(false);
 </script>
 
 <script setup lang="ts">
+/* declare props & emits */
 const props = defineProps({
   mathJaxSrc: { type: String, default: "" },
-  mathJaxFunctionName: {
+  sourceFormat: {
     type: String,
+    default: "tex",
     validator(val: string) {
-      return ["mathml2chtml", "tex2chtml"].includes(val);
+      return ["mml", "mathml", "latex", "tex"].includes(val);
     },
-    required: true,
+  },
+  targetFormat: {
+    type: String,
+    default: "chtml",
+    validator(val: string) {
+      return ["html", "chtml", "svg"].includes(val);
+    },
+  },
+  mathJaxOptions: {
+    type: Object,
+    default: () => {
+      return {};
+    },
   },
   content: { type: String, required: true },
 });
 const emit = defineEmits(["math-jax-loaded"]);
 
+/* setup ready() */
+const ready = function () {
+  if (window.MathJax.startup?.defaultReady) {
+    window.MathJax.startup?.defaultReady();
+  }
+  isMathJaxLoadedRef.value = true;
+  emit("math-jax-loaded");
+};
+
+const initMathJaxOptionsRef = computed(() => {
+  const options = { ...props.mathJaxOptions };
+  if (!options.startup) {
+    options.startup = {};
+  }
+  if (typeof options.startup.ready == "function") {
+    const oldReady = options.startup.ready;
+    options.startup.ready = () => {
+      oldReady();
+      ready();
+    };
+  } else {
+    options.startup.ready = ready;
+  }
+  return options;
+});
+
+/* load MathJax if needed */
+const mathJaxFunctionNameRef = computed(() => {
+  const source =
+    {
+      mml: "mathml",
+      latex: "tex",
+    }[props.sourceFormat] || props.sourceFormat;
+  const target =
+    {
+      html: "chtml",
+    }[props.targetFormat] || props.targetFormat;
+  return `${source}2${target}Promise`;
+});
+
 if (
-  !(window.MathJax && window.MathJax[props.mathJaxFunctionName]) &&
+  !(window.MathJax && window.MathJax[mathJaxFunctionNameRef.value]) &&
   props.mathJaxSrc
 ) {
   loadScript(props.mathJaxSrc);
   window.MathJax = {
     ...window.MathJax,
-    ...{
-      loader: {
-        load: ["[tex]/html"],
-      },
-      startup: {
-        ready() {
-          if (window.MathJax.startup?.defaultReady) {
-            window.MathJax.startup?.defaultReady();
-          }
-          isMathJaxLoadedRef.value = true;
-          emit("math-jax-loaded");
-        },
-      },
-    },
+    ...initMathJaxOptionsRef.value,
   };
 }
 
+/* setup components */
 const isMountedRef = ref(false);
 const containerRef = ref();
 onMounted(() => {
@@ -81,16 +123,16 @@ onMounted(() => {
 
 watch(
   [() => props.content, isMountedRef, isMathJaxLoadedRef],
-  ([content, isMounted, isMathJaxLoaded]) => {
+  async ([content, isMounted, isMathJaxLoaded]) => {
     if (!isMounted || !isMathJaxLoaded) {
       return;
     }
     const MathJax = window.MathJax,
-      MathJaxFunction = MathJax[props.mathJaxFunctionName];
+      MathJaxFunction = MathJax[mathJaxFunctionNameRef.value];
     if (typeof MathJaxFunction == "function") {
       const el = containerRef.value;
       el.innerHTML = "";
-      el.appendChild(MathJaxFunction(content));
+      el.appendChild(await MathJaxFunction(content));
       MathJax.startup?.document?.clear();
       MathJax.startup?.document?.updateDocument();
     }

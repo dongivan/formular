@@ -2,10 +2,13 @@
   <div>
     <MathJaxViewer
       class="jax-container"
-      math-jax-function-name="tex2chtml"
+      source-format="tex"
+      target-format="html"
       :content="latexText"
     />
     <div>{{ latexText }}</div>
+    <img src="formular-svg/operators/SquareRoot.svg" />
+    <img src="formular-svg/operators/Square.svg" />
     <button
       v-for="partName of 10"
       :key="`key-value-${partName - 1}`"
@@ -33,8 +36,10 @@
 
   <MathJaxViewer
     class="jax-container"
-    math-jax-src="mathjax/es5/tex-mml-chtml.js"
-    math-jax-function-name="mathml2chtml"
+    math-jax-src="mathjax/es5/startup.js"
+    source-format="mml"
+    target-format="html"
+    :math-jax-options="mathJaxOptions"
     :content="mathMlText"
     @click="onViewerClick"
   />
@@ -48,6 +53,21 @@ import { computed, reactive } from "vue";
 import Formula from "./models/Formula";
 
 const formula = reactive(new Formula());
+
+const mathJaxOptions = {
+  loader: {
+    load: [
+      "input/tex-base",
+      "input/mml",
+      "output/chtml",
+      "output/svg",
+      "[tex]/html",
+    ],
+  },
+  tex: {
+    packages: ["base"],
+  },
+};
 
 const mathMlText = computed(() => {
   return formula.toMathMLNode().render();
