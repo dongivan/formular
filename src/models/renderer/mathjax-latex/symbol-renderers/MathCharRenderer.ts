@@ -1,15 +1,7 @@
-import { replace } from "../../../utils";
 import { MathChar } from "../../../math-char";
 import { MathSymbol, OperatorSymbol } from "../../../math-symbol";
 import { SymbolRendererFunction } from "../../SymbolRendererTypes";
 import SymbolRenderer from "../SymbolRenderer";
-
-function renderOperandLatex(
-  template: string,
-  operandLatex: string | undefined
-) {
-  return operandLatex ? replace(template, operandLatex) : "";
-}
 
 export default {
   operandRenderer: (
@@ -30,10 +22,6 @@ export default {
     rightOperand: string | undefined,
     renderer: SymbolRenderer
   ): string => {
-    return (
-      renderOperandLatex(symbol.char.leftOperandLatexTemplate, leftOperand) +
-      renderer.renderOperand(symbol) +
-      renderOperandLatex(symbol.char.rightOperandLatexTemplate, rightOperand)
-    );
+    return leftOperand + renderer.renderOperand(symbol) + rightOperand;
   },
 } as SymbolRendererFunction<string>;

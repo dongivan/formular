@@ -17,8 +17,6 @@ export default abstract class OperatorChar extends MathChar {
   protected _priority = OperatorChar.Priorities.Addition;
   protected _hasLeftOperand = true;
   protected _hasRightOperand = true;
-  protected _leftOperandLatexTemplate = "<0>";
-  protected _rightOperandLatexTemplate = "<0>";
 
   constructor(value: string) {
     super(value);
@@ -34,13 +32,5 @@ export default abstract class OperatorChar extends MathChar {
 
   get hasRightOperand(): boolean {
     return this._hasRightOperand;
-  }
-
-  get leftOperandLatexTemplate(): string {
-    return this._leftOperandLatexTemplate;
-  }
-
-  get rightOperandLatexTemplate(): string {
-    return this._rightOperandLatexTemplate;
   }
 }

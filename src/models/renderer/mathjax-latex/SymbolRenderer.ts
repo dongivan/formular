@@ -29,6 +29,29 @@ const operatorRendererFunctions: Record<
   MathChar: MathCharRenderer.operatorRenderer,
 };
 
+type OperandLatexTemplate = {
+  left: string;
+  right: string;
+};
+
+const operandLatexTemplates: Record<string, OperandLatexTemplate> = {
+  OperatorChar: {
+    left: "<0>",
+    right: "<0>",
+  },
+  Power: {
+    left: "{<0>}",
+    right: "<0>",
+  },
+};
+
+function renderOperandLatex(
+  template: string,
+  operandLatex: string | undefined
+) {
+  return operandLatex ? replace(template, operandLatex) : "";
+}
+
 export default class SymbolRenderer extends BaseSymbolRenderer<string> {
   protected _charRenderer = new CharRenderer();
 
@@ -53,13 +76,17 @@ export default class SymbolRenderer extends BaseSymbolRenderer<string> {
       symbol.char,
       operatorRendererFunctions
     );
-    return renderer ? renderer(symbol, leftOperand, rightOperand, this) : "";
-  }
-
-  private _renderOperandLatex(
-    template: string,
-    operandLatex: string | undefined
-  ) {
-    return operandLatex ? replace(template, operandLatex) : "";
+    const template = findByClass<MathChar, OperandLatexTemplate>(
+      symbol.char,
+      operandLatexTemplates
+    );
+    return renderer
+      ? renderer(
+          symbol,
+          renderOperandLatex(template?.left || "<0>", leftOperand),
+          renderOperandLatex(template?.right || "<0>", rightOperand),
+          this
+        )
+      : "";
   }
 }
