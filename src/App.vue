@@ -1,6 +1,6 @@
 <template>
   <div>
-    <MathMLViewer
+    <MathJaxViewer
       class="jax-container"
       math-jax-function-name="tex2chtml"
       :content="latexText"
@@ -31,7 +31,7 @@
     <button :disabled="!formula.couldRedo" @click="formula.redo()">REDO</button>
   </div>
 
-  <MathMLViewer
+  <MathJaxViewer
     class="jax-container"
     math-jax-src="mathjax/es5/tex-mml-chtml.js"
     math-jax-function-name="mathml2chtml"
@@ -43,7 +43,7 @@
 </template>
 
 <script setup lang="ts">
-import MathMLViewer from "./components/MathMLViewer.vue";
+import MathJaxViewer from "./components/MathJaxViewer.vue";
 import { computed, reactive } from "vue";
 import Formula from "./models/Formula";
 
