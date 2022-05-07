@@ -1,5 +1,6 @@
 const fs = require("fs");
 const path = require("path");
+const { optimize } = require("svgo");
 const PACKAGES = "base, autoload, require, ams, newcommand";
 
 const root = "../public/formular-icons";
@@ -92,7 +93,7 @@ const latexes = {
     ExpPower: "e^⬚",
     ExpSquare: "e^2",
     Infinity: "\\infty",
-    // Limit: "\\lim_{⬚\\rightarrow⬚}",
+    /* Limit: "\\lim_{⬚\\rightarrow⬚}", */
     Limit: "\\lim",
     Log: "\\log_⬚",
     Ln: "\\ln",
@@ -113,7 +114,28 @@ const output = async function (MathJax, group, name, latex) {
   const node = await MathJax.tex2svgPromise(latex, {
     display: true,
   });
-  fs.writeFileSync(file, MathJax.startup.adaptor.innerHTML(node));
+  const result = optimize(MathJax.startup.adaptor.innerHTML(node), {
+    plugins: [
+      "preset-default",
+      {
+        name: "removeAttributesBySelector",
+        params: {
+          selectors: [
+            {
+              selector: "[data-mml-node]",
+              attributes: "data-mml-node",
+            },
+            {
+              selector: "[data-mjx-texclass]",
+              attributes: "data-mjx-texclass",
+            },
+          ],
+        },
+      },
+    ],
+  });
+  fs.writeFileSync(file, result.data);
+  /* fs.writeFileSync(file, MathJax.startup.adaptor.innerHTML(node)); */
 };
 
 require("mathjax-full")
