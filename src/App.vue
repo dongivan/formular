@@ -7,8 +7,6 @@
       :content="latexText"
     />
     <div>{{ latexText }}</div>
-    <img src="formular-svg/operators/SquareRoot.svg" />
-    <img src="formular-svg/operators/Square.svg" />
     <button
       v-for="partName of 10"
       :key="`key-value-${partName - 1}`"
