@@ -3,11 +3,11 @@ const path = require("path");
 const { optimize } = require("svgo");
 const PACKAGES = "base, autoload, require, ams, newcommand";
 
-const root = "../public/formular-icons";
+const root = "../src/assets/formular-svgs";
 
-const numbers = {};
+const number = {};
 for (let i = 0; i < 10; i++) {
-  numbers[i] = i.toString();
+  number[i] = i.toString();
 }
 
 const englishLetters = "abcdefghijklmnopqrstuvwxyz".split("");
@@ -74,7 +74,7 @@ const greece = {
 };
 
 const latexes = {
-  operators: {
+  operator: {
     Plus: "+",
     Minus: "-",
     Times: "\\times",
@@ -99,7 +99,7 @@ const latexes = {
     Ln: "\\ln",
     Lg: "\\lg",
   },
-  numbers,
+  number,
   english,
   greece,
 };
