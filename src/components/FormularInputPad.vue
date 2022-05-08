@@ -68,7 +68,7 @@ Array.from({ length: 9 }).forEach((_, i) => {
 });
 addButton(".", [4, 1]);
 addButton(0, [4, 2], "number-0");
-addButton("infy", [4, 3], "operator-Infinity");
+addButton("infy", [4, 3], "operator-infinity");
 </script>
 
 <script setup lang="ts">
