@@ -8,10 +8,13 @@ export default {
     symbol: MathSymbol<MathChar>,
     renderer: SymbolRenderer
   ): string => {
-    const latexParams = symbol.params.map<string>((param) => {
+    const latexParams = symbol.params.map<string>((param, i) => {
       const infix = renderer.formula.infixMaker.make(param);
       const postfix = renderer.formula.postfixMaker.make(infix);
-      const tree = renderer.formula.binaryTreeMaker.make(postfix);
+      const tree = renderer.formula.binaryTreeMaker.make(
+        postfix,
+        symbol.char.hasParamParen(i)
+      );
       return tree.renderLatex();
     });
     return renderer.charRenderer.render(symbol.char, latexParams);

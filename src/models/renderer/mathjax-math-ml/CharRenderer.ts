@@ -43,6 +43,8 @@ export default class CharRenderer extends BaseRenderer<MathMLNode> {
     HiddenTimes: { tag: "mtext", value: "" },
     Power: { tag: "msup" },
     Times: { tag: "mo", value: "&#xD7;" },
+    Infinity: { tag: "mi", value: "&#x221E;" },
+    Ln: { tag: "mi", value: "ln" },
   };
 
   protected _render(char: MathChar, params: MathMLNode[]): MathMLNode {

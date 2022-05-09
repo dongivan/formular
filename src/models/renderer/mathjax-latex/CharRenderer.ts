@@ -15,6 +15,8 @@ export default class LatexCharRenderer extends CharRenderer<string> {
     Power: "^{<1>}",
     Divide: "\\div",
     Times: "\\times",
+    Infinity: "\\infty",
+    Ln: "\\ln<1>",
   };
 
   protected _render(char: MathChar, params: string[]): string {

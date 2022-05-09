@@ -35,9 +35,11 @@ const commands: CreateCommand[] = [
   classCommand(OperatorChars.RightParen, [")", "right-paren"]),
   classCommand(OperatorChars.Power, ["^", "power"]),
 
+  classCommand(OperandChars.Infinity, ["infinity"]),
   classCommand(OperandChars.DecimalPoint, [".", "point"]),
   classCommand(OperandChars.SquareRoot, ["sqrt", "square-root"]),
   classCommand(OperandChars.Fraction, ["frac", "fraction"]),
+  classCommand(OperandChars.Ln, ["ln"]),
 
   {
     aliases: ["square"],
@@ -147,10 +149,18 @@ class MathCharFactory {
     return this._hidden;
   }
 
+  createTempParen(): [OperatorChars.LeftParen, OperatorChars.RightParen] {
+    return [
+      new OperatorChars.LeftParen("", -1),
+      new OperatorChars.RightParen("", -1),
+    ];
+  }
+
   private _afterCreate<T extends MathChar>(...chars: [T, ...T[]]): [T, ...T[]] {
     chars.forEach((char) => {
       this._chars[char.sequenceNumber] = char;
     });
+    console.log(this._chars);
     return chars;
   }
 

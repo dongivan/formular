@@ -18,10 +18,6 @@ export default abstract class OperatorChar extends MathChar {
   protected _hasLeftOperand = true;
   protected _hasRightOperand = true;
 
-  constructor(value: string) {
-    super(value);
-  }
-
   get priority(): number {
     return this._priority;
   }

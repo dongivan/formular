@@ -4,11 +4,14 @@ export default class MathChar {
   private _sequenceNumber: number;
   protected _value: string;
   protected _paramsNumber = 0;
+  /* `_paramsParen` = n, if each ith param should be in parentheses and n & i = 1,
+  and jth param should NOT be in parentheses and n & j = 0 */
+  protected _paramsParen = 0;
   protected _clickable = false;
 
-  constructor(value: string) {
+  constructor(value: string, sn = 0) {
     this._value = value;
-    this._sequenceNumber = ++MathChar._SEQUENCE_NUMBER;
+    this._sequenceNumber = sn || ++MathChar._SEQUENCE_NUMBER;
   }
 
   get sequenceNumber(): number {
@@ -25,6 +28,11 @@ export default class MathChar {
 
   get clickable(): boolean {
     return this._clickable;
+  }
+
+  /* check if the ith param should be in parentheses. be careful: i is from 0. */
+  hasParamParen(i: number): boolean {
+    return !!((1 << i) & this._paramsParen);
   }
 
   toString(): string {

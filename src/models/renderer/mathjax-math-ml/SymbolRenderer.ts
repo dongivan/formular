@@ -11,6 +11,7 @@ import {
   OperandRendererFunction,
   OperatorRendererFunction,
 } from "../SymbolRendererTypes";
+import FlatRenderer from "./symbol-renderers/FlatRenderer";
 
 const operandRendererFunctions: Record<
   string,
@@ -19,6 +20,7 @@ const operandRendererFunctions: Record<
   MathChar: MathCharRenderer.operandRenderer,
   Digit: NumberRenderer.operandRenderer,
   DecimalPoint: NumberRenderer.operandRenderer,
+  Ln: FlatRenderer.operandRenderer,
   HiddenTimes: () => {
     return [];
   },

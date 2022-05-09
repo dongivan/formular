@@ -5,3 +5,5 @@ export { default as SquareRoot } from "./SquareRoot";
 export { default as Fraction } from "./Fraction";
 export { default as DecimalPoint } from "./DecimalPoint";
 export { default as Variable } from "./Variable";
+export { default as Infinity } from "./Infinity";
+export { default as Ln } from "./Ln";

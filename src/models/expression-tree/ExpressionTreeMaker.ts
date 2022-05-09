@@ -10,11 +10,14 @@ export default class ExpressionTreeMaker {
     this._formula = formula;
   }
 
-  make(postfix: PostfixList) {
-    return this._parsePostfixToBinaryTree(postfix);
+  make(postfix: PostfixList, addParen = false) {
+    return this._parsePostfixToBinaryTree(postfix, addParen);
   }
 
-  private _parsePostfixToBinaryTree(postfix: PostfixList): ExpressionTree {
+  private _parsePostfixToBinaryTree(
+    postfix: PostfixList,
+    addParen: boolean
+  ): ExpressionTree {
     const tree = new ExpressionTree(this._formula);
     let root: ExpressionNode | undefined = undefined;
 
@@ -43,6 +46,14 @@ export default class ExpressionTreeMaker {
       root = node;
 
       pos += 1;
+    }
+    if (addParen) {
+      const [left, right] = this._formula.charFactory.createTempParen();
+      const rightNode = new ExpressionNode(tree, new OperatorSymbol(right)),
+        leftNode = new ExpressionNode(tree, new OperatorSymbol(left));
+      rightNode.leftChild = root;
+      leftNode.rightChild = rightNode;
+      root = leftNode;
     }
     if (root) {
       root.setParenLevelRecursively();
