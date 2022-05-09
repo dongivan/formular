@@ -74,11 +74,8 @@ export default class Formula {
     }
 
     const cursorPos = this._chars.indexOf(this._cursor),
-      chars = this._charFactory.create(value);
-    this._chars.splice(cursorPos, 0, ...chars);
-    if (chars.length > 1) {
-      this.moveCursorTo(cursorPos + 1);
-    }
+      chars = this._charFactory.create(value, this._cursor);
+    this._chars.splice(cursorPos, 1, ...chars);
 
     this._pushStep();
   }

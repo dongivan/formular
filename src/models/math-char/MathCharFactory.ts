@@ -2,27 +2,60 @@ import MathChar from "./MathChar";
 import * as OperandChars from "./operand-chars";
 import * as OperatorChars from "./operator-chars";
 
-export default class MathCharFactory {
-  private static _CHAR_CLASSES: {
-    [key: string]: typeof MathChar;
-  } = {
-    /* operand chars */
-    digit: OperandChars.Digit,
-    hidden: OperatorChars.HiddenTimes,
-    sqrt: OperandChars.SquareRoot,
-    frac: OperandChars.Fraction,
-    ".": OperandChars.DecimalPoint,
-    variable: OperandChars.Variable,
+type CreateCommand = (
+  | {
+      create: (
+        factory: MathCharFactory,
+        cursor?: OperandChars.Cursor
+      ) => [MathChar, ...MathChar[]];
+    }
+  | {
+      class: typeof MathChar;
+    }
+) & {
+  aliases: string[];
+};
 
-    /* operator chars */
-    "+": OperatorChars.Plus,
-    "-": OperatorChars.Minus,
-    "*": OperatorChars.Times,
-    "/": OperatorChars.Divide,
-    "(": OperatorChars.LeftParen,
-    ")": OperatorChars.RightParen,
-    "^": OperatorChars.Power,
+const classCommand = function (
+  cls: typeof MathChar,
+  aliases: string[] = []
+): CreateCommand {
+  return {
+    class: cls,
+    aliases,
   };
+};
+
+const commands: CreateCommand[] = [
+  classCommand(OperatorChars.Plus, ["+", "plus"]),
+  classCommand(OperatorChars.Minus, ["-", "minus"]),
+  classCommand(OperatorChars.Times, ["*", "times", "multiple"]),
+  classCommand(OperatorChars.Divide, ["/", "divide"]),
+  classCommand(OperatorChars.LeftParen, ["(", "left-paren"]),
+  classCommand(OperatorChars.RightParen, [")", "right-paren"]),
+  classCommand(OperatorChars.Power, ["^", "power"]),
+
+  classCommand(OperandChars.DecimalPoint, [".", "point"]),
+  classCommand(OperandChars.SquareRoot, ["sqrt", "square-root"]),
+  classCommand(OperandChars.Fraction, ["frac", "fraction"]),
+
+  {
+    aliases: ["square"],
+    create: (factory, cursor) => {
+      const chars = factory.create("power");
+      chars.splice(1, 0, ...factory.create("2"));
+      if (cursor) {
+        chars.push(cursor);
+      }
+      return chars;
+    },
+  },
+];
+
+class MathCharFactory {
+  private static _COMMANDS: {
+    [key: string]: CreateCommand;
+  } = {};
 
   private _chars: {
     [key: number]: MathChar;
@@ -36,28 +69,54 @@ export default class MathCharFactory {
     };
   } = {};
 
-  constructor() {
-    this._cursor = this._afterCreate(new OperandChars.Cursor());
-    this._hidden = this._afterCreate(new OperatorChars.HiddenTimes());
+  static init() {
+    if (Object.keys(MathCharFactory._COMMANDS).length == 0) {
+      commands.forEach((command) => {
+        command.aliases.forEach((alias) => {
+          MathCharFactory._COMMANDS[alias] = command;
+        });
+      });
+    }
   }
 
-  create(name: string): MathChar[] {
-    let cls;
-    if (/^[0-9]$/.test(name)) {
-      cls = MathCharFactory._CHAR_CLASSES.digit;
+  constructor() {
+    this._cursor = this._afterCreate(new OperandChars.Cursor())[0];
+    this._hidden = this._afterCreate(new OperatorChars.HiddenTimes())[0];
+  }
+
+  create(
+    commandAlias: string,
+    cursor?: OperandChars.Cursor
+  ): [MathChar, ...MathChar[]] {
+    let command: CreateCommand;
+    if (/^[0-9]$/.test(commandAlias)) {
+      command = classCommand(OperandChars.Digit);
     } else {
-      cls = MathCharFactory._CHAR_CLASSES[name];
+      command = MathCharFactory._COMMANDS[commandAlias];
     }
-    if (!cls) {
-      cls = MathCharFactory._CHAR_CLASSES.variable;
+
+    if (!command) {
+      command = classCommand(OperandChars.Variable);
     }
-    const char = this._afterCreate(new cls(name)),
-      chars = [char];
-    if (char.paramsNumber > 0) {
-      for (let i = char.paramsNumber; i > 1; i--) {
-        chars.push(this._afterCreate(new OperatorChars.ParamSeparator()));
+    let chars: [MathChar, ...MathChar[]];
+    if ("class" in command) {
+      chars = this._afterCreate(new command.class(commandAlias));
+      const char = chars[0];
+      if (char.paramsNumber > 0) {
+        for (let i = char.paramsNumber; i > 1; i--) {
+          chars.push(...this._afterCreate(new OperatorChars.ParamSeparator()));
+        }
+        chars.push(...this._afterCreate(new OperatorChars.ParamEnd()));
       }
-      chars.push(this._afterCreate(new OperatorChars.ParamEnd()));
+      if (cursor) {
+        if (char.paramsNumber > 0) {
+          chars.splice(1, 0, cursor);
+        } else {
+          chars.push(cursor);
+        }
+      }
+    } else {
+      chars = this._afterCreate(...command.create(this, cursor));
     }
     return chars;
   }
@@ -74,7 +133,7 @@ export default class MathCharFactory {
     if (!char) {
       char = this._afterCreate(
         new OperandChars.Placeholder(master, leftOrRight == "left" ? -1 : 1)
-      );
+      )[0];
       this._placeholders[master.sequenceNumber] = Object.assign(
         {},
         this._placeholders[master.sequenceNumber] || {},
@@ -88,9 +147,11 @@ export default class MathCharFactory {
     return this._hidden;
   }
 
-  private _afterCreate<T extends MathChar>(char: T): T {
-    this._chars[char.sequenceNumber] = char;
-    return char;
+  private _afterCreate<T extends MathChar>(...chars: [T, ...T[]]): [T, ...T[]] {
+    chars.forEach((char) => {
+      this._chars[char.sequenceNumber] = char;
+    });
+    return chars;
   }
 
   findCharBySequenceNumber(sequenceNumber: number): MathChar {
@@ -120,3 +181,7 @@ export default class MathCharFactory {
     });
   }
 }
+
+MathCharFactory.init();
+
+export default MathCharFactory;
