@@ -6,8 +6,8 @@ export default class MathChar {
   protected _paramsNumber = 0;
   protected _clickable = false;
 
-  constructor(value: string | number) {
-    this._value = value.toString();
+  constructor(value: string) {
+    this._value = value;
     this._sequenceNumber = ++MathChar._SEQUENCE_NUMBER;
   }
 

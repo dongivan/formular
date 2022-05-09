@@ -66,7 +66,7 @@ export default class Formula {
     return this._chars[pos];
   }
 
-  insertAtCursor(value: number | string) {
+  insertAtCursor(value: string) {
     if (this._currentStep < this._steps.length - 1) {
       this._charFactory.clearCharsAfterSequenceNumber(
         Math.max(...this._steps[this._currentStep])

@@ -41,9 +41,9 @@ export default class MathCharFactory {
     this._hidden = this._afterCreate(new OperatorChars.HiddenTimes());
   }
 
-  create(name: string | number): MathChar[] {
+  create(name: string): MathChar[] {
     let cls;
-    if (typeof name == "number") {
+    if (/^[0-9]$/.test(name)) {
       cls = MathCharFactory._CHAR_CLASSES.digit;
     } else {
       cls = MathCharFactory._CHAR_CLASSES[name];
