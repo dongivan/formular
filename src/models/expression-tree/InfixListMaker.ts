@@ -26,11 +26,11 @@ export default class InfixListMaker {
     let pos = 0;
     while (pos < chars.length) {
       const char = chars[pos];
-      let operatorParams = undefined;
+      let charParams = undefined;
       if (char.paramsNumber > 0) {
         /* current char has params, fetch them from chars */
         const { params, endPos } = this._generateParams(chars, pos + 1);
-        operatorParams = params;
+        charParams = params;
         pos = endPos;
       }
 
@@ -45,7 +45,7 @@ export default class InfixListMaker {
         pos = endPos;
       } else if (char instanceof OperandChar) {
         /* current char is an OperandChar (and IS NOT a Digit), push it */
-        const symbol = new OperandSymbol(char, operatorParams);
+        const symbol = new OperandSymbol(char, charParams);
         this._pushOperand(infixList, symbol);
       } else if (char instanceof OperatorChar) {
         /* current char is an OperatorChar, push it */
@@ -53,7 +53,7 @@ export default class InfixListMaker {
           /* current char is a Minus, reset its priority & hasLeftOperand by previous char */
           char.adapt(chars[pos - 1]);
         }
-        const symbol = new OperatorSymbol(char, operatorParams);
+        const symbol = new OperatorSymbol(char, charParams);
         this._pushOperator(infixList, symbol);
       }
 
