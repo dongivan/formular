@@ -3,16 +3,23 @@
     <div class="menu"></div>
     <div class="buttons">
       <button
-        v-for="(button, name) in buttonsMapRef"
+        v-for="(button, name) in padButtonsRef['page-1']"
         :key="`button-${name}`"
         :class="`button-${name}`"
-        :style="buttonsPositionStyleRef[name]"
+        :style="{
+          gridRow: `${button.row + 1} / span ${button.rowSpan || 1}`,
+          gridColumn: `${button.col + 1} / span ${button.colSpan || 1}`,
+        }"
         @click="emit('key-pressed', button.value)"
       >
-        <SvgIcon v-if="button.icon" :name="button.icon" />
-        <templave v-else>
+        <SvgIcon
+          v-if="button.icon"
+          :name="button.icon"
+          :icon-size="button.iconSize"
+        />
+        <template v-else>
           {{ button.label || button.name || button.value.toString() }}
-        </templave>
+        </template>
       </button>
     </div>
     <div class="controls"></div>
@@ -20,55 +27,9 @@
 </template>
 
 <script lang="ts">
-type InputButton = {
-  value: string | number;
-  icon?: string;
-  label?: string;
-  name?: string;
-};
+import { padButtons as defaultPadButtons } from "./input-pad/buttons";
 
-type ButtonPosition = [[number, number], [number, number]];
-
-const defaultButtonsMap: Record<string, InputButton> = {};
-const defaultButtonsPosition: Record<string, ButtonPosition> = {};
-
-const parsePosition: (
-  position: [number, number] | [[number, number], [number, number]]
-) => ButtonPosition = function (position) {
-  let pos = position,
-    span: [number, number] = [1, 1];
-  if (Array.isArray(pos[0])) {
-    [pos, span] = position as [[number, number], [number, number]];
-  } else {
-    pos = pos as [number, number];
-  }
-  return [pos, span];
-};
-
-const addButton = function (
-  button: InputButton | string | number,
-  position: ButtonPosition | [number, number],
-  icon?: string
-) {
-  let name, label, value;
-  if (typeof button == "object") {
-    ({ name, label, value } = button);
-    icon = icon || button.icon;
-  } else {
-    value = button;
-    name = label = button.toString() as string;
-  }
-  name = name || value.toString();
-  defaultButtonsMap[name] = { name, label, value, icon };
-  defaultButtonsPosition[name] = parsePosition(position);
-};
-
-Array.from({ length: 9 }).forEach((_, i) => {
-  addButton(i + 1, [3 - Math.floor(i / 3), (i % 3) + 1], `number-${i + 1}`);
-});
-addButton(".", [4, 1]);
-addButton(0, [4, 2], "number-0");
-addButton("infy", [4, 3], "operator-infinity");
+// const defaultButtonsPosition = buttonPositions;
 </script>
 
 <script setup lang="ts">
@@ -77,29 +38,33 @@ import SvgIcon from "./SvgIcon.vue";
 
 const emit = defineEmits(["key-pressed"]);
 
-const buttonsMapRef = computed(() => {
-  return defaultButtonsMap;
+const padButtonsRef = computed(() => {
+  return defaultPadButtons;
 });
-const buttonsPositionRef = computed(() => {
-  return defaultButtonsPosition;
-});
-const buttonsPositionStyleRef = computed(() => {
-  const styles: {
-    [name: string]: { gridRow: string; gridColumn: string };
-  } = {};
-  Object.keys(buttonsMapRef.value).forEach((name) => {
-    const [position, span] = buttonsPositionRef.value[name];
-    styles[name] = {
-      gridRow: `${position[0]} / span ${span[0]}`,
-      gridColumn: `${position[1]} / span ${span[1]}`,
-    };
-  });
-  return styles;
-});
+// const buttonsPositionRef = computed(() => {
+//   return defaultButtonsPosition;
+// });
+// const buttonsPositionStyleRef = computed(() => {
+//   const styles: {
+//     [name: string]: { gridRow: string; gridColumn: string };
+//   } = {};
+//   Object.keys(padButtonsRef.value).forEach((name) => {
+//     if (!buttonsPositionRef.value[name]) {
+//       return;
+//     }
+//     const [position, span] = buttonsPositionRef.value[name];
+//     styles[name] = {
+//       gridRow: `${position[0]} / span ${span[0]}`,
+//       gridColumn: `${position[1]} / span ${span[1]}`,
+//     };
+//   });
+//   return styles;
+// });
 </script>
 
 <style lang="scss" scoped>
 .formular-input-pad {
+  width: min-content;
   display: grid;
   grid-template-columns: repeat(11, 1fr);
   grid-template-rows: 1fr;
@@ -129,6 +94,12 @@ const buttonsPositionStyleRef = computed(() => {
       "undo redo"
       "left right"
       "launch launch";
+  }
+
+  button {
+    height: 3em;
+    width: 3em;
+    padding: 0;
   }
 }
 </style>
