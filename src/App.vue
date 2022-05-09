@@ -7,6 +7,7 @@
       :content="latexText"
     />
     <div>{{ latexText }}</div>
+    <SvgIcon name="number-0" />
     <button
       v-for="partName of 10"
       :key="`key-value-${partName - 1}`"
@@ -31,7 +32,7 @@
     <button :disabled="!formula.couldUndo" @click="formula.undo()">UNDO</button>
     <button :disabled="!formula.couldRedo" @click="formula.redo()">REDO</button>
   </div>
-
+  <FormularInputPad @key-pressed="handleInputPadKeyPressed" />
   <MathJaxViewer
     class="jax-container"
     math-jax-src="mathjax/es5/startup.js"
@@ -47,8 +48,10 @@
 
 <script setup lang="ts">
 import MathJaxViewer from "./components/MathJaxViewer.vue";
+import FormularInputPad from "./components/FormularInputPad.vue";
 import { computed, reactive } from "vue";
 import Formula from "./models/Formula";
+import SvgIcon from "./components/SvgIcon.vue";
 
 const formula = reactive(new Formula());
 
@@ -63,7 +66,9 @@ const mathJaxOptions = {
     ],
   },
   tex: {
-    packages: ["base"],
+    packages: {
+      "[+]": ["base"],
+    },
   },
 };
 
@@ -74,6 +79,28 @@ const mathMlText = computed(() => {
 const latexText = computed(() => {
   return formula.toLatex();
 });
+
+const handleInputPadKeyPressed = (name: number | string) => {
+  switch (name) {
+    case "left":
+      formula.moveCursorLeft();
+      break;
+    case "right":
+      formula.moveCursorRight();
+      break;
+    case "delete":
+      formula.deleteCharBeforeCursor();
+      break;
+    case "undo":
+      formula.undo();
+      break;
+    case "redo":
+      formula.redo();
+      break;
+    default:
+      formula.insertAtCursor(name);
+  }
+};
 
 const onViewerClick = (evt: Event) => {
   if (!evt.target) {
