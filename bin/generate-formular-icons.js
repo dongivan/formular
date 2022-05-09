@@ -74,15 +74,19 @@ const greece = {
 };
 
 const latexes = {
+  symbol: {
+    infinity: "\\infty",
+    point: ".",
+  },
   operator: {
     plus: "+",
     minus: "-",
     times: "\\times",
     divide: "\\div",
-    power: "⬚\\ ^⬚",
-    square: "⬚\\ ^2",
-    cube: "⬚\\ ^3",
-    fraction: "\\frac{⬚\\ }{⬚\\ }",
+    power: "⬚{\\tiny\\ }^⬚",
+    square: "⬚{\\tiny\\ }^2",
+    cube: "⬚{\\tiny\\ }^3",
+    fraction: "\\frac{⬚\\small\\ }{⬚\\small\\ }",
     "square-root": "\\sqrt{⬚\\ }",
     root: "\\sqrt[⬚]{⬚\\ }",
     "cube-root": "\\sqrt[3]{⬚\\ }",
@@ -93,7 +97,6 @@ const latexes = {
     "d-integral": "\\int^⬚_⬚",
     exp: "e^⬚",
     "exp-square": "e^2",
-    infinity: "\\infty",
     /* limit: "\\lim_{⬚\\rightarrow⬚}", */
     limit: "\\lim",
     log: "\\log_⬚",
@@ -101,8 +104,10 @@ const latexes = {
     lg: "\\lg",
     combination: "_⬚C_⬚",
     permutation: "_⬚P_⬚",
-    factorial: "⬚\\ !",
-    point: ".",
+    factorial: "⬚{\\small\\ }!",
+    "left-paren": "(",
+    "right-paren": ")",
+    differential: "\\frac{d⬚}{dx}",
   },
   number,
   english,
@@ -110,11 +115,10 @@ const latexes = {
 };
 
 const output = async function (MathJax, group, name, latex) {
-  const dir = path.join(root, group);
-  if (!fs.existsSync(dir)) {
-    fs.mkdirSync(dir, { recursive: true });
+  if (!fs.existsSync(root)) {
+    fs.mkdirSync(root, { recursive: true });
   }
-  const file = path.join(dir, `${name}.svg`);
+  const file = path.join(root, `${group}-${name}.svg`);
   console.log(`working on file ${file}...`);
   const node = await MathJax.tex2svgPromise(latex, {
     display: true,

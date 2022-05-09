@@ -1,3 +1,3 @@
-const context = require.context(".", true, /\.svg$/);
+const context = require.context(".", false, /\.svg$/);
 
 context.keys().map(context);
