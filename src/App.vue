@@ -11,7 +11,7 @@
     <button
       v-for="partName of 10"
       :key="`key-value-${partName - 1}`"
-      @click="formula.insertAtCursor(partName - 1)"
+      @click="formula.insertAtCursor((partName - 1).toString())"
     >
       {{ partName - 1 }}
     </button>
@@ -80,7 +80,7 @@ const latexText = computed(() => {
   return formula.toLatex();
 });
 
-const handleInputPadKeyPressed = (name: number | string) => {
+const handleInputPadKeyPressed = (name: string) => {
   switch (name) {
     case "left":
       formula.moveCursorLeft();
