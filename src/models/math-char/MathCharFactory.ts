@@ -160,7 +160,6 @@ class MathCharFactory {
     chars.forEach((char) => {
       this._chars[char.sequenceNumber] = char;
     });
-    console.log(this._chars);
     return chars;
   }
 

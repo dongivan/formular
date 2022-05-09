@@ -186,8 +186,6 @@ export const inputButtons: Record<string, InputButton> = {
   }),
 };
 
-console.log(inputButtons);
-
 const buttonsLayouts: Record<string, (string | number)[][]> = {
   "page-1": [
     // eslint-disable-next-line prettier/prettier
