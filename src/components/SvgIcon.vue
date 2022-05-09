@@ -1,5 +1,5 @@
 <template>
-  <svg class="svg-icon">
+  <svg class="svg-icon" :style="{ width: iconSize, height: iconSize }">
     <use :xlink:href="iconNameRef"></use>
   </svg>
 </template>
@@ -8,6 +8,7 @@
 import { computed } from "vue";
 const props = defineProps({
   name: { type: String, required: true },
+  iconSize: { type: String, default: "1em" },
 });
 
 const iconNameRef = computed(() => {
