@@ -73,7 +73,7 @@ class ExpressionTree extends BinaryTree<ExpressionNode> {
   }
 
   renderMathML(): MathMLNode {
-    const rootEle = new MathMLNode("math");
+    const rootEle = new MathMLNode("math", { display: "block" });
     rootEle.children = this.root?.traverse(RenderMathML) || [];
     return rootEle;
   }
