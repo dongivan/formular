@@ -76,7 +76,7 @@ export default class LatexCharRenderer extends CharRenderer<string> {
     IIntegral: "\\int{<1>}d{<2>}",
     Differential: "\\frac{d{<1>}}{d{<2>}}",
     Combination: "{_{<1>}C_{<2>}}",
-    Limit: "\\lim_{{<1>}\\rightarrow{<2>}}",
+    Limit: "\\lim_{{<1>}\\rightarrow{<2>}}{<3>}",
   };
 
   protected _render(char: MathChar, params: string[]): string {
