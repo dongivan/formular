@@ -16,6 +16,7 @@ import SumRenderer from "./symbol-renderers/SumRenderer";
 import IIntegralRenderer from "./symbol-renderers/IIntegralRenderer";
 import DifferentialRenderer from "./symbol-renderers/DifferentialRenderer";
 import CombinationRenderer from "./symbol-renderers/CombinationRenderer";
+import LimitRenderer from "./symbol-renderers/LimitRenderer";
 
 const operandRendererFunctions: Record<
   string,
@@ -29,6 +30,7 @@ const operandRendererFunctions: Record<
   IIntegral: IIntegralRenderer.operandRenderer,
   Differential: DifferentialRenderer.operandRenderer,
   Combination: CombinationRenderer.operandRenderer,
+  Limit: LimitRenderer.operandRenderer,
   HiddenTimes: () => {
     return [];
   },
