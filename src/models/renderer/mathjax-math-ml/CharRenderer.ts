@@ -113,7 +113,7 @@ export default class CharRenderer extends BaseRenderer<MathMLNode> {
     } else {
       template = findByClass(char, this._templates) || this._templates.MathChar;
     }
-    const node = new MathMLNode(template.tag, template.attrs);
+    const node = new MathMLNode(template.tag, { attrs: template.attrs });
     if (params.length > 0) {
       node.children = params;
     } else {

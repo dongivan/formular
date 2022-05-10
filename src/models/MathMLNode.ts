@@ -1,13 +1,25 @@
+type Attrs = {
+  [key: string]: string | undefined;
+};
+
+type MathMLNodeParameters = {
+  attrs?: Attrs;
+  value?: string;
+  children?: MathMLNode[];
+};
+
 export default class MathMLNode {
   private _pad = 2;
   private _tag: string;
   private _attrs: { [key: string]: string | undefined };
-  value = "";
-  children: MathMLNode[] = [];
+  value: string;
+  children: MathMLNode[];
 
-  constructor(tag: string, attrs?: { [key: string]: string | undefined }) {
+  constructor(tag: string, parameters?: MathMLNodeParameters) {
     this._tag = tag;
-    this._attrs = attrs || {};
+    this._attrs = parameters?.attrs || {};
+    this.value = parameters?.value || "";
+    this.children = parameters?.children || [];
   }
 
   setAttr(attrs: { [key: string]: string | undefined }) {

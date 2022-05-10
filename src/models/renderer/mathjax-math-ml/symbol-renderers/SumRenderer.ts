@@ -10,26 +10,29 @@ export default {
     renderer: SymbolRenderer
   ): MathMLNode[] => {
     const parameters = symbol.params.map<MathMLNode>((param, i) => {
-      const row = new MathMLNode("mrow");
       const infix = renderer.formula.infixMaker.make(param);
       const postfix = renderer.formula.postfixMaker.make(infix);
       const tree = renderer.formula.binaryTreeMaker.make(
         postfix,
         symbol.char.hasParamParen(i)
       );
-      row.children = tree.renderMathML().children;
-      return row;
+      return new MathMLNode("mrow", { children: tree.renderMathML().children });
     });
-    const underRow = new MathMLNode("mrow");
-    const equal = new MathMLNode("mo");
-    equal.value = "=";
-    underRow.children.push(parameters[0], equal, parameters[1]);
-    const sigma = new MathMLNode("munderover");
-    sigma.children.push(
-      renderer.charRenderer.render(symbol.char),
-      underRow,
-      parameters[2]
-    );
-    return [sigma, parameters[3]];
+    return [
+      new MathMLNode("munderover", {
+        children: [
+          renderer.charRenderer.render(symbol.char),
+          new MathMLNode("mrow", {
+            children: [
+              parameters[0],
+              new MathMLNode("mo", { value: "=" }),
+              parameters[1],
+            ],
+          }),
+          parameters[2],
+        ],
+      }),
+      parameters[3],
+    ];
   },
 } as SymbolRendererFunction<MathMLNode[]>;

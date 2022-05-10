@@ -10,12 +10,10 @@ export default {
     renderer: SymbolRenderer
   ): MathMLNode[] => {
     const children = symbol.params.map<MathMLNode>((param) => {
-      const row = new MathMLNode("mrow");
       const infix = renderer.formula.infixMaker.make(param);
       const postfix = renderer.formula.postfixMaker.make(infix);
       const tree = renderer.formula.binaryTreeMaker.make(postfix);
-      row.children = tree.renderMathML().children;
-      return row;
+      return new MathMLNode("mrow", { children: tree.renderMathML().children });
     });
     return [renderer.charRenderer.render(symbol.char, children)];
   },

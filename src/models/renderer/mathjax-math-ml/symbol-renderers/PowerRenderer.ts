@@ -10,13 +10,10 @@ export default {
     rightOperand: MathMLNode[] | undefined,
     renderer: SymbolRenderer
   ): MathMLNode[] => {
-    const base = new MathMLNode("mrow");
-    base.children = leftOperand || [];
     const power = renderer.renderOperand(symbol);
-    power[0].children.unshift(base);
-    const result: MathMLNode[] = [];
-    result.push(...power);
-    result.push(...(rightOperand || []));
-    return result;
+    power[0].children.unshift(
+      new MathMLNode("mrow", { children: leftOperand || [] })
+    );
+    return [...power, ...(rightOperand || [])];
   },
 } as SymbolRendererFunction<MathMLNode[]>;
