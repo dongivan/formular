@@ -14,6 +14,7 @@ import {
 import FlatRenderer from "./symbol-renderers/FlatRenderer";
 import SumRenderer from "./symbol-renderers/SumRenderer";
 import IIntegralRenderer from "./symbol-renderers/IIntegralRenderer";
+import DifferentialRender from "./symbol-renderers/DifferentialRender";
 
 const operandRendererFunctions: Record<
   string,
@@ -25,6 +26,7 @@ const operandRendererFunctions: Record<
   Ln: FlatRenderer.operandRenderer,
   Sum: SumRenderer.operandRenderer,
   IIntegral: IIntegralRenderer.operandRenderer,
+  Differential: DifferentialRender.operandRenderer,
   HiddenTimes: () => {
     return [];
   },

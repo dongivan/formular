@@ -9,3 +9,4 @@ export { default as Infinity } from "./Infinity";
 export { default as Ln } from "./Ln";
 export { default as Sum } from "./Sum";
 export { default as IIntegral } from "./IIntegral";
+export { default as Differential } from "./Differential";
