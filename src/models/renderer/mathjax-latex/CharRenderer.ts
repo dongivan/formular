@@ -73,6 +73,7 @@ export default class LatexCharRenderer extends CharRenderer<string> {
     Infinity: "\\infty",
     Ln: "\\ln<1>",
     Sum: "\\sum^{<3>}_{{<1>}={<2>}}{<4>}",
+    IIntegral: "\\int{<1>}d{<2>}",
   };
 
   protected _render(char: MathChar, params: string[]): string {

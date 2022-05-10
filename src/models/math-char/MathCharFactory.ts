@@ -41,6 +41,7 @@ const commands: CreateCommand[] = [
   classCommand(OperandChars.Fraction, ["frac", "fraction"]),
   classCommand(OperandChars.Ln, ["ln"]),
   classCommand(OperandChars.Sum, ["sum"]),
+  classCommand(OperandChars.IIntegral, ["i-integral"]),
 
   {
     aliases: ["square"],

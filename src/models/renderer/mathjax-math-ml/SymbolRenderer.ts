@@ -13,6 +13,7 @@ import {
 } from "../SymbolRendererTypes";
 import FlatRenderer from "./symbol-renderers/FlatRenderer";
 import SumRenderer from "./symbol-renderers/SumRenderer";
+import IIntegralRenderer from "./symbol-renderers/IIntegralRenderer";
 
 const operandRendererFunctions: Record<
   string,
@@ -23,6 +24,7 @@ const operandRendererFunctions: Record<
   DecimalPoint: NumberRenderer.operandRenderer,
   Ln: FlatRenderer.operandRenderer,
   Sum: SumRenderer.operandRenderer,
+  IIntegral: IIntegralRenderer.operandRenderer,
   HiddenTimes: () => {
     return [];
   },
