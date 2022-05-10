@@ -27,14 +27,15 @@
 </template>
 
 <script lang="ts">
-import { padButtons as defaultPadButtons } from "./input-pad/buttons";
+import { padButtons as defaultPadButtons } from "./buttons";
 
+export default {};
 // const defaultButtonsPosition = buttonPositions;
 </script>
 
 <script setup lang="ts">
 import { computed } from "vue";
-import SvgIcon from "./SvgIcon.vue";
+import SvgIcon from "@/components/SvgIcon.vue";
 
 const emit = defineEmits(["key-pressed"]);
 

@@ -30,7 +30,7 @@ const operators = [
   "right-paren",
   "differential",
 ];
-const greece = [
+const greek = [
   "lower-alpha",
   "upper-alpha",
   "lower-beta",
@@ -180,9 +180,9 @@ export const inputButtons: Record<string, InputButton> = {
     icon: (val) => `english-upper-${val}`,
     name: (val) => val?.toUpperCase(),
   }),
-  ...generateButtons(greece, {
-    key: (val) => `greece-${val}`,
-    icon: (val) => `greece-${val}`,
+  ...generateButtons(greek, {
+    key: (val) => `greek-${val}`,
+    icon: (val) => `greek-${val}`,
   }),
 };
 
@@ -193,7 +193,7 @@ const buttonsLayouts: Record<string, (string | number)[][]> = {
     // eslint-disable-next-line prettier/prettier
     [4,         5,          6,      "minus",      "square", "english-lower-k",          "sum",    "factorial"   ],
     // eslint-disable-next-line prettier/prettier
-    [1,         2,          3,      "times", "square-root", "greece-lower-pi",   "i-integral",  "combination"   ],
+    [1,         2,          3,      "times", "square-root", "greek-lower-pi",   "i-integral",  "combination"   ],
     // eslint-disable-next-line prettier/prettier
     ["point",   0, "infinity",     "divide",          "ln", "english-lower-e", "differential",        "limit"   ],
   ],

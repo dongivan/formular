@@ -3,7 +3,7 @@ const path = require("path");
 const { optimize } = require("svgo");
 const PACKAGES = "base, autoload, require, ams, newcommand";
 
-const root = "../src/assets/formular-svgs";
+const root = "../svgs";
 
 const number = {};
 for (let i = 0; i < 10; i++) {
@@ -18,7 +18,7 @@ for (let i = 0; i < 26; i++) {
   english[`lower-${letter}`] = letter;
 }
 
-const greece = {
+const greek = {
   "lower-alpha": "\\alpha",
   "upper-alpha": "A",
   "lower-beta": "\\beta",
@@ -111,7 +111,7 @@ const latexes = {
   },
   number,
   english,
-  greece,
+  greek,
 };
 
 const output = async function (MathJax, group, name, latex) {

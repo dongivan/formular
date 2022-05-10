@@ -47,11 +47,11 @@
 </template>
 
 <script setup lang="ts">
-import MathJaxViewer from "./components/MathJaxViewer.vue";
-import FormularInputPad from "./components/FormularInputPad.vue";
+import MathJaxViewer from "@/components/MathJaxViewer.vue";
+import FormularInputPad from "@/components/input-pad";
 import { computed, reactive } from "vue";
 import Formula from "./models/Formula";
-import SvgIcon from "./components/SvgIcon.vue";
+import SvgIcon from "@/components/SvgIcon.vue";
 
 const formula = reactive(new Formula());
 
