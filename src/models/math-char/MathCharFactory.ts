@@ -44,6 +44,7 @@ const commands: CreateCommand[] = [
   classCommand(OperandChars.Sum, ["sum"]),
   classCommand(OperandChars.IIntegral, ["i-integral"]),
   classCommand(OperandChars.Differential, ["differential", "dif"]),
+  classCommand(OperandChars.Combination, ["combination"]),
 
   {
     aliases: ["square"],

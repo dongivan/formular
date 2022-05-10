@@ -75,6 +75,7 @@ export default class LatexCharRenderer extends CharRenderer<string> {
     Sum: "\\sum^{<3>}_{{<1>}={<2>}}{<4>}",
     IIntegral: "\\int{<1>}d{<2>}",
     Differential: "\\frac{d{<1>}}{d{<2>}}",
+    Combination: "{_{<1>}C_{<2>}}",
   };
 
   protected _render(char: MathChar, params: string[]): string {

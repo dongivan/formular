@@ -103,6 +103,7 @@ export default class CharRenderer extends BaseRenderer<MathMLNode> {
     Sum: { tag: "mo", value: "&#x2211;" },
     IIntegral: { tag: "mo", value: "&#x222B;" },
     Differential: { tag: "mfrac" },
+    Combination: { tag: "mi" },
   };
 
   protected _render(char: MathChar, params: MathMLNode[]): MathMLNode {

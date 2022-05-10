@@ -10,3 +10,4 @@ export { default as Ln } from "./Ln";
 export { default as Sum } from "./Sum";
 export { default as IIntegral } from "./IIntegral";
 export { default as Differential } from "./Differential";
+export { default as Combination } from "./Combination";
