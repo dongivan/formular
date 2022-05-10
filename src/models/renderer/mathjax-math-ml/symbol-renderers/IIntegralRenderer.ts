@@ -9,15 +9,7 @@ export default {
     symbol: OperandSymbol<IIntegral>,
     renderer: SymbolRenderer
   ): MathMLNode[] => {
-    const parameters = symbol.params.map<MathMLNode>((param, i) => {
-      const infix = renderer.formula.infixMaker.make(param);
-      const postfix = renderer.formula.postfixMaker.make(infix);
-      const tree = renderer.formula.binaryTreeMaker.make(
-        postfix,
-        symbol.char.hasParamParen(i)
-      );
-      return new MathMLNode("mrow", { children: tree.renderMathML().children });
-    });
+    const parameters = SymbolRenderer.renderParameters(symbol, renderer);
     return [
       renderer.charRenderer.render(symbol.char),
       parameters[0],
