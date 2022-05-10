@@ -9,3 +9,4 @@ export { default as ParamEnd } from "./ParamEnd";
 export { default as ParamSeparator } from "./ParamSeparator";
 export { default as Power } from "./Power";
 export { default as AbstractParen } from "./AbstractParen";
+export { default as Factorial } from "./Factorial";

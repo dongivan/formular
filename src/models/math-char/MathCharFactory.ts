@@ -34,6 +34,7 @@ const commands: CreateCommand[] = [
   classCommand(OperatorChars.LeftParen, ["(", "left-paren"]),
   classCommand(OperatorChars.RightParen, [")", "right-paren"]),
   classCommand(OperatorChars.Power, ["^", "power"]),
+  classCommand(OperatorChars.Factorial, ["!", "factorial"]),
 
   classCommand(OperandChars.Infinity, ["infinity"]),
   classCommand(OperandChars.DecimalPoint, [".", "point"]),

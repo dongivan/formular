@@ -1,11 +1,21 @@
 import MathChar from "./MathChar";
 
 export default abstract class OperatorChar extends MathChar {
-  /* 
-    for the reason that parentheses will render in result, the reverse polish notation should
-    have them. so "(" has a big positive priority and right and ")" has a negative one ( just
-    equals negative priority of "(" ).
-  */
+  /**
+   * for the reason that parentheses will render in result, the reverse polish notation should
+   * have them. so "(" has a big positive priority and right and ")" has a negative one ( just
+   * equals negative priority of "(" ).
+   *
+   * `Addition`: + -
+   *
+   * `Multiplication`: * /
+   *
+   * `Negative`: -
+   *
+   * `Exponentiation`: ^ !
+   *
+   * `Parenthese`: (
+   */
   static readonly Priorities = {
     Addition: 1,
     Multiplication: 2,
