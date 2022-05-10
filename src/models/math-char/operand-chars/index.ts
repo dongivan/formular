@@ -7,3 +7,4 @@ export { default as DecimalPoint } from "./DecimalPoint";
 export { default as Variable } from "./Variable";
 export { default as Infinity } from "./Infinity";
 export { default as Ln } from "./Ln";
+export { default as Sum } from "./Sum";

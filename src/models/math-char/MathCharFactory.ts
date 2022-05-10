@@ -40,6 +40,7 @@ const commands: CreateCommand[] = [
   classCommand(OperandChars.SquareRoot, ["sqrt", "square-root"]),
   classCommand(OperandChars.Fraction, ["frac", "fraction"]),
   classCommand(OperandChars.Ln, ["ln"]),
+  classCommand(OperandChars.Sum, ["sum"]),
 
   {
     aliases: ["square"],
