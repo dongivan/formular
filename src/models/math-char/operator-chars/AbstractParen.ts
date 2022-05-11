@@ -1,5 +1,5 @@
-import Operator from "../OperatorChar";
+import { OperatorChar } from "../internal";
 
-export default abstract class AbstractParen extends Operator {
+export default abstract class AbstractParen extends OperatorChar {
   level = 0;
 }

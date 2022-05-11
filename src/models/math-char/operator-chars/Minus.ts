@@ -1,6 +1,6 @@
-import MathChar from "../MathChar";
-import OperatorChar from "../OperatorChar";
+import { MathChar, MathCharFactory, OperatorChar } from "../internal";
 
+@MathCharFactory.registerMathChar("-", "minus")
 export default class Minus extends OperatorChar {
   constructor() {
     super("-");

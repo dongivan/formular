@@ -1,5 +1,6 @@
-import OperatorChar from "../OperatorChar";
+import { MathCharFactory, OperatorChar } from "../internal";
 
+@MathCharFactory.registerMathChar("*", "times", "multiple")
 export default class Times extends OperatorChar {
   constructor() {
     super("*");

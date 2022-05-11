@@ -1,5 +1,4 @@
-import MathChar from "../MathChar";
-import OperandChar from "../OperandChar";
+import { MathChar, OperandChar } from "../internal";
 
 export default class Placeholder extends OperandChar {
   protected _clickable = true;

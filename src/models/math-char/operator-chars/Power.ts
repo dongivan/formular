@@ -1,5 +1,6 @@
-import OperatorChar from "../OperatorChar";
+import { MathCharFactory, OperatorChar } from "../internal";
 
+@MathCharFactory.registerMathChar("^", "power")
 export default class Power extends OperatorChar {
   constructor() {
     super("^");

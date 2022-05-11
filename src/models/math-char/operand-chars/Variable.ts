@@ -1,4 +1,4 @@
-import OperandChar from "../OperandChar";
+import { OperandChar } from "../internal";
 
 export default class Variable extends OperandChar {
   protected _clickable = true;

@@ -1,6 +1,6 @@
-import Operator from "../OperatorChar";
+import { OperatorChar } from "../internal";
 
-export default class ParamEnd extends Operator {
+export default class ParamEnd extends OperatorChar {
   constructor() {
     super("#");
     this._hasRightOperand = false;

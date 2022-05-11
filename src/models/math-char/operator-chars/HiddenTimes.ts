@@ -1,4 +1,4 @@
-import OperatorChar from "../OperatorChar";
+import { OperatorChar } from "../internal";
 
 export default class HiddenTimes extends OperatorChar {
   constructor() {

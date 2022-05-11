@@ -1,5 +1,6 @@
-import OperandChar from "../OperandChar";
+import { MathCharFactory, OperandChar } from "../internal";
 
+@MathCharFactory.registerMathChar("sum")
 export default class Sum extends OperandChar {
   protected _paramsNumber = 4;
   protected _paramsParen = 1 << 3;

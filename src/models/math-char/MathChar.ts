@@ -1,3 +1,5 @@
+console.log("in math char file");
+
 export default class MathChar {
   private static _SEQUENCE_NUMBER = 0;
 
@@ -30,7 +32,12 @@ export default class MathChar {
     return this._clickable;
   }
 
-  /* check if the ith param should be in parentheses. be careful: i is from 0. */
+  /**
+   * Check if the `i`th param should be in parentheses.
+   *
+   * @param i the position of the param. Be careful: `i` is from 0 (NOT 1).
+   * @returns true if the `i`th param should be in parentheses.
+   */
   hasParamParen(i: number): boolean {
     return !!((1 << i) & this._paramsParen);
   }

@@ -1,5 +1,6 @@
-import OperandChar from "../OperandChar";
+import { MathCharFactory, OperandChar } from "../internal";
 
+@MathCharFactory.registerMathChar("differential", "dif")
 export default class Differential extends OperandChar {
   constructor() {
     super("dif");

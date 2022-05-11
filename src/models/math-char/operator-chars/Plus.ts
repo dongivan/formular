@@ -1,6 +1,7 @@
-import Operator from "../OperatorChar";
+import { MathCharFactory, OperatorChar } from "../internal";
 
-export default class Plus extends Operator {
+@MathCharFactory.registerMathChar("+", "plus")
+export default class Plus extends OperatorChar {
   constructor() {
     super("+");
   }
