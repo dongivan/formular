@@ -1,7 +1,7 @@
-import Formula from "../Formula";
+import type Formula from "../Formula";
 import { ExpressionTree, ExpressionNode } from "./ExpressionTree";
 import { OperandSymbol, OperatorSymbol } from "../math-symbol";
-import PostfixList from "./PostfixList";
+import type PostfixList from "./PostfixList";
 
 export default class ExpressionTreeMaker {
   private _formula: Formula;
@@ -18,7 +18,7 @@ export default class ExpressionTreeMaker {
     postfix: PostfixList,
     addParen: boolean
   ): ExpressionTree {
-    const tree = new ExpressionTree(this._formula);
+    const tree = new ExpressionTree();
     let root: ExpressionNode | undefined = undefined;
 
     const stack: ExpressionNode[] = [];

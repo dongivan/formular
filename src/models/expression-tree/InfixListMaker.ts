@@ -1,4 +1,5 @@
-import { MathChar, OperatorChar, OperandChar, Minus } from "../math-char";
+import { OperatorChar, OperandChar, Minus } from "../math-char";
+import type { MathChar } from "../math-char";
 import { ParamSeparator, ParamEnd, Digit, DecimalPoint } from "../math-char";
 import {
   OperandSymbol,
@@ -6,8 +7,9 @@ import {
   IntegerSymbol,
   DecimalSymbol,
 } from "../math-symbol";
-import Formula from "../Formula";
-import InfixList from "./InfixList";
+import type Formula from "../Formula";
+import type InfixList from "./InfixList";
+import type { ExpressionTree } from "./ExpressionTree";
 
 export default class InfixListMaker {
   private _formula: Formula;
@@ -26,11 +28,15 @@ export default class InfixListMaker {
     let pos = 0;
     while (pos < chars.length) {
       const char = chars[pos];
-      let charParams = undefined;
+      const paramTrees: ExpressionTree[] = [];
       if (char.paramsNumber > 0) {
         /* current char has params, fetch them from chars */
         const { params, endPos } = this._generateParams(chars, pos + 1);
-        charParams = params;
+        paramTrees.push(
+          ...params.map<ExpressionTree>((param, i) =>
+            this._formula.generateExpressionTree(param, char.hasParamParen(i))
+          )
+        );
         pos = endPos;
       }
 
@@ -45,7 +51,7 @@ export default class InfixListMaker {
         pos = endPos;
       } else if (char instanceof OperandChar) {
         /* current char is an OperandChar (and IS NOT a Digit), push it */
-        const symbol = new OperandSymbol(char, charParams);
+        const symbol = new OperandSymbol(char, paramTrees);
         this._pushOperand(infixList, symbol);
       } else if (char instanceof OperatorChar) {
         /* current char is an OperatorChar, push it */
@@ -53,7 +59,7 @@ export default class InfixListMaker {
           /* current char is a Minus, reset its priority & hasLeftOperand by previous char */
           char.adapt(chars[pos - 1]);
         }
-        const symbol = new OperatorSymbol(char, charParams);
+        const symbol = new OperatorSymbol(char, paramTrees);
         this._pushOperator(infixList, symbol);
       }
 

@@ -1,7 +1,8 @@
-import Formula from "../Formula";
-import { LeftParen, RightParen, MathChar } from "../math-char";
 import { BinaryNode, BinaryTree } from "./BinaryTree";
-import { OperatorSymbol, MathSymbol } from "../math-symbol";
+import { LeftParen, RightParen } from "../math-char";
+import type { MathChar } from "../math-char";
+import { OperatorSymbol } from "../math-symbol";
+import type { MathSymbol } from "../math-symbol";
 import MathMLNode from "../MathMLNode";
 import { LatexSymbolRenderer, MathMLSymbolRenderer } from "../renderer";
 
@@ -31,11 +32,7 @@ const RenderLatex = function (
   leftResult: string | undefined,
   rightResult: string | undefined
 ): string {
-  return node.symbol.render(
-    new LatexSymbolRenderer(node.tree.formula),
-    leftResult,
-    rightResult
-  );
+  return node.symbol.render(new LatexSymbolRenderer(), leftResult, rightResult);
 };
 
 const RenderMathML = function (
@@ -44,7 +41,7 @@ const RenderMathML = function (
   rightResult: Array<MathMLNode> | undefined
 ): Array<MathMLNode> {
   return node.symbol.render(
-    new MathMLSymbolRenderer(node.tree.formula),
+    new MathMLSymbolRenderer(),
     leftResult,
     rightResult
   );
@@ -61,13 +58,6 @@ class ExpressionNode extends BinaryNode<MathSymbol<MathChar>, ExpressionTree> {
 }
 
 class ExpressionTree extends BinaryTree<ExpressionNode> {
-  formula: Formula;
-
-  constructor(formula: Formula) {
-    super();
-    this.formula = formula;
-  }
-
   renderLatex(): string {
     return this.root?.traverse(RenderLatex) || "";
   }

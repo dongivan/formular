@@ -10,6 +10,7 @@ import {
   ExpressionTreeMaker,
   PostfixListMaker,
   InfixListMaker,
+  ExpressionTree,
 } from "./expression-tree";
 import Config from "./Config";
 import MathMLNode from "./MathMLNode";
@@ -215,19 +216,21 @@ export default class Formula {
   }
 
   toLatex(): string {
-    const infix = this._infixMaker.make(this._chars);
-    const postfix = this._postfixMaker.make(infix);
-    const tree = this._binaryTreeMaker.make(postfix);
+    const tree = this.generateExpressionTree(this._chars);
     const latex = tree.renderLatex();
     return latex;
   }
 
   toMathMLNode(): MathMLNode {
-    const infix = this._infixMaker.make(this._chars);
-    const postfix = this._postfixMaker.make(infix);
-    const tree = this._binaryTreeMaker.make(postfix);
+    const tree = this.generateExpressionTree(this._chars);
     const node = tree.renderMathML();
     return node;
+  }
+
+  generateExpressionTree(chars: MathChar[], addParen = false): ExpressionTree {
+    const infix = this._infixMaker.make(chars);
+    const postfix = this._postfixMaker.make(infix);
+    return this._binaryTreeMaker.make(postfix, addParen);
   }
 
   toString(): string {

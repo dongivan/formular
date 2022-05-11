@@ -9,7 +9,7 @@ export default {
     symbol: MathSymbol<MathChar>,
     renderer: SymbolRenderer
   ): MathMLNode[] => {
-    const parameters = SymbolRenderer.renderParameters(symbol, renderer);
+    const parameters = SymbolRenderer.renderParameters(symbol);
     return [renderer.charRenderer.render(symbol.char, parameters)];
   },
   operatorRenderer: (

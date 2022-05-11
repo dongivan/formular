@@ -71,18 +71,10 @@ export default class SymbolRenderer extends BaseSymbolRenderer<MathMLNode[]> {
     return renderer ? renderer(symbol, leftOperand, rightOperand, this) : [];
   }
 
-  static renderParameters(
-    symbol: MathSymbol<MathChar>,
-    renderer: SymbolRenderer
-  ) {
-    return symbol.params.map<MathMLNode>((param, i) => {
-      const infix = renderer.formula.infixMaker.make(param);
-      const postfix = renderer.formula.postfixMaker.make(infix);
-      const tree = renderer.formula.binaryTreeMaker.make(
-        postfix,
-        symbol.char.hasParamParen(i)
-      );
-      return new MathMLNode("mrow", { children: tree.renderMathML().children });
-    });
+  static renderParameters(symbol: MathSymbol<MathChar>) {
+    return symbol.paramTrees.map<MathMLNode>(
+      (tree) =>
+        new MathMLNode("mrow", { children: tree.renderMathML().children })
+    );
   }
 }

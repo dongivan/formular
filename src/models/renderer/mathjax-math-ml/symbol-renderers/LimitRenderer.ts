@@ -9,7 +9,7 @@ export default {
     symbol: OperandSymbol<Limit>,
     renderer: SymbolRenderer
   ): MathMLNode[] => {
-    const parameters = SymbolRenderer.renderParameters(symbol, renderer);
+    const parameters = SymbolRenderer.renderParameters(symbol);
     return [
       new MathMLNode("munder", {
         children: [

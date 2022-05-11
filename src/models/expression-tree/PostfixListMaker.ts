@@ -1,8 +1,8 @@
 import { OperandSymbol, OperatorSymbol } from "../math-symbol";
 import { LeftParen, RightParen } from "../math-char";
-import Formula from "../Formula";
-import InfixList from "./InfixList";
-import PostfixList from "./PostfixList";
+import type Formula from "../Formula";
+import type InfixList from "./InfixList";
+import type PostfixList from "./PostfixList";
 
 export default class PostfixListMaker {
   private _formula: Formula;

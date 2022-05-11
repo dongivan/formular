@@ -5,11 +5,8 @@ import { SymbolRendererFunction } from "../../SymbolRendererTypes";
 import SymbolRenderer from "../SymbolRenderer";
 
 export default {
-  operandRenderer: (
-    symbol: OperandSymbol<Combination>,
-    renderer: SymbolRenderer
-  ): MathMLNode[] => {
-    const parameters = SymbolRenderer.renderParameters(symbol, renderer);
+  operandRenderer: (symbol: OperandSymbol<Combination>): MathMLNode[] => {
+    const parameters = SymbolRenderer.renderParameters(symbol);
     return [
       new MathMLNode("msub", {
         children: [new MathMLNode("mi"), parameters[0]],
