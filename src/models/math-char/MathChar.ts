@@ -1,5 +1,3 @@
-console.log("in math char file");
-
 export default class MathChar {
   private static _SEQUENCE_NUMBER = 0;
 
