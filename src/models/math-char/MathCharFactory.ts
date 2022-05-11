@@ -78,7 +78,6 @@ export default class MathCharFactory {
   }
 
   create(commandAlias: string, cursor?: Cursor): [MathChar, ...MathChar[]] {
-    console.log(createCommands);
     let command: CreateCommandFunction | typeof MathChar;
     if (/^[0-9]$/.test(commandAlias)) {
       command = Digit;
