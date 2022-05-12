@@ -3,8 +3,6 @@ import { LeftParen, RightParen } from "../math-char";
 import type { MathChar } from "../math-char";
 import { OperatorSymbol } from "../math-symbol";
 import type { MathSymbol } from "../math-symbol";
-import MathMLNode from "../MathMLNode";
-import { LatexSymbolRenderer, MathMLSymbolRenderer } from "../renderer";
 
 const SetParenLevel = function (
   node: ExpressionNode,
@@ -27,26 +25,6 @@ const SetParenLevel = function (
   return parenCounts;
 };
 
-const RenderLatex = function (
-  node: ExpressionNode,
-  leftResult: string | undefined,
-  rightResult: string | undefined
-): string {
-  return node.symbol.render(new LatexSymbolRenderer(), leftResult, rightResult);
-};
-
-const RenderMathML = function (
-  node: ExpressionNode,
-  leftResult: Array<MathMLNode> | undefined,
-  rightResult: Array<MathMLNode> | undefined
-): Array<MathMLNode> {
-  return node.symbol.render(
-    new MathMLSymbolRenderer(),
-    leftResult,
-    rightResult
-  );
-};
-
 class ExpressionNode extends BinaryNode<MathSymbol<MathChar>, ExpressionTree> {
   get symbol(): MathSymbol<MathChar> {
     return this.value;
@@ -57,17 +35,6 @@ class ExpressionNode extends BinaryNode<MathSymbol<MathChar>, ExpressionTree> {
   }
 }
 
-class ExpressionTree extends BinaryTree<ExpressionNode> {
-  renderLatex(): string {
-    return this.root?.traverse(RenderLatex) || "";
-  }
-
-  renderMathML(): MathMLNode {
-    return new MathMLNode("math", {
-      attrs: { display: "block" },
-      children: this.root?.traverse(RenderMathML) || [],
-    });
-  }
-}
+class ExpressionTree extends BinaryTree<ExpressionNode> {}
 
 export { ExpressionNode, ExpressionTree };

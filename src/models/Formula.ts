@@ -1,6 +1,5 @@
+import type { MathChar, Cursor } from "./math-char";
 import {
-  MathChar,
-  Cursor,
   MathCharFactory,
   ParamEnd,
   ParamSeparator,
@@ -14,6 +13,7 @@ import {
 } from "./expression-tree";
 import Config from "./Config";
 import MathMLNode from "./MathMLNode";
+import { Latex, MathML } from "./Renderer";
 
 export default class Formula {
   private _chars: MathChar[] = [];
@@ -217,14 +217,12 @@ export default class Formula {
 
   toLatex(): string {
     const tree = this.generateExpressionTree(this._chars);
-    const latex = tree.renderLatex();
-    return latex;
+    return Latex.render(tree);
   }
 
   toMathMLNode(): MathMLNode {
     const tree = this.generateExpressionTree(this._chars);
-    const node = tree.renderMathML();
-    return node;
+    return new MathMLNode("math", { children: MathML.render(tree) });
   }
 
   generateExpressionTree(chars: MathChar[], addParen = false): ExpressionTree {

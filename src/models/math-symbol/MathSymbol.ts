@@ -1,6 +1,6 @@
 import type { ExpressionTree } from "../expression-tree";
 import type { MathChar } from "../math-char";
-import type { SymbolRenderer } from "../renderer";
+// import type { SymbolRenderer } from "../renderer";
 
 export default abstract class MathSymbol<M extends MathChar> {
   protected _char: M;
@@ -39,14 +39,6 @@ export default abstract class MathSymbol<M extends MathChar> {
   // get hasParams(): boolean {
   //   return this._params.length > 0;
   // }
-
-  render<R>(
-    renderer: SymbolRenderer<R>,
-    leftOperand: R | undefined,
-    rightOperand: R | undefined
-  ): R {
-    return renderer.render(this, leftOperand, rightOperand);
-  }
 
   toString(): string {
     return (

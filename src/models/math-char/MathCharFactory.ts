@@ -124,7 +124,7 @@ export default class MathCharFactory {
     let char = (this._placeholders[master.sequenceNumber] || {})[leftOrRight];
     if (!char) {
       char = this._afterCreate(
-        new Placeholder(master, leftOrRight == "left" ? -1 : 1)
+        new Placeholder({ master, offset: leftOrRight == "left" ? -1 : 1 })
       )[0];
       this._placeholders[master.sequenceNumber] = Object.assign(
         {},
@@ -140,7 +140,10 @@ export default class MathCharFactory {
   }
 
   createTempParen(): [LeftParen, RightParen] {
-    return [new LeftParen("", -1), new RightParen("", -1)];
+    return [
+      new LeftParen({ sequenceNumber: -1 }),
+      new RightParen({ sequenceNumber: -1 }),
+    ];
   }
 
   private _afterCreate<T extends MathChar>(...chars: [T, ...T[]]): [T, ...T[]] {

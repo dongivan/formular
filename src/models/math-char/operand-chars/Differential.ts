@@ -1,6 +1,14 @@
+import { Latex, MathML } from "../../Renderer";
 import { MathCharFactory, OperandChar } from "../internal";
 
 @MathCharFactory.registerMathChar("differential", "dif")
+@Latex.RenderChar(({ params, h }) => h("\\frac{d{<0>}}{d{<1>}}", params))
+@MathML.RenderChar(({ params, h }) => [
+  h("mfrac", [
+    [h("mi", "d"), h("mrow", [params[0]])],
+    [h("mi", "d"), h("mrow", [params[1]])],
+  ]),
+])
 export default class Differential extends OperandChar {
   constructor() {
     super("dif");

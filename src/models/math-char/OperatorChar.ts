@@ -1,6 +1,13 @@
+import { MathML } from "../Renderer";
 import MathChar from "./MathChar";
 
-export default abstract class OperatorChar extends MathChar {
+@MathML.RenderChar(({ char, params, h }) => [
+  h("mo", {
+    value: char.value,
+    children: params.map((p) => h("mrow", { children: p })),
+  }),
+])
+export default class OperatorChar extends MathChar {
   /**
    * for the reason that parentheses will render in result, the reverse polish notation should
    * have them. so "(" has a big positive priority and right and ")" has a negative one ( just

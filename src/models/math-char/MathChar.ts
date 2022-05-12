@@ -1,3 +1,15 @@
+import { Latex, MathML } from "../Renderer";
+
+@Latex.RenderChar(({ char }) => char.value)
+@Latex.RenderNode(
+  ({ current, left, right }) => `${left || ""}${current}${right || ""}`
+)
+@MathML.RenderChar(({ char, h }) => [h("mtext", { value: char.value })])
+@MathML.RenderNode(({ current, left, right }) => [
+  ...(left || []),
+  ...current,
+  ...(right || []),
+])
 export default class MathChar {
   private static _SEQUENCE_NUMBER = 0;
 
@@ -9,9 +21,25 @@ export default class MathChar {
   protected _paramsParen = 0;
   protected _clickable = false;
 
-  constructor(value: string, sn = 0) {
-    this._value = value;
-    this._sequenceNumber = sn || ++MathChar._SEQUENCE_NUMBER;
+  constructor(
+    args?:
+      | {
+          value?: string;
+          sequenceNumber?: number;
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          [key: string]: any;
+        }
+      | string
+  ) {
+    if (typeof args == "undefined") {
+      throw new Error("Create `MathChar` instance failed: miss args.");
+    } else if (typeof args == "string") {
+      this._value = args;
+      this._sequenceNumber = ++MathChar._SEQUENCE_NUMBER;
+    } else {
+      this._value = args.value || "";
+      this._sequenceNumber = args.sequenceNumber || ++MathChar._SEQUENCE_NUMBER;
+    }
   }
 
   get sequenceNumber(): number {

@@ -22,6 +22,33 @@ export default class MathMLNode {
     this.children = parameters?.children || [];
   }
 
+  /**
+   * MathML Node create helper.
+   *
+   * @param tag tag
+   * @param parameters original parameters of constructor, or value (while
+   * oftype `string`), or children which should be put in `mrow`s. BE CAREFUL:
+   * put `children` into original parameters of constructor if they should
+   * not be put in `mrow`s!
+   * @returns `MathMLNode` instance
+   */
+  static create(
+    tag: string,
+    parameters?: MathMLNodeParameters | string | MathMLNode[][]
+  ) {
+    if (typeof parameters == "string") {
+      return new MathMLNode(tag, { value: parameters });
+    } else if (Array.isArray(parameters)) {
+      return new MathMLNode(tag, {
+        children: parameters.map<MathMLNode>(
+          (param) => new MathMLNode("mrow", { children: param })
+        ),
+      });
+    } else {
+      return new MathMLNode(tag, parameters);
+    }
+  }
+
   setAttr(attrs: { [key: string]: string | undefined }) {
     Object.keys(attrs).forEach((key) => {
       this._attrs[key] = attrs[key];
