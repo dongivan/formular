@@ -14,27 +14,37 @@ import {
 import Config from "./Config";
 import MathMLNode from "./MathMLNode";
 import { Latex, MathML } from "./Renderer";
+import Instance from "./InstanceResolver";
 
-export default class Formula {
+export default class Formula extends Instance {
   private _chars: MathChar[] = [];
   private _steps: number[][] = [];
   private _currentStep = -1;
   private _cursor: Cursor;
 
-  private _charFactory: MathCharFactory;
-  private _infixMaker: InfixListMaker;
-  private _postfixMaker: PostfixListMaker;
-  private _binaryTreeMaker: ExpressionTreeMaker;
-
   constructor() {
+    super();
+
     Config.init();
 
-    this._charFactory = new MathCharFactory();
-    this._infixMaker = new InfixListMaker(this);
-    this._postfixMaker = new PostfixListMaker(this);
-    this._binaryTreeMaker = new ExpressionTreeMaker(this);
+    const charFactory = new MathCharFactory();
+    this.addRelation({ prop: MathCharFactory, instance: charFactory });
+    this.addRelation({
+      prop: InfixListMaker,
+      instance: new InfixListMaker(),
+      backProp: Formula,
+    });
+    this.addRelation({
+      prop: PostfixListMaker,
+      instance: new PostfixListMaker(),
+    });
+    this.addRelation({
+      prop: ExpressionTreeMaker,
+      instance: new ExpressionTreeMaker(),
+      backProp: Formula,
+    });
 
-    this._cursor = this._charFactory.createCursor();
+    this._cursor = charFactory.createCursor();
     this._chars.push(this._cursor);
     this._pushStep();
   }
@@ -48,19 +58,19 @@ export default class Formula {
   }
 
   get charFactory(): MathCharFactory {
-    return this._charFactory;
+    return this.getTrackedRelated(MathCharFactory);
   }
 
   get infixMaker(): InfixListMaker {
-    return this._infixMaker;
+    return this.getTrackedRelated(InfixListMaker);
   }
 
   get postfixMaker(): PostfixListMaker {
-    return this._postfixMaker;
+    return this.getTrackedRelated(PostfixListMaker);
   }
 
   get binaryTreeMaker(): ExpressionTreeMaker {
-    return this._binaryTreeMaker;
+    return this.getTrackedRelated<ExpressionTreeMaker>(ExpressionTreeMaker);
   }
 
   get(pos: number): MathChar | undefined {
@@ -69,13 +79,13 @@ export default class Formula {
 
   insertAtCursor(value: string) {
     if (this._currentStep < this._steps.length - 1) {
-      this._charFactory.clearCharsAfterSequenceNumber(
+      this.charFactory.clearCharsAfterSequenceNumber(
         Math.max(...this._steps[this._currentStep])
       );
     }
 
     const cursorPos = this._chars.indexOf(this._cursor),
-      chars = this._charFactory.create(value, this._cursor);
+      chars = this.charFactory.create(value, this._cursor);
     this._chars.splice(cursorPos, 1, ...chars);
 
     this._pushStep();
@@ -202,7 +212,7 @@ export default class Formula {
 
   private _rebuildStep(step: number[]): MathChar[] {
     const list: MathChar[] = step.map<MathChar>((sn) =>
-      this._charFactory.findCharBySequenceNumber(sn)
+      this.charFactory.findCharBySequenceNumber(sn)
     );
     return list;
   }
@@ -226,9 +236,9 @@ export default class Formula {
   }
 
   generateExpressionTree(chars: MathChar[], addParen = false): ExpressionTree {
-    const infix = this._infixMaker.make(chars);
-    const postfix = this._postfixMaker.make(infix);
-    return this._binaryTreeMaker.make(postfix, addParen);
+    const infix = this.infixMaker.make(chars);
+    const postfix = this.postfixMaker.make(infix);
+    return this.binaryTreeMaker.make(postfix, addParen);
   }
 
   toString(): string {

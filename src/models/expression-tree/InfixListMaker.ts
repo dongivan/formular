@@ -7,15 +7,14 @@ import {
   IntegerSymbol,
   DecimalSymbol,
 } from "../math-symbol";
-import type Formula from "../Formula";
+import Formula from "../Formula";
 import type InfixList from "./InfixList";
 import type { ExpressionTree } from "./ExpressionTree";
+import Instance from "../InstanceResolver";
 
-export default class InfixListMaker {
-  private _formula: Formula;
-
-  constructor(formula: Formula) {
-    this._formula = formula;
+export default class InfixListMaker extends Instance {
+  get formula(): Formula {
+    return this.getTrackedRelated(Formula);
   }
 
   make(chars: MathChar[]): InfixList {
@@ -34,7 +33,7 @@ export default class InfixListMaker {
         const { params, endPos } = this._generateParams(chars, pos + 1);
         paramTrees.push(
           ...params.map<ExpressionTree>((param, i) =>
-            this._formula.generateExpressionTree(param, char.hasParamParen(i))
+            this.formula.generateExpressionTree(param, char.hasParamParen(i))
           )
         );
         pos = endPos;
@@ -73,7 +72,7 @@ export default class InfixListMaker {
       this._pushOperand(
         infixList,
         new OperandSymbol(
-          this._formula.charFactory.createPlaceholder(char, "right")
+          this.formula.charFactory.createPlaceholder(char, "right")
         )
       );
     }
@@ -96,7 +95,7 @@ export default class InfixListMaker {
         /* current item is param separator ("|") and operator level is 1, so push param into params */
         if (param.length == 0) {
           /* param is empty, push a placeholder into it */
-          param.push(this._formula.charFactory.createPlaceholder(item, "left"));
+          param.push(this.formula.charFactory.createPlaceholder(item, "left"));
         }
         params.push(param);
         param = [];
@@ -111,7 +110,7 @@ export default class InfixListMaker {
           if (param.length == 0) {
             /* param is empty, push a placeholder into it */
             param.push(
-              this._formula.charFactory.createPlaceholder(item, "left")
+              this.formula.charFactory.createPlaceholder(item, "left")
             );
           }
           params.push(param);
@@ -184,7 +183,7 @@ export default class InfixListMaker {
         push a operand with "placeholder" into inputs */
         infixList.push(
           new OperandSymbol(
-            this._formula.charFactory.createPlaceholder(operator.char, "left")
+            this.formula.charFactory.createPlaceholder(operator.char, "left")
           )
         );
       }
@@ -194,7 +193,7 @@ export default class InfixListMaker {
           /* the previous item is an Operand object, and the current operator DOES NOT HAVE
           the left operand, push a "hidden" into inputs */
           infixList.push(
-            new OperatorSymbol(this._formula.charFactory.createHiddenTimes())
+            new OperatorSymbol(this.formula.charFactory.createHiddenTimes())
           );
         }
       } else if (prevItem instanceof OperatorSymbol) {
@@ -203,14 +202,14 @@ export default class InfixListMaker {
           has left operand, push a "placeholder" into inputs */
           infixList.push(
             new OperandSymbol(
-              this._formula.charFactory.createPlaceholder(operator.char, "left")
+              this.formula.charFactory.createPlaceholder(operator.char, "left")
             )
           );
         } else if (!prevItem.hasRightOperand && !operator.hasLeftOperand) {
           /* the previous item is an operator which DOES NOT HAVE right operand, and the
           current operator DOES NOT HAVE left operand, push a "hidden" into inputs */
           infixList.push(
-            new OperatorSymbol(this._formula.charFactory.createHiddenTimes())
+            new OperatorSymbol(this.formula.charFactory.createHiddenTimes())
           );
         }
       }
@@ -231,7 +230,7 @@ export default class InfixListMaker {
       /* previous item of inputs is an Operand object, or it is an Operator object and
       it HAS NOT the right operand, push a "hidden" operator into inputs */
       infixList.push(
-        new OperatorSymbol(this._formula.charFactory.createHiddenTimes())
+        new OperatorSymbol(this.formula.charFactory.createHiddenTimes())
       );
     }
     infixList.push(operand);

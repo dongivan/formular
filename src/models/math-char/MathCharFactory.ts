@@ -1,3 +1,4 @@
+import Instance from "../InstanceResolver";
 import {
   Cursor,
   Digit,
@@ -55,7 +56,7 @@ registerCreateFunction("square", (factory, cursor) => {
   return chars;
 });
 
-export default class MathCharFactory {
+export default class MathCharFactory extends Instance {
   static registerMathChar = registerMathCharDecorator;
 
   static registerCreateFunction = registerCreateFunction;
@@ -73,6 +74,8 @@ export default class MathCharFactory {
   } = {};
 
   constructor() {
+    super();
+
     this._cursor = this._afterCreate(new Cursor())[0];
     this._hidden = this._afterCreate(new HiddenTimes())[0];
   }

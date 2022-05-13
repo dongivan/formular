@@ -1,15 +1,10 @@
-import type Formula from "../Formula";
+import Formula from "../Formula";
 import { ExpressionTree, ExpressionNode } from "./ExpressionTree";
 import { OperandSymbol, OperatorSymbol } from "../math-symbol";
 import type PostfixList from "./PostfixList";
+import Instance from "../InstanceResolver";
 
-export default class ExpressionTreeMaker {
-  private _formula: Formula;
-
-  constructor(formula: Formula) {
-    this._formula = formula;
-  }
-
+export default class ExpressionTreeMaker extends Instance {
   make(postfix: PostfixList, addParen = false) {
     return this._parsePostfixToBinaryTree(postfix, addParen);
   }
@@ -48,7 +43,8 @@ export default class ExpressionTreeMaker {
       pos += 1;
     }
     if (addParen) {
-      const [left, right] = this._formula.charFactory.createTempParen();
+      const [left, right] =
+        this.getTrackedRelated<Formula>(Formula).charFactory.createTempParen();
       const rightNode = new ExpressionNode(tree, new OperatorSymbol(right)),
         leftNode = new ExpressionNode(tree, new OperatorSymbol(left));
       rightNode.leftChild = root;
