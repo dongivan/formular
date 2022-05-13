@@ -9,18 +9,24 @@ export default class ExpressionTreeMaker extends Instance {
     return this._parsePostfixToBinaryTree(postfix, addParen);
   }
 
+  get formula() {
+    return this.getTrackedRelated<Formula>(Formula);
+  }
+
   private _parsePostfixToBinaryTree(
     postfix: PostfixList,
     addParen: boolean
   ): ExpressionTree {
-    const tree = new ExpressionTree();
     let root: ExpressionNode | undefined = undefined;
 
+    if (postfix.length == 0) {
+      throw new Error("Create expression tree failed: postfix array is empty.");
+    }
     const stack: ExpressionNode[] = [];
     let pos = 0;
     while (pos < postfix.length) {
       const oper = postfix[pos];
-      const node = new ExpressionNode(tree, oper);
+      const node = new ExpressionNode(oper);
       if (oper instanceof OperandSymbol) {
         stack.push(node);
       } else if (oper instanceof OperatorSymbol) {
@@ -38,23 +44,31 @@ export default class ExpressionTreeMaker extends Instance {
         }
         stack.push(node);
       }
+      node.paramTrees = node.symbol.params.map<ExpressionTree>((param, i) => {
+        return this.formula.generateExpressionTree(
+          param,
+          node.symbol.char.hasParamParen(i)
+        );
+      });
       root = node;
 
       pos += 1;
     }
+    if (!root) {
+      throw new Error(
+        "Create expression tree failed: create root node failed."
+      );
+    }
     if (addParen) {
-      const [left, right] =
-        this.getTrackedRelated<Formula>(Formula).charFactory.createTempParen();
-      const rightNode = new ExpressionNode(tree, new OperatorSymbol(right)),
-        leftNode = new ExpressionNode(tree, new OperatorSymbol(left));
+      const [left, right] = this.formula.charFactory.createTempParen();
+      const rightNode = new ExpressionNode(new OperatorSymbol(right)),
+        leftNode = new ExpressionNode(new OperatorSymbol(left));
       rightNode.leftChild = root;
       leftNode.rightChild = rightNode;
       root = leftNode;
     }
-    if (root) {
-      root.setParenLevelRecursively();
-    }
-    tree.root = root;
+    root.setParenLevelRecursively();
+    const tree = new ExpressionTree(root);
     return tree;
   }
 }

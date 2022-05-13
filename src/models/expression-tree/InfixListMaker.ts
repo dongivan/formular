@@ -9,7 +9,6 @@ import {
 } from "../math-symbol";
 import Formula from "../Formula";
 import type InfixList from "./InfixList";
-import type { ExpressionTree } from "./ExpressionTree";
 import Instance from "../InstanceResolver";
 
 export default class InfixListMaker extends Instance {
@@ -27,16 +26,14 @@ export default class InfixListMaker extends Instance {
     let pos = 0;
     while (pos < chars.length) {
       const char = chars[pos];
-      const paramTrees: ExpressionTree[] = [];
+      let charParams: MathChar[][];
       if (char.paramsNumber > 0) {
         /* current char has params, fetch them from chars */
         const { params, endPos } = this._generateParams(chars, pos + 1);
-        paramTrees.push(
-          ...params.map<ExpressionTree>((param, i) =>
-            this.formula.generateExpressionTree(param, char.hasParamParen(i))
-          )
-        );
+        charParams = params;
         pos = endPos;
+      } else {
+        charParams = [];
       }
 
       if (char instanceof Digit || char instanceof DecimalPoint) {
@@ -44,13 +41,13 @@ export default class InfixListMaker extends Instance {
         const { integers, decimals, decimalPoint, endPos } =
           this._generateDigits(char, chars, pos + 1);
         const symbol = decimalPoint
-          ? new DecimalSymbol(integers, decimalPoint, decimals)
-          : new IntegerSymbol(integers as [Digit, ...Digit[]]);
+          ? new DecimalSymbol({ integers, char: decimalPoint, decimals })
+          : new IntegerSymbol({ char: integers[0], integers });
         this._pushOperand(infixList, symbol);
         pos = endPos;
       } else if (char instanceof OperandChar) {
         /* current char is an OperandChar (and IS NOT a Digit), push it */
-        const symbol = new OperandSymbol(char, paramTrees);
+        const symbol = new OperandSymbol({ char, params: charParams });
         this._pushOperand(infixList, symbol);
       } else if (char instanceof OperatorChar) {
         /* current char is an OperatorChar, push it */
@@ -58,7 +55,7 @@ export default class InfixListMaker extends Instance {
           /* current char is a Minus, reset its priority & hasLeftOperand by previous char */
           char.adapt(chars[pos - 1]);
         }
-        const symbol = new OperatorSymbol(char, paramTrees);
+        const symbol = new OperatorSymbol({ char, params: charParams });
         this._pushOperator(infixList, symbol);
       }
 
@@ -218,10 +215,7 @@ export default class InfixListMaker extends Instance {
     infixList.push(operator);
   }
 
-  private _pushOperand(
-    infixList: InfixList,
-    operand: OperandSymbol<OperandChar>
-  ) {
+  private _pushOperand(infixList: InfixList, operand: OperandSymbol) {
     const prevItem = infixList[infixList.length - 1];
     if (
       prevItem instanceof OperandSymbol ||

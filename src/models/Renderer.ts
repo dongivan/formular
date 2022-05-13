@@ -104,8 +104,8 @@ class Renderer<N, H> {
         left: node.leftChild ? this._renderNode(node.leftChild) : undefined,
         right: node.rightChild ? this._renderNode(node.rightChild) : undefined,
         current: this._renderChar(
-          node.symbol.char,
-          node.symbol.paramTrees.map<N>((tree) => this.render(tree))
+          symbol.char,
+          node.paramTrees.map<N>((tree) => this.render(tree))
         ),
         h: this._helper,
         renderChar: this._renderChar.bind(this),
@@ -114,11 +114,6 @@ class Renderer<N, H> {
   }
 
   render(tree: ExpressionTree): N {
-    if (tree.root == undefined) {
-      throw new Error(
-        "Render failed: cannot render a tree with `undefined` root node."
-      );
-    }
     return this._renderNode(tree.root);
   }
 }

@@ -25,7 +25,14 @@ const SetParenLevel = function (
   return parenCounts;
 };
 
-class ExpressionNode extends BinaryNode<MathSymbol<MathChar>, ExpressionTree> {
+class ExpressionNode extends BinaryNode<MathSymbol<MathChar>> {
+  paramTrees: ExpressionTree[];
+
+  constructor(symbol: MathSymbol<MathChar>, paramTrees?: ExpressionTree[]) {
+    super(symbol);
+    this.paramTrees = paramTrees || [];
+  }
+
   get symbol(): MathSymbol<MathChar> {
     return this.value;
   }

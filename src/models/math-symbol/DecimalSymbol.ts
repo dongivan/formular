@@ -1,7 +1,7 @@
 import { Digit, DecimalPoint } from "../math-char";
-import NumberSymbol from "./NumberSymbol";
+import OperandSymbol from "./OperandSymbol";
 
-export default class DecimalSymbol extends NumberSymbol<DecimalPoint> {
+export default class DecimalSymbol extends OperandSymbol {
   private _integers: Digit[];
   private _decimals: Digit[];
 
@@ -13,14 +13,14 @@ export default class DecimalSymbol extends NumberSymbol<DecimalPoint> {
     return Object.freeze(this._decimals);
   }
 
-  constructor(
-    integers: Digit[],
-    decimalPoint: DecimalPoint,
-    decimals: Digit[]
-  ) {
-    super(decimalPoint);
-    this._integers = integers;
-    this._decimals = decimals;
+  constructor(args: {
+    integers: Digit[];
+    char: DecimalPoint;
+    decimals: Digit[];
+  }) {
+    super(args);
+    this._integers = args.integers;
+    this._decimals = args.decimals;
   }
 
   toString(): string {

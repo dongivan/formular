@@ -7,17 +7,13 @@ interface BinaryTreeInterface {
   root: BinaryNodeInterface | undefined;
 }
 
-class BinaryNode<V, T extends BinaryTreeInterface>
-  implements BinaryNodeInterface
-{
+class BinaryNode<V> implements BinaryNodeInterface {
   value: V;
-  tree: T;
   leftChild: this | undefined;
   rightChild: this | undefined;
 
-  constructor(tree: T, value: V) {
+  constructor(value: V) {
     this.value = value;
-    this.tree = tree;
   }
 
   /**
@@ -65,7 +61,11 @@ class BinaryNode<V, T extends BinaryTreeInterface>
 }
 
 class BinaryTree<N extends BinaryNodeInterface> implements BinaryTreeInterface {
-  root: N | undefined;
+  root: N;
+
+  constructor(root: N) {
+    this.root = root;
+  }
 }
 
 export { BinaryTree, BinaryNode };

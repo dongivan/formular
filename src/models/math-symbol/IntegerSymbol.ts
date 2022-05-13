@@ -1,16 +1,16 @@
 import { Digit } from "../math-char";
-import NumberSymbol from "./NumberSymbol";
+import OperandSymbol from "./OperandSymbol";
 
-export default class IntegerSymbol extends NumberSymbol<Digit> {
+export default class IntegerSymbol extends OperandSymbol {
   private _integers: Digit[];
 
   get integers(): readonly Digit[] {
     return Object.freeze(this._integers);
   }
 
-  constructor(integers: [Digit, ...Digit[]]) {
-    super(integers[0]);
-    this._integers = integers;
+  constructor(args: { char: Digit; integers: Digit[] }) {
+    super(args);
+    this._integers = args.integers;
   }
 
   toString(): string {

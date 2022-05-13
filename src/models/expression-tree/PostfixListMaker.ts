@@ -1,6 +1,5 @@
 import { OperandSymbol, OperatorSymbol } from "../math-symbol";
 import { LeftParen, RightParen } from "../math-char";
-// import type Formula from "../Formula";
 import type InfixList from "./InfixList";
 import type PostfixList from "./PostfixList";
 import Instance from "../InstanceResolver";
