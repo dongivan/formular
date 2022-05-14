@@ -5,7 +5,7 @@ import { MathCharFactory, OperandChar } from "../internal";
 
 @MathCharFactory.registerMathChar(".", "point")
 @Latex.RenderNode(({ node, renderChar }) => {
-  const symbol = node.symbol as DecimalSymbol;
+  const symbol = node as DecimalSymbol;
   return (
     symbol.integers.map<string>((char) => renderChar(char, [])).join("") +
     renderChar(symbol.char, []) +
@@ -14,7 +14,7 @@ import { MathCharFactory, OperandChar } from "../internal";
 })
 @MathML.RenderChar(({ char, h }) => [h("mn", char.value)])
 @MathML.RenderNode(({ node, renderChar }) => {
-  const symbol = node.symbol as DecimalSymbol;
+  const symbol = node as DecimalSymbol;
   return [
     ...symbol.integers.map<MathMLNode>((char) => {
       return renderChar(char, [])[0];

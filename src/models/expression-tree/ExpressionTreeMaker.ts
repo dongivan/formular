@@ -1,6 +1,6 @@
 import Formula from "../Formula";
-import { ExpressionTree, ExpressionNode } from "./ExpressionTree";
-import { OperandSymbol, OperatorSymbol } from "../math-symbol";
+import ExpressionTree from "./ExpressionTree";
+import { MathSymbol, OperandSymbol, OperatorSymbol } from "../math-symbol";
 import type PostfixList from "./PostfixList";
 import { Instance } from "../InstanceResolver";
 
@@ -17,40 +17,39 @@ export default class ExpressionTreeMaker extends Instance {
     postfix: PostfixList,
     addParen: boolean
   ): ExpressionTree {
-    let root: ExpressionNode | undefined = undefined;
+    let root: MathSymbol | undefined = undefined;
 
     if (postfix.length == 0) {
       throw new Error("Create expression tree failed: postfix array is empty.");
     }
-    const stack: ExpressionNode[] = [];
+    const stack: MathSymbol[] = [];
     let pos = 0;
     while (pos < postfix.length) {
-      const oper = postfix[pos];
-      const node = new ExpressionNode(oper);
-      if (oper instanceof OperandSymbol) {
-        stack.push(node);
-      } else if (oper instanceof OperatorSymbol) {
-        if (oper.hasRightOperand) {
+      const symbol = postfix[pos];
+      if (symbol instanceof OperandSymbol) {
+        stack.push(symbol);
+      } else if (symbol instanceof OperatorSymbol) {
+        if (symbol.hasRightOperand) {
           const rightChild = stack.pop();
           if (rightChild) {
-            node.rightChild = rightChild;
+            symbol.rightChild = rightChild;
           }
         }
-        if (oper.hasLeftOperand) {
+        if (symbol.hasLeftOperand) {
           const leftChild = stack.pop();
           if (leftChild) {
-            node.leftChild = leftChild;
+            symbol.leftChild = leftChild;
           }
         }
-        stack.push(node);
+        stack.push(symbol);
       }
-      node.paramTrees = node.symbol.params.map<ExpressionTree>((param, i) => {
+      symbol.paramTrees = symbol.params.map<ExpressionTree>((param, i) => {
         return this.formula.generateExpressionTree(
           param,
-          node.symbol.char.hasParamParen(i)
+          symbol.char.hasParamParen(i)
         );
       });
-      root = node;
+      root = symbol;
 
       pos += 1;
     }
@@ -61,13 +60,13 @@ export default class ExpressionTreeMaker extends Instance {
     }
     if (addParen) {
       const [left, right] = this.formula.charFactory.createTempParen();
-      const rightNode = new ExpressionNode(new OperatorSymbol({ char: right })),
-        leftNode = new ExpressionNode(new OperatorSymbol({ char: left }));
+      const rightNode = new OperatorSymbol({ char: right }),
+        leftNode = new OperatorSymbol({ char: left });
       rightNode.leftChild = root;
       leftNode.rightChild = rightNode;
       root = leftNode;
     }
-    root.setParenLevelRecursively();
+    root.setParenLevels();
     const tree = new ExpressionTree(root);
     return tree;
   }

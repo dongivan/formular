@@ -1,8 +1,14 @@
-import { MathChar } from "../math-char";
+import { OperatorSymbol } from ".";
+import { ExpressionTree } from "../expression-tree";
+import { LeftParen, MathChar, RightParen } from "../math-char";
 
 export default abstract class MathSymbol {
   protected _char: MathChar;
   protected _params: MathChar[][] = [];
+
+  private _paramTrees: ExpressionTree[] | undefined;
+  leftChild: MathSymbol | undefined;
+  rightChild: MathSymbol | undefined;
 
   constructor(args: { char: MathChar; params?: MathChar[][] }) {
     this._char = args.char;
@@ -15,6 +21,33 @@ export default abstract class MathSymbol {
 
   get params(): MathChar[][] {
     return this._params;
+  }
+
+  get paramTrees() {
+    return this._paramTrees || [];
+  }
+
+  set paramTrees(val: ExpressionTree[]) {
+    this._paramTrees = val;
+  }
+
+  setParenLevels() {
+    const leftResult = this.leftChild?.setParenLevels() || [0, 0],
+      rightResult = this.rightChild?.setParenLevels() || [0, 0];
+    const parenCounts: [number, number] = [
+      Math.max(leftResult[0], rightResult[0]),
+      Math.max(leftResult[1], rightResult[1]),
+    ];
+    if (this instanceof OperatorSymbol) {
+      if (this.char instanceof LeftParen) {
+        this.char.level = parenCounts[0];
+        parenCounts[0] += 1;
+      } else if (this.char instanceof RightParen) {
+        this.char.level = parenCounts[1];
+        parenCounts[1] += 1;
+      }
+    }
+    return parenCounts;
   }
 
   toString(): string {

@@ -1,6 +1,7 @@
 import Config from "./Config";
-import type { ExpressionNode, ExpressionTree } from "./expression-tree";
+import type { ExpressionTree } from "./expression-tree";
 import { AbstractParen, MathChar } from "./math-char";
+import { MathSymbol } from "./math-symbol";
 import MathMLNode from "./MathMLNode";
 import { findByClass, replace } from "./utils";
 
@@ -18,7 +19,7 @@ type DecoratorNodeTemplateFunction<N, H> = (args: {
   current: N;
   left?: N;
   right?: N;
-  node: ExpressionNode;
+  node: MathSymbol;
   h: H;
   renderChar: (char: MathChar, params: N[]) => N;
 }) => N;
@@ -81,18 +82,18 @@ class Renderer<N, H> {
     }
 
     if (this._interactive && this._addClickableMarkFn) {
-      this._addClickableMarkFn(result, char.sequenceNumber);
+      result = this._addClickableMarkFn(result, char.sequenceNumber);
     }
 
     if (this._setParenthesesLevelFn && char instanceof AbstractParen) {
-      this._setParenthesesLevelFn(result, char.level);
+      result = this._setParenthesesLevelFn(result, char.level);
     }
 
     return result;
   }
 
-  private _renderNode(node: ExpressionNode): N {
-    const symbol = node.symbol;
+  private _renderNode(node: MathSymbol): N {
+    const symbol = node;
     const template = findByClass(symbol.char, this._nodeFns);
     if (template == undefined) {
       throw new Error(
