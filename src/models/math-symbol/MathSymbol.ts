@@ -29,10 +29,6 @@ export default abstract class MathSymbol<M extends MathChar> {
     return this._params;
   }
 
-  get hasParams(): boolean {
-    return this._params.length > 0;
-  }
-
   toString(): string {
     return (
       this._char.toString() +

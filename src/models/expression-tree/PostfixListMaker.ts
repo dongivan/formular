@@ -62,7 +62,7 @@ export default class PostfixListMaker extends Instance {
     while (
       operatorStack.length > 0 &&
       !(operatorStack[0].char instanceof LeftParen) &&
-      operatorStack[0].priority >= operator.priority
+      operatorStack[0].char.priority >= operator.char.priority
     ) {
       postfixList.push(operatorStack[0]);
       operatorStack.shift();
