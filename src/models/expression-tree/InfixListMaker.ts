@@ -9,12 +9,12 @@ import {
   Minus,
 } from "../math-char";
 import {
-  OperandSymbol,
-  OperatorSymbol,
-  IntegerSymbol,
-  DecimalSymbol,
-  MathSymbol,
-} from "../math-symbol";
+  OperandNode,
+  OperatorNode,
+  IntegerNode,
+  DecimalNode,
+  MathNode,
+} from "../math-node";
 import Formula from "../Formula";
 import type InfixList from "./InfixList";
 import { Instance } from "../InstanceResolver";
@@ -45,39 +45,39 @@ export default class InfixListMaker extends Instance {
       }
 
       if (char instanceof Digit || char instanceof DecimalPoint) {
-        /* current char is a Digit, generate a NumberSymbol and push it into infix expression */
+        /* current char is a Digit, generate a NumberNode and push it into infix expression */
         const { integers, decimals, decimalPoint, endPos } =
           this._generateDigits(char, chars, pos + 1);
-        const symbol = decimalPoint
-          ? this._createMathSymbol(DecimalSymbol, {
+        const node = decimalPoint
+          ? this._createMathNode(DecimalNode, {
               integers,
               char: decimalPoint,
               decimals,
             })
-          : this._createMathSymbol(IntegerSymbol, {
+          : this._createMathNode(IntegerNode, {
               char: integers[0],
               integers,
             });
-        this._pushOperand(infixList, symbol);
+        this._pushOperand(infixList, node);
         pos = endPos;
       } else if (char instanceof OperandChar) {
         /* current char is an OperandChar (and IS NOT a Digit), push it */
-        const symbol = this._createMathSymbol(OperandSymbol, {
+        const node = this._createMathNode(OperandNode, {
           char,
           params: charParams,
         });
-        this._pushOperand(infixList, symbol);
+        this._pushOperand(infixList, node);
       } else if (char instanceof OperatorChar) {
         /* current char is an OperatorChar, push it */
         if (char instanceof Minus) {
           /* current char is a Minus, reset its priority & hasLeftOperand by previous char */
           char.adapt(chars[pos - 1]);
         }
-        const symbol = this._createMathSymbol(OperatorSymbol, {
+        const node = this._createMathNode(OperatorNode, {
           char,
           params: charParams,
         });
-        this._pushOperator(infixList, symbol);
+        this._pushOperator(infixList, node);
       }
 
       pos += 1;
@@ -89,7 +89,7 @@ export default class InfixListMaker extends Instance {
         push a placeholder into the infix expression */
       this._pushOperand(
         infixList,
-        this._createMathSymbol(OperandSymbol, {
+        this._createMathNode(OperandNode, {
           char: this.formula.charFactory.createPlaceholder(char, "right"),
         })
       );
@@ -193,14 +193,14 @@ export default class InfixListMaker extends Instance {
     return { integers, decimals, decimalPoint, endPos: pos };
   }
 
-  private _pushOperator(infixList: InfixList, operator: OperatorSymbol) {
+  private _pushOperator(infixList: InfixList, operator: OperatorNode) {
     const prevItem = infixList[infixList.length - 1];
     if (!prevItem) {
       if (operator.hasLeftOperand) {
         /* the previous item DOES NOT exist, and the current operator HAS the left operand
         push a operand with "placeholder" into inputs */
         infixList.push(
-          this._createMathSymbol(OperandSymbol, {
+          this._createMathNode(OperandNode, {
             char: this.formula.charFactory.createPlaceholder(
               operator.char,
               "left"
@@ -209,22 +209,22 @@ export default class InfixListMaker extends Instance {
         );
       }
     } else {
-      if (prevItem instanceof OperandSymbol) {
+      if (prevItem instanceof OperandNode) {
         if (!operator.hasLeftOperand) {
           /* the previous item is an Operand object, and the current operator DOES NOT HAVE
           the left operand, push a "hidden" into inputs */
           infixList.push(
-            this._createMathSymbol(OperatorSymbol, {
+            this._createMathNode(OperatorNode, {
               char: this.formula.charFactory.createHiddenTimes(),
             })
           );
         }
-      } else if (prevItem instanceof OperatorSymbol) {
+      } else if (prevItem instanceof OperatorNode) {
         if (prevItem.hasRightOperand && operator.hasLeftOperand) {
           /* the previous item is an operator which has right operand, and the current operator
           has left operand, push a "placeholder" into inputs */
           infixList.push(
-            this._createMathSymbol(OperandSymbol, {
+            this._createMathNode(OperandNode, {
               char: this.formula.charFactory.createPlaceholder(
                 operator.char,
                 "left"
@@ -235,7 +235,7 @@ export default class InfixListMaker extends Instance {
           /* the previous item is an operator which DOES NOT HAVE right operand, and the
           current operator DOES NOT HAVE left operand, push a "hidden" into inputs */
           infixList.push(
-            this._createMathSymbol(OperatorSymbol, {
+            this._createMathNode(OperatorNode, {
               char: this.formula.charFactory.createHiddenTimes(),
             })
           );
@@ -246,16 +246,16 @@ export default class InfixListMaker extends Instance {
     infixList.push(operator);
   }
 
-  private _pushOperand(infixList: InfixList, operand: OperandSymbol) {
+  private _pushOperand(infixList: InfixList, operand: OperandNode) {
     const prevItem = infixList[infixList.length - 1];
     if (
-      prevItem instanceof OperandSymbol ||
-      (prevItem instanceof OperatorSymbol && !prevItem.hasRightOperand)
+      prevItem instanceof OperandNode ||
+      (prevItem instanceof OperatorNode && !prevItem.hasRightOperand)
     ) {
       /* previous item of inputs is an Operand object, or it is an Operator object and
       it HAS NOT the right operand, push a "hidden" operator into inputs */
       infixList.push(
-        this._createMathSymbol(OperatorSymbol, {
+        this._createMathNode(OperatorNode, {
           char: this.formula.charFactory.createHiddenTimes(),
         })
       );
@@ -263,7 +263,7 @@ export default class InfixListMaker extends Instance {
     infixList.push(operand);
   }
 
-  private _createMathSymbol<M extends MathSymbol>(
+  private _createMathNode<M extends MathNode>(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     constructor: new (args: any) => M,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

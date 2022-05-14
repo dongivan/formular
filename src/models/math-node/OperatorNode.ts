@@ -1,7 +1,7 @@
 import { MathChar, OperatorChar } from "../math-char";
-import MathSymbol from "./MathSymbol";
+import MathNode from "./MathNode";
 
-export default class OperatorSymbol extends MathSymbol {
+export default class OperatorNode extends MathNode {
   constructor(args: { char: OperatorChar; params?: MathChar[][] }) {
     super(args);
   }

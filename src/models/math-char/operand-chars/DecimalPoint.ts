@@ -1,26 +1,26 @@
-import type { DecimalSymbol } from "@/models/math-symbol";
+import type { DecimalNode } from "@/models/math-node";
 import type MathMLNode from "@/models/MathMLNode";
 import { Latex, MathML } from "../../Renderer";
 import { MathCharFactory, OperandChar } from "../internal";
 
 @MathCharFactory.registerMathChar(".", "point")
 @Latex.RenderNode(({ node, renderChar }) => {
-  const symbol = node as DecimalSymbol;
+  const decimalNode = node as DecimalNode;
   return (
-    symbol.integers.map<string>((char) => renderChar(char, [])).join("") +
-    renderChar(symbol.char, []) +
-    symbol.decimals.map<string>((char) => renderChar(char, [])).join("")
+    decimalNode.integers.map<string>((char) => renderChar(char, [])).join("") +
+    renderChar(decimalNode.char, []) +
+    decimalNode.decimals.map<string>((char) => renderChar(char, [])).join("")
   );
 })
 @MathML.RenderChar(({ char, h }) => [h("mn", char.value)])
 @MathML.RenderNode(({ node, renderChar }) => {
-  const symbol = node as DecimalSymbol;
+  const decimaoNode = node as DecimalNode;
   return [
-    ...symbol.integers.map<MathMLNode>((char) => {
+    ...decimaoNode.integers.map<MathMLNode>((char) => {
       return renderChar(char, [])[0];
     }),
-    ...renderChar(symbol.char, []),
-    ...symbol.decimals.map<MathMLNode>((char) => {
+    ...renderChar(decimaoNode.char, []),
+    ...decimaoNode.decimals.map<MathMLNode>((char) => {
       return renderChar(char, [])[0];
     }),
   ];

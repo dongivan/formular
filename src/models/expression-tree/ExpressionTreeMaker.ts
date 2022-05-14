@@ -1,6 +1,6 @@
 import Formula from "../Formula";
 import ExpressionTree from "./ExpressionTree";
-import { MathSymbol, OperandSymbol, OperatorSymbol } from "../math-symbol";
+import { MathNode, OperandNode, OperatorNode } from "../math-node";
 import type PostfixList from "./PostfixList";
 import { Instance } from "../InstanceResolver";
 
@@ -17,39 +17,39 @@ export default class ExpressionTreeMaker extends Instance {
     postfix: PostfixList,
     addParen: boolean
   ): ExpressionTree {
-    let root: MathSymbol | undefined = undefined;
+    let root: MathNode | undefined = undefined;
 
     if (postfix.length == 0) {
       throw new Error("Create expression tree failed: postfix array is empty.");
     }
-    const stack: MathSymbol[] = [];
+    const stack: MathNode[] = [];
     let pos = 0;
     while (pos < postfix.length) {
-      const symbol = postfix[pos];
-      if (symbol instanceof OperandSymbol) {
-        stack.push(symbol);
-      } else if (symbol instanceof OperatorSymbol) {
-        if (symbol.hasRightOperand) {
+      const node = postfix[pos];
+      if (node instanceof OperandNode) {
+        stack.push(node);
+      } else if (node instanceof OperatorNode) {
+        if (node.hasRightOperand) {
           const rightChild = stack.pop();
           if (rightChild) {
-            symbol.rightChild = rightChild;
+            node.rightChild = rightChild;
           }
         }
-        if (symbol.hasLeftOperand) {
+        if (node.hasLeftOperand) {
           const leftChild = stack.pop();
           if (leftChild) {
-            symbol.leftChild = leftChild;
+            node.leftChild = leftChild;
           }
         }
-        stack.push(symbol);
+        stack.push(node);
       }
-      symbol.paramTrees = symbol.params.map<ExpressionTree>((param, i) => {
+      node.paramTrees = node.params.map<ExpressionTree>((param, i) => {
         return this.formula.generateExpressionTree(
           param,
-          symbol.char.hasParamParen(i)
+          node.char.hasParamParen(i)
         );
       });
-      root = symbol;
+      root = node;
 
       pos += 1;
     }
@@ -60,8 +60,8 @@ export default class ExpressionTreeMaker extends Instance {
     }
     if (addParen) {
       const [left, right] = this.formula.charFactory.createTempParen();
-      const rightNode = new OperatorSymbol({ char: right }),
-        leftNode = new OperatorSymbol({ char: left });
+      const rightNode = new OperatorNode({ char: right }),
+        leftNode = new OperatorNode({ char: left });
       rightNode.leftChild = root;
       leftNode.rightChild = rightNode;
       root = leftNode;

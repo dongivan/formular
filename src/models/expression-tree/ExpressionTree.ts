@@ -1,9 +1,9 @@
-import type { MathSymbol } from "../math-symbol";
+import type { MathNode } from "../math-node";
 
 export default class ExpressionTree {
-  root: MathSymbol;
+  root: MathNode;
 
-  constructor(root: MathSymbol) {
+  constructor(root: MathNode) {
     this.root = root;
   }
 }

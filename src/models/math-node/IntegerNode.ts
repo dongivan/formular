@@ -1,7 +1,7 @@
 import { Digit } from "../math-char";
-import OperandSymbol from "./OperandSymbol";
+import OperandNode from "./OperandNode";
 
-export default class IntegerSymbol extends OperandSymbol {
+export default class IntegerNode extends OperandNode {
   private _integers: Digit[];
 
   get integers(): readonly Digit[] {

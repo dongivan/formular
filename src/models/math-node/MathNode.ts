@@ -1,14 +1,13 @@
-import { OperatorSymbol } from ".";
 import { ExpressionTree } from "../expression-tree";
 import { LeftParen, MathChar, RightParen } from "../math-char";
 
-export default abstract class MathSymbol {
+export default abstract class MathNode {
   protected _char: MathChar;
   protected _params: MathChar[][] = [];
 
   private _paramTrees: ExpressionTree[] | undefined;
-  leftChild: MathSymbol | undefined;
-  rightChild: MathSymbol | undefined;
+  leftChild: MathNode | undefined;
+  rightChild: MathNode | undefined;
 
   constructor(args: { char: MathChar; params?: MathChar[][] }) {
     this._char = args.char;
@@ -38,14 +37,12 @@ export default abstract class MathSymbol {
       Math.max(leftResult[0], rightResult[0]),
       Math.max(leftResult[1], rightResult[1]),
     ];
-    if (this instanceof OperatorSymbol) {
-      if (this.char instanceof LeftParen) {
-        this.char.level = parenCounts[0];
-        parenCounts[0] += 1;
-      } else if (this.char instanceof RightParen) {
-        this.char.level = parenCounts[1];
-        parenCounts[1] += 1;
-      }
+    if (this.char instanceof LeftParen) {
+      this.char.level = parenCounts[0];
+      parenCounts[0] += 1;
+    } else if (this.char instanceof RightParen) {
+      this.char.level = parenCounts[1];
+      parenCounts[1] += 1;
     }
     return parenCounts;
   }

@@ -1,7 +1,7 @@
 import Config from "./Config";
 import type { ExpressionTree } from "./expression-tree";
 import { AbstractParen, MathChar } from "./math-char";
-import { MathSymbol } from "./math-symbol";
+import { MathNode } from "./math-node";
 import MathMLNode from "./MathMLNode";
 import { findByClass, replace } from "./utils";
 
@@ -19,7 +19,7 @@ type DecoratorNodeTemplateFunction<N, H> = (args: {
   current: N;
   left?: N;
   right?: N;
-  node: MathSymbol;
+  node: MathNode;
   h: H;
   renderChar: (char: MathChar, params: N[]) => N;
 }) => N;
@@ -92,12 +92,11 @@ class Renderer<N, H> {
     return result;
   }
 
-  private _renderNode(node: MathSymbol): N {
-    const symbol = node;
-    const template = findByClass(symbol.char, this._nodeFns);
+  private _renderNode(node: MathNode): N {
+    const template = findByClass(node.char, this._nodeFns);
     if (template == undefined) {
       throw new Error(
-        `Render failed: cannot find node template of \`${symbol.char.constructor.name}\`(\`{ ${symbol.char.value}}\`).`
+        `Render failed: cannot find node template of \`${node.char.constructor.name}\`(\`{ ${node.char.value}}\`).`
       );
     } else {
       return template({
@@ -105,7 +104,7 @@ class Renderer<N, H> {
         left: node.leftChild ? this._renderNode(node.leftChild) : undefined,
         right: node.rightChild ? this._renderNode(node.rightChild) : undefined,
         current: this._renderChar(
-          symbol.char,
+          node.char,
           node.paramTrees.map<N>((tree) => this.render(tree))
         ),
         h: this._helper,

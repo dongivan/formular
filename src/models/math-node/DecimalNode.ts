@@ -1,7 +1,7 @@
 import { Digit, DecimalPoint } from "../math-char";
-import OperandSymbol from "./OperandSymbol";
+import OperandNode from "./OperandNode";
 
-export default class DecimalSymbol extends OperandSymbol {
+export default class DecimalNode extends OperandNode {
   private _integers: Digit[];
   private _decimals: Digit[];
 

@@ -1,3 +1,3 @@
-import type { MathSymbol } from "../math-symbol";
+import type { MathNode } from "../math-node";
 
-export default class PofixList extends Array<MathSymbol> {}
+export default class PofixList extends Array<MathNode> {}
