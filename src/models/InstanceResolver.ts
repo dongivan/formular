@@ -5,7 +5,7 @@ function stringifyPropertyName(name: string | typeof Instance): string {
   return name.name;
 }
 
-export default class Instance {
+export class Instance {
   private static _INSTANCE_ID = 0;
   private _instance_id: number;
 
@@ -58,7 +58,7 @@ export default class Instance {
   }
 }
 
-class InstanceResolver {
+export class InstanceResolver {
   private static _instances: Record<string, Instance> = {};
   private static _relations: Record<string, Record<string, string>> = {};
 
@@ -96,5 +96,21 @@ class InstanceResolver {
     }
     const member = InstanceResolver._instances[instanceId];
     return member == undefined ? undefined : (member as T);
+  }
+
+  static getInstance<T extends Instance>(id: string): T | undefined {
+    const instance = InstanceResolver._instances[id];
+    if (!instance) {
+      return undefined;
+    }
+    return instance as T;
+  }
+
+  static getTrackedInstance<T extends Instance>(id: string): T {
+    const instance = InstanceResolver.getInstance<T>(id);
+    if (!instance) {
+      throw new Error(`The instance with id \`${id})\` is not tracked.`);
+    }
+    return instance as T;
   }
 }

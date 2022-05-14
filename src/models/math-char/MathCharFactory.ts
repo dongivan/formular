@@ -1,4 +1,4 @@
-import Instance from "../InstanceResolver";
+import { Instance } from "../InstanceResolver";
 import {
   Cursor,
   Digit,

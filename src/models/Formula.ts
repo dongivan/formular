@@ -14,7 +14,7 @@ import {
 import Config from "./Config";
 import MathMLNode from "./MathMLNode";
 import { Latex, MathML } from "./Renderer";
-import Instance from "./InstanceResolver";
+import { Instance } from "./InstanceResolver";
 
 export default class Formula extends Instance {
   private _chars: MathChar[] = [];

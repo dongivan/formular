@@ -9,7 +9,7 @@ import {
 } from "../math-symbol";
 import Formula from "../Formula";
 import type InfixList from "./InfixList";
-import Instance from "../InstanceResolver";
+import { Instance } from "../InstanceResolver";
 
 export default class InfixListMaker extends Instance {
   get formula(): Formula {

@@ -2,7 +2,7 @@ import { OperandSymbol, OperatorSymbol } from "../math-symbol";
 import { LeftParen, RightParen } from "../math-char";
 import type InfixList from "./InfixList";
 import type PostfixList from "./PostfixList";
-import Instance from "../InstanceResolver";
+import { Instance } from "../InstanceResolver";
 
 export default class PostfixListMaker extends Instance {
   make(infix: InfixList): PostfixList {

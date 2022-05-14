@@ -2,7 +2,7 @@ import Formula from "../Formula";
 import { ExpressionTree, ExpressionNode } from "./ExpressionTree";
 import { OperandSymbol, OperatorSymbol } from "../math-symbol";
 import type PostfixList from "./PostfixList";
-import Instance from "../InstanceResolver";
+import { Instance } from "../InstanceResolver";
 
 export default class ExpressionTreeMaker extends Instance {
   make(postfix: PostfixList, addParen = false) {
