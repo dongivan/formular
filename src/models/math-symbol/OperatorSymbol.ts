@@ -1,12 +1,20 @@
-import { OperatorChar } from "../math-char";
+import { MathChar, OperatorChar } from "../math-char";
 import MathSymbol from "./MathSymbol";
 
-export default class OperatorSymbol extends MathSymbol<OperatorChar> {
+export default class OperatorSymbol extends MathSymbol {
+  constructor(args: { char: OperatorChar; params?: MathChar[][] }) {
+    super(args);
+  }
+
+  get char() {
+    return this._char as OperatorChar;
+  }
+
   get hasLeftOperand(): boolean {
-    return this._char.hasLeftOperand;
+    return this.char.hasLeftOperand;
   }
 
   get hasRightOperand(): boolean {
-    return this._char.hasRightOperand;
+    return this.char.hasRightOperand;
   }
 }

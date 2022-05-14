@@ -263,7 +263,7 @@ export default class InfixListMaker extends Instance {
     infixList.push(operand);
   }
 
-  private _createMathSymbol<M extends MathSymbol<MathChar>>(
+  private _createMathSymbol<M extends MathSymbol>(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     constructor: new (args: any) => M,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

@@ -1,6 +1,5 @@
 import { BinaryNode, BinaryTree } from "./BinaryTree";
 import { LeftParen, RightParen } from "../math-char";
-import type { MathChar } from "../math-char";
 import { OperatorSymbol } from "../math-symbol";
 import type { MathSymbol } from "../math-symbol";
 
@@ -25,15 +24,15 @@ const SetParenLevel = function (
   return parenCounts;
 };
 
-class ExpressionNode extends BinaryNode<MathSymbol<MathChar>> {
+class ExpressionNode extends BinaryNode<MathSymbol> {
   paramTrees: ExpressionTree[];
 
-  constructor(symbol: MathSymbol<MathChar>, paramTrees?: ExpressionTree[]) {
+  constructor(symbol: MathSymbol, paramTrees?: ExpressionTree[]) {
     super(symbol);
     this.paramTrees = paramTrees || [];
   }
 
-  get symbol(): MathSymbol<MathChar> {
+  get symbol(): MathSymbol {
     return this.value;
   }
 

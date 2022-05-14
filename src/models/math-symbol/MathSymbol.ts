@@ -1,15 +1,15 @@
 import { MathChar } from "../math-char";
 
-export default abstract class MathSymbol<M extends MathChar> {
-  protected _char: M;
+export default abstract class MathSymbol {
+  protected _char: MathChar;
   protected _params: MathChar[][] = [];
 
-  constructor(args: { char: M; params?: MathChar[][] }) {
+  constructor(args: { char: MathChar; params?: MathChar[][] }) {
     this._char = args.char;
     this._params = args.params || [];
   }
 
-  get char(): M {
+  get char(): MathChar {
     return this._char;
   }
 
