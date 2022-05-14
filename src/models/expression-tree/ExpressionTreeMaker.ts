@@ -61,8 +61,8 @@ export default class ExpressionTreeMaker extends Instance {
     }
     if (addParen) {
       const [left, right] = this.formula.charFactory.createTempParen();
-      const rightNode = new ExpressionNode(new OperatorSymbol(right)),
-        leftNode = new ExpressionNode(new OperatorSymbol(left));
+      const rightNode = new ExpressionNode(new OperatorSymbol({ char: right })),
+        leftNode = new ExpressionNode(new OperatorSymbol({ char: left }));
       rightNode.leftChild = root;
       leftNode.rightChild = rightNode;
       root = leftNode;

@@ -4,21 +4,9 @@ export default abstract class MathSymbol<M extends MathChar> {
   protected _char: M;
   protected _params: MathChar[][] = [];
 
-  constructor(
-    args:
-      | {
-          char: M;
-          params?: MathChar[][];
-        }
-      | M
-  ) {
-    if (args instanceof MathChar) {
-      this._char = args;
-      this._params = [];
-    } else {
-      this._char = args.char;
-      this._params = args.params || [];
-    }
+  constructor(args: { char: M; params?: MathChar[][] }) {
+    this._char = args.char;
+    this._params = args.params || [];
   }
 
   get char(): M {
