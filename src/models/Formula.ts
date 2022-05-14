@@ -5,12 +5,7 @@ import {
   ParamSeparator,
   Placeholder,
 } from "./math-char";
-import {
-  ExpressionTreeMaker,
-  PostfixListMaker,
-  InfixListMaker,
-  ExpressionTree,
-} from "./expression-tree";
+import { PostfixListMaker, InfixListMaker, MathTree } from "./math-tree";
 import Config from "./Config";
 import MathMLNode from "./MathMLNode";
 import { Latex, MathML } from "./Renderer";
@@ -18,6 +13,7 @@ import { Instance } from "./InstanceResolver";
 
 export default class Formula extends Instance {
   private _chars: MathChar[] = [];
+  private _tree: MathTree;
   private _steps: number[][] = [];
   private _currentStep = -1;
   private _cursor: Cursor;
@@ -38,15 +34,13 @@ export default class Formula extends Instance {
       prop: PostfixListMaker,
       instance: new PostfixListMaker(),
     });
-    this.addRelation({
-      prop: ExpressionTreeMaker,
-      instance: new ExpressionTreeMaker(),
-      backProp: Formula,
-    });
 
     this._cursor = charFactory.createCursor();
     this._chars.push(this._cursor);
     this._pushStep();
+
+    this._tree = new MathTree(this, false);
+    this._afterCharsChange();
   }
 
   get cursor(): Cursor {
@@ -69,12 +63,8 @@ export default class Formula extends Instance {
     return this.getTrackedRelated(PostfixListMaker);
   }
 
-  get binaryTreeMaker(): ExpressionTreeMaker {
-    return this.getTrackedRelated<ExpressionTreeMaker>(ExpressionTreeMaker);
-  }
-
-  get(pos: number): MathChar | undefined {
-    return this._chars[pos];
+  private _afterCharsChange() {
+    this._tree.resetInfixList(this._chars);
   }
 
   insertAtCursor(value: string) {
@@ -87,6 +77,7 @@ export default class Formula extends Instance {
     const cursorPos = this._chars.indexOf(this._cursor),
       chars = this.charFactory.create(value, this._cursor);
     this._chars.splice(cursorPos, 1, ...chars);
+    this._afterCharsChange();
 
     this._pushStep();
   }
@@ -129,6 +120,7 @@ export default class Formula extends Instance {
         }
       }
       this._chars.splice(cursorPos - 1, 1);
+      this._afterCharsChange();
     }
     this._pushStep();
   }
@@ -160,6 +152,7 @@ export default class Formula extends Instance {
     }
     this._chars.splice(cursorPos, 1);
     this._chars.splice(pos, 0, this._cursor);
+    this._afterCharsChange();
   }
 
   moveCursor(direction: number) {
@@ -170,6 +163,7 @@ export default class Formula extends Instance {
     }
     this._chars.splice(cursorPos, 1);
     this._chars.splice(newPos, 0, this._cursor);
+    this._afterCharsChange();
   }
 
   moveCursorLeft() {
@@ -196,6 +190,7 @@ export default class Formula extends Instance {
       return;
     }
     this._chars = this._rebuildStep(step);
+    this._afterCharsChange();
   }
 
   redo(): void {
@@ -208,6 +203,7 @@ export default class Formula extends Instance {
       return;
     }
     this._chars = this._rebuildStep(step);
+    this._afterCharsChange();
   }
 
   private _rebuildStep(step: number[]): MathChar[] {
@@ -226,19 +222,11 @@ export default class Formula extends Instance {
   }
 
   toLatex(): string {
-    const tree = this.generateExpressionTree(this._chars);
-    return Latex.render(tree);
+    return Latex.render(this._tree);
   }
 
   toMathMLNode(): MathMLNode {
-    const tree = this.generateExpressionTree(this._chars);
-    return new MathMLNode("math", { children: MathML.render(tree) });
-  }
-
-  generateExpressionTree(chars: MathChar[], addParen = false): ExpressionTree {
-    const infix = this.infixMaker.make(chars);
-    const postfix = this.postfixMaker.make(infix);
-    return this.binaryTreeMaker.make(postfix, addParen);
+    return new MathMLNode("math", { children: MathML.render(this._tree) });
   }
 
   toString(): string {

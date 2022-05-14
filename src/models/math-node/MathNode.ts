@@ -1,13 +1,13 @@
-import { ExpressionTree } from "../expression-tree";
 import { LeftParen, MathChar, RightParen } from "../math-char";
+import type { MathTree } from "../math-tree";
 
 export default abstract class MathNode {
   protected _char: MathChar;
   protected _params: MathChar[][] = [];
 
-  private _paramTrees: ExpressionTree[] | undefined;
   leftChild: MathNode | undefined;
   rightChild: MathNode | undefined;
+  paramTrees: MathTree[] | undefined;
 
   constructor(args: { char: MathChar; params?: MathChar[][] }) {
     this._char = args.char;
@@ -20,14 +20,6 @@ export default abstract class MathNode {
 
   get params(): MathChar[][] {
     return this._params;
-  }
-
-  get paramTrees() {
-    return this._paramTrees || [];
-  }
-
-  set paramTrees(val: ExpressionTree[]) {
-    this._paramTrees = val;
   }
 
   setParenLevels() {

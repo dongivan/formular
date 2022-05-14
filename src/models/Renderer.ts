@@ -1,7 +1,7 @@
 import Config from "./Config";
-import type { ExpressionTree } from "./expression-tree";
 import { AbstractParen, MathChar } from "./math-char";
 import { MathNode } from "./math-node";
+import type { MathTree } from "./math-tree";
 import MathMLNode from "./MathMLNode";
 import { findByClass, replace } from "./utils";
 
@@ -105,7 +105,7 @@ class Renderer<N, H> {
         right: node.rightChild ? this._renderNode(node.rightChild) : undefined,
         current: this._renderChar(
           node.char,
-          node.paramTrees.map<N>((tree) => this.render(tree))
+          (node.paramTrees || []).map<N>((tree) => this.render(tree))
         ),
         h: this._helper,
         renderChar: this._renderChar.bind(this),
@@ -113,7 +113,12 @@ class Renderer<N, H> {
     }
   }
 
-  render(tree: ExpressionTree): N {
+  render(tree: MathTree): N {
+    if (!tree.root) {
+      throw new Error(
+        "Render failed: the `root` of `MathTree` is `undefined`."
+      );
+    }
     return this._renderNode(tree.root);
   }
 }
