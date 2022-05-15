@@ -4,10 +4,9 @@
       class="jax-container"
       source-format="tex"
       target-format="html"
-      :content="latexText"
+      :content="latexResultRef"
     />
-    <div>{{ latexText }}</div>
-    <SvgIcon name="number-0" />
+    <div>{{ latexResultRef }}</div>
     <button
       v-for="partName of 10"
       :key="`key-value-${partName - 1}`"
@@ -39,21 +38,20 @@
     source-format="mml"
     target-format="html"
     :math-jax-options="mathJaxOptions"
-    :content="mathMlText"
+    :content="mathMLResultRef"
     @click="onViewerClick"
   />
 
-  <pre>{{ mathMlText }}</pre>
+  <pre>{{ mathMLResultRef }}</pre>
 </template>
 
 <script setup lang="ts">
 import MathJaxViewer from "@/components/MathJaxViewer.vue";
 import FormularInputPad from "@/components/input-pad";
-import { computed, reactive } from "vue";
-import Formula from "./models/Formula";
-import SvgIcon from "@/components/SvgIcon.vue";
+import { ref } from "vue";
+import { Formula, Latex, MathML } from "./models";
 
-const formula = reactive(new Formula());
+const formula = new Formula();
 
 const mathJaxOptions = {
   loader: {
@@ -72,12 +70,13 @@ const mathJaxOptions = {
   },
 };
 
-const mathMlText = computed(() => {
-  return formula.toMathMLNode().render();
+const latexResultRef = ref("");
+formula.addTreeChangedListener(({ tree }) => {
+  latexResultRef.value = Latex.render(tree);
 });
-
-const latexText = computed(() => {
-  return formula.toLatex();
+const mathMLResultRef = ref("");
+formula.addTreeChangedListener(({ tree }) => {
+  mathMLResultRef.value = MathML.renderText(tree, "block");
 });
 
 const handleInputPadKeyPressed = (name: string) => {

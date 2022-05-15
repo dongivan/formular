@@ -24,7 +24,9 @@ type DecoratorNodeTemplateFunction<N, H> = (args: {
   renderChar: (char: MathChar, params: N[]) => N;
 }) => N;
 
-class Renderer<N, H> {
+type RenderTextFunction<N> = (r: N, ...args: unknown[]) => string;
+
+export class Renderer<N, H> {
   private _helper: H;
 
   private _charFns: Record<string, DecoratorCharTemplateFunction<N, H>> = {};
@@ -34,17 +36,21 @@ class Renderer<N, H> {
 
   private _nodeFns: Record<string, DecoratorNodeTemplateFunction<N, H>> = {};
 
+  private _renderTextFunction?: RenderTextFunction<N>;
+
   readonly renderVariable: RenderVariableFunction<N>;
 
   constructor(config: {
     helper: H;
     addClickableMarkFunction?: AddClickableMarkFunction<N>;
     setParenthesesLevelFunction?: SetParenthesesLevelFunction<N>;
+    renderTextFunction?: RenderTextFunction<N>;
     renderVariable: RenderVariableFunction<N>;
   }) {
     this._helper = config.helper;
     this._addClickableMarkFn = config.addClickableMarkFunction;
     this._setParenthesesLevelFn = config.setParenthesesLevelFunction;
+    this._renderTextFunction = config.renderTextFunction;
     this.renderVariable = config.renderVariable;
   }
 
@@ -121,6 +127,15 @@ class Renderer<N, H> {
     }
     return this._renderNode(tree.root);
   }
+
+  renderText(tree: MathTree, ...args: unknown[]): string {
+    if (!this._renderTextFunction) {
+      throw new Error(
+        "Render text failed: `renderTextFunction` has not been defined."
+      );
+    }
+    return this._renderTextFunction(this.render(tree), ...args);
+  }
 }
 
 const latexGreekLetters: Record<string, string> = {
@@ -189,6 +204,7 @@ export const Latex = new Renderer<string, typeof replace>({
   renderVariable(char) {
     return `{${latexGreekLetters[char.value] || char.value}}`;
   },
+  renderTextFunction: (r) => r,
 });
 
 const mathMLGreekLetters: Record<
@@ -283,5 +299,16 @@ export const MathML = new Renderer<MathMLNode[], typeof MathMLNode.create>({
         mathMLGreekLetters[char.value] || { value: char.value }
       ),
     ];
+  },
+  renderTextFunction: (children, ...args: unknown[]) => {
+    const attrs = { display: "" };
+    if (args[0]) {
+      if (typeof args[0] == "string") {
+        attrs.display = args[0];
+      } else if (typeof args[0] == "object" && "display" in args[0]) {
+        attrs.display = (args[0] as { display: string }).display;
+      }
+    }
+    return new MathMLNode("math", { children, attrs }).render();
   },
 });

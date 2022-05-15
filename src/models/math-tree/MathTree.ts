@@ -3,7 +3,6 @@ import type { MathNode } from "../math-node";
 import { OperandNode, OperatorNode } from "../math-node";
 import { InstanceResolver } from "../InstanceResolver";
 import type { MathChar } from "../math-char";
-import type PostfixList from "./PostfixList";
 
 export default class MathTree {
   private _formulaId: string;
@@ -33,7 +32,7 @@ export default class MathTree {
   }
 
   resetInfixList(chars: MathChar[]) {
-    this._infixList = this.infixMaker.make(chars);
+    this._infixList = this.infixMaker.make(chars, this._infixList);
     this._generateTree();
   }
 
@@ -42,7 +41,7 @@ export default class MathTree {
     this._parsePostfixToBinaryTree(postfix);
   }
 
-  private _parsePostfixToBinaryTree(postfix: PostfixList): void {
+  private _parsePostfixToBinaryTree(postfix: MathNode[]): void {
     let root: MathNode | undefined = undefined;
 
     if (postfix.length == 0) {

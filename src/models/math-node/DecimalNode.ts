@@ -23,6 +23,20 @@ export default class DecimalNode extends OperandNode {
     this._decimals = args.decimals;
   }
 
+  protected _reuse(args: {
+    integers: Digit[];
+    char: DecimalPoint;
+    decimals: Digit[];
+  }) {
+    super._reuse(args);
+    if (this._integers !== args.integers) {
+      this._integers = args.integers;
+    }
+    if (this._decimals !== args.decimals) {
+      this._decimals = args.decimals;
+    }
+  }
+
   toString(): string {
     return (
       this._integers.map<string>((char) => char.toString()).join("") +

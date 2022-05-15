@@ -7,9 +7,12 @@ import {
 } from "./math-char";
 import { PostfixListMaker, InfixListMaker, MathTree } from "./math-tree";
 import Config from "./Config";
-import MathMLNode from "./MathMLNode";
-import { Latex, MathML } from "./Renderer";
 import { Instance } from "./InstanceResolver";
+
+type TreeChangedEvent = {
+  tree: MathTree;
+};
+type TreeChangedListener = (evt: TreeChangedEvent) => void;
 
 export default class Formula extends Instance {
   private _chars: MathChar[] = [];
@@ -17,6 +20,7 @@ export default class Formula extends Instance {
   private _steps: number[][] = [];
   private _currentStep = -1;
   private _cursor: Cursor;
+  private _treeChangedListeners: TreeChangedListener[] = [];
 
   constructor() {
     super();
@@ -65,6 +69,9 @@ export default class Formula extends Instance {
 
   private _afterCharsChange() {
     this._tree.resetInfixList(this._chars);
+    this._treeChangedListeners.forEach((listener) => {
+      listener({ tree: this._tree });
+    });
   }
 
   insertAtCursor(value: string) {
@@ -221,12 +228,18 @@ export default class Formula extends Instance {
     return this._currentStep > 0;
   }
 
-  toLatex(): string {
-    return Latex.render(this._tree);
+  addTreeChangedListener(listener: TreeChangedListener) {
+    if (this._treeChangedListeners.indexOf(listener) < 0) {
+      this._treeChangedListeners.push(listener);
+      listener({ tree: this._tree });
+    }
   }
 
-  toMathMLNode(): MathMLNode {
-    return new MathMLNode("math", { children: MathML.render(this._tree) });
+  removeTreeChangedListener(listener: TreeChangedListener) {
+    const index = this._treeChangedListeners.indexOf(listener);
+    if (index >= 0) {
+      this._treeChangedListeners.splice(index, 1);
+    }
   }
 
   toString(): string {

@@ -1,17 +1,16 @@
 import { OperandNode, OperatorNode } from "../math-node";
+import type { MathNode } from "../math-node";
 import { LeftParen, RightParen } from "../math-char";
-import type InfixList from "./InfixList";
-import type PostfixList from "./PostfixList";
 import { Instance } from "../InstanceResolver";
 
 export default class PostfixListMaker extends Instance {
-  make(infix: InfixList): PostfixList {
+  make(infix: MathNode[]): MathNode[] {
     return this._generatePostfixList(infix);
   }
 
-  private _generatePostfixList(infix: InfixList): PostfixList {
+  private _generatePostfixList(infix: MathNode[]): MathNode[] {
     /* use shunting yard algorithm to parse infix expression to postfix expression */
-    const postfixList: PostfixList = [],
+    const postfixList: MathNode[] = [],
       operatorStack: OperatorNode[] = [];
 
     let pos = 0;
@@ -55,7 +54,7 @@ export default class PostfixListMaker extends Instance {
   private _pushOperatorIntoStack(
     operator: OperatorNode,
     operatorStack: OperatorNode[],
-    postfixList: PostfixList
+    postfixList: MathNode[]
   ) {
     /* pop operators from the operator stack until the priority of the top operator is less than the operator's
      and push them into the output list */

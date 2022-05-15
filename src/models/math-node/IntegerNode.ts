@@ -13,6 +13,13 @@ export default class IntegerNode extends OperandNode {
     this._integers = args.integers;
   }
 
+  protected _reuse(args: { char: Digit; integers: Digit[] }) {
+    super._reuse(args);
+    if (this._integers !== args.integers) {
+      this._integers = args.integers;
+    }
+  }
+
   toString(): string {
     return this._integers.map<string>((char) => char.toString()).join("");
   }
