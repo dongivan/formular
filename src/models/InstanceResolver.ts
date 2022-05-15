@@ -63,17 +63,10 @@ export class InstanceResolver {
   private static _relations: Record<string, Record<string, string>> = {};
 
   static track(instance: Instance) {
-    console.log("track instance: ", instance.instanceId);
     InstanceResolver._instances[instance.instanceId] = instance;
   }
 
   static buildRelation(instance: Instance, property: string, member: Instance) {
-    console.log(
-      "build relation:",
-      instance.constructor.name,
-      property,
-      member.constructor.name
-    );
     let relations = InstanceResolver._relations[instance.instanceId];
     if (!relations) {
       relations = {};
