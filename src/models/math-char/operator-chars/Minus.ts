@@ -1,4 +1,4 @@
-import { MathML } from "@/models/Renderer";
+import { MathML } from "../../Renderer";
 import { MathChar, MathCharFactory, OperatorChar } from "../internal";
 
 @MathCharFactory.registerMathChar("-", "minus")

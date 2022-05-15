@@ -1,5 +1,5 @@
-import type { IntegerNode } from "@/models/math-node";
-import type MathMLNode from "@/models/MathMLNode";
+import type { IntegerNode } from "../../math-node";
+import type MathMLNode from "../../MathMLNode";
 import { Latex, MathML } from "../../Renderer";
 import { OperandChar } from "../internal";
 

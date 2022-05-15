@@ -1,5 +1,5 @@
-import type { DecimalNode } from "@/models/math-node";
-import type MathMLNode from "@/models/MathMLNode";
+import type { DecimalNode } from "../../math-node";
+import type MathMLNode from "../../MathMLNode";
 import { Latex, MathML } from "../../Renderer";
 import { MathCharFactory, OperandChar } from "../internal";
 
