@@ -1,5 +1,8 @@
 <template>
-  <svg class="svg-icon" :style="{ width: iconSize, height: iconSize }">
+  <svg
+    class="inline-block w-4 h-4 fill-current overflow-hidden"
+    :style="styleRef"
+  >
     <use :xlink:href="iconNameRef"></use>
   </svg>
 </template>
@@ -8,20 +11,21 @@
 import { computed } from "vue";
 const props = defineProps({
   name: { type: String, required: true },
-  iconSize: { type: String, default: "1em" },
+  scale: { type: Number, default: 1 },
+  flip: { type: Boolean, default: false },
 });
 
 const iconNameRef = computed(() => {
-  return `#svg-icon-${props.name}`;
-});
+    return `#svg-icon-${props.name}`;
+  }),
+  styleRef = computed(() => {
+    const styles: Record<string, string | number> = {
+      width: `${props.scale}rem`,
+      height: `${props.scale}rem`,
+    };
+    if (props.flip) {
+      styles["transform"] = "scale(-1,1)";
+    }
+    return styles;
+  });
 </script>
-
-<style lang="scss" scoped>
-.svg-icon {
-  width: 1em;
-  height: 1em;
-  vertical-align: -0.15em;
-  fill: currentColor;
-  overflow: hidden;
-}
-</style>

@@ -31,82 +31,45 @@ const operators = [
   "differential",
 ];
 const greek = [
-  "lower-alpha",
-  "upper-alpha",
-  "lower-beta",
-  "upper-beta",
-  "lower-gamma",
-  "upper-gamma",
-  "lower-delta",
-  "upper-delta",
-  "lower-epsilon",
-  "var-epsilon",
-  "upper-epsilon",
-  "lower-zeta",
-  "upper-zeta",
-  "lower-eta",
-  "upper-eta",
-  "lower-theta",
-  "var-theta",
-  "upper-theta",
-  "lower-iota",
-  "upper-iota",
-  "lower-kappa",
-  "upper-kappa",
-  "lower-lambda",
-  "upper-lambda",
-  "lower-mu",
-  "upper-mu",
-  "lower-nu",
-  "upper-nu",
-  "lower-xi",
-  "upper-xi",
-  "lower-o",
-  "upper-o",
-  "lower-pi",
-  "upper-pi",
-  "lower-rho",
-  "var-rho",
-  "upper-rho",
-  "lower-sigma",
-  "upper-sigma",
-  "lower-tau",
-  "upper-tau",
-  "lower-upsilon",
-  "upper-upsilon",
-  "lower-phi",
-  "var-phi",
-  "upper-phi",
-  "lower-chi",
-  "upper-chi",
-  "lower-psi",
-  "upper-psi",
-  "lower-omega",
-  "upper-omega",
+  // eslint-disable-next-line prettier/prettier
+  "lower-alpha", "upper-alpha", "lower-beta", "upper-beta", "lower-gamma", "upper-gamma", "lower-delta", "upper-delta", "lower-epsilon", "var-epsilon", "upper-epsilon", "lower-zeta", "upper-zeta", "lower-eta", "upper-eta", "lower-theta", "var-theta", "upper-theta", "lower-iota", "upper-iota", "lower-kappa", "upper-kappa", "lower-lambda", "upper-lambda", "lower-mu", "upper-mu", "lower-nu", "upper-nu", "lower-xi", "upper-xi", "lower-o", "upper-o", "lower-pi", "upper-pi", "lower-rho", "var-rho", "upper-rho", "lower-sigma", "upper-sigma", "lower-tau", "upper-tau", "lower-upsilon", "upper-upsilon", "lower-phi", "var-phi", "upper-phi", "lower-chi", "upper-chi", "lower-psi", "upper-psi", "lower-omega", "upper-omega",
+];
+const controls = [
+  "move-left",
+  "move-right",
+  "backspace",
+  "undo",
+  "redo",
+  "execute",
 ];
 
-const iconSizes: Record<string, string> = {
-  "operator-fraction": "2.5em",
-  "operator-square": "1.5em",
-  "operator-square-root": "2em",
-  "operator-ln": "1.35em",
-  "operator-sum": "1.2em",
-  "operator-i-integral": "2em",
-  "operator-differential": "2em",
-  "operator-factorial": "2em",
-  "operator-combination": "2.4em",
-  "operator-limit": "2em",
+type Icon = {
+  name: string;
+  scale?: number;
+  flip?: boolean;
 };
 
-type IconData = {
-  icon: string;
-  iconSize?: string;
+const iconData: Record<string, Partial<Icon>> = {
+  "operator-fraction": { scale: 2.5 },
+  "operator-square": { scale: 1.5 },
+  "operator-square-root": { scale: 2 },
+  "operator-ln": { scale: 1.35 },
+  "operator-sum": { scale: 1.2 },
+  "operator-i-integral": { scale: 2 },
+  "operator-differential": { scale: 2 },
+  "operator-factorial": { scale: 2 },
+  "operator-combination": { scale: 2.4 },
+  "operator-limit": { scale: 2 },
+  "control-redo": { name: "control-undo", flip: true },
 };
+
 type InputButton = {
   value: string;
   label?: string;
   name?: string;
-} & Partial<IconData>;
+  icon?: Icon;
+  type?: string;
+};
 type ButtonPosition = {
   page: string;
   row: number;
@@ -126,16 +89,11 @@ const runParser = function (
 };
 const generateIconData = function (
   iconName: string | undefined
-): Partial<IconData> {
+): Icon | undefined {
   if (!iconName) {
-    return {};
+    return undefined;
   }
-  const result: IconData = { icon: iconName },
-    size = iconSizes[iconName];
-  if (size) {
-    result.iconSize = size;
-  }
-  return result;
+  return { name: iconName, ...iconData[iconName] };
 };
 const generateButtons = function (
   names: string[],
@@ -157,9 +115,7 @@ const generateButtons = function (
     result[key] = {
       value,
       name: runParser(fn.name, val) || val,
-      ...generateIconData(runParser(fn.icon, val)),
-      // icon: runParser(fn.icon, val),
-      // iconSize: runParser(fn.iconSize, val, false),
+      icon: generateIconData(runParser(fn.icon, val)),
     };
   });
 
@@ -184,23 +140,26 @@ export const inputButtons: Record<string, InputButton> = {
     key: (val) => `greek-${val}`,
     icon: (val) => `greek-${val}`,
   }),
+  ...generateButtons(controls, { icon: (val) => `control-${val}` }),
 };
 
-const buttonsLayouts: Record<string, (string | number)[][]> = {
+type PageLayout = (string | InputButton | undefined)[][];
+
+const buttonsLayouts: Record<string, PageLayout> = {
   "page-1": [
     // eslint-disable-next-line prettier/prettier
-    [7,         8,          9,       "plus",    "fraction", "english-lower-x",   "left-paren",  "right-paren"   ],
+    ["7",     "8",        "9",       "plus",    "fraction", "english-lower-x",   "left-paren",  "right-paren",          "backspace:1:2:danger" ],
     // eslint-disable-next-line prettier/prettier
-    [4,         5,          6,      "minus",      "square", "english-lower-k",          "sum",    "factorial"   ],
+    ["4",     "5",        "6",      "minus",      "square", "english-lower-k",          "sum",    "factorial",           "undo",        "redo" ],
     // eslint-disable-next-line prettier/prettier
-    [1,         2,          3,      "times", "square-root", "greek-lower-pi",   "i-integral",  "combination"   ],
+    ["1",     "2",        "3",      "times",  "square-root", "greek-lower-pi",   "i-integral",  "combination",      "move-left",  "move-right" ],
     // eslint-disable-next-line prettier/prettier
-    ["point",   0, "infinity",     "divide",          "ln", "english-lower-e", "differential",        "limit"   ],
+    ["point", "0", "infinity",     "divide",          "ln", "english-lower-e", "differential",        "limit",           "execute:1:2:primary" ],
   ],
 };
 
 export const parseLayouts: (
-  layouts: Record<string, (string | number)[][]>,
+  layouts: Record<string, PageLayout>,
   inputButtons: Record<string, InputButton>
 ) => Record<string, PadButton[]> = function (layouts) {
   const result: Record<string, PadButton[]> = {};
@@ -211,17 +170,31 @@ export const parseLayouts: (
 
     layout.forEach((line, row) => {
       line.forEach((key, col) => {
-        const inputButton = inputButtons[key];
+        if (!key) {
+          return;
+        }
+        let inputButton: InputButton;
+        const buttonPosition: ButtonPosition = {
+          page,
+          row: row + 1,
+          col: col + 1,
+        };
+        if (typeof key == "string") {
+          const [name, rowSpan, colSpan, type] = key.split(":");
+          inputButton = inputButtons[name];
+          inputButton.type = type || inputButton.type || "default";
+          buttonPosition.rowSpan = parseInt(rowSpan) || 1;
+          buttonPosition.colSpan = parseInt(colSpan) || 1;
+        } else {
+          inputButton = key;
+        }
         if (!inputButton) {
           return;
         }
 
         buttons.push({
           ...inputButton,
-
-          page,
-          row: row + 1,
-          col: col + 1,
+          ...buttonPosition,
         });
       });
     });
@@ -232,4 +205,6 @@ export const parseLayouts: (
   return result;
 };
 
-export const padButtons = parseLayouts(buttonsLayouts, inputButtons);
+const padButtons = parseLayouts(buttonsLayouts, inputButtons);
+
+export { padButtons, PadButton };

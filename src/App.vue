@@ -10,26 +10,33 @@
     <button
       v-for="partName of 10"
       :key="`key-value-${partName - 1}`"
+      class="btn"
       @click="formula.insertAtCursor((partName - 1).toString())"
     >
       {{ partName - 1 }}
     </button>
-    <button @click="formula.insertAtCursor('.')">.</button>
-    <button @click="formula.insertAtCursor('+')">+</button>
-    <button @click="formula.insertAtCursor('(')">(</button>
-    <button @click="formula.insertAtCursor(')')">)</button>
-    <button @click="formula.insertAtCursor('-')">-</button>
-    <button @click="formula.insertAtCursor('*')">*</button>
-    <button @click="formula.insertAtCursor('/')">/</button>
-    <button @click="formula.insertAtCursor('frac')">frac</button>
-    <button @click="formula.insertAtCursor('^')">^</button>
-    <button @click="formula.insertAtCursor('sqrt')">sqrt</button>
-    <button @click="formula.insertAtCursor('x')">x</button>
-    <button @click="formula.moveCursorLeft()">&lt;-</button>
-    <button @click="formula.moveCursorRight()">-&gt;</button>
-    <button @click="formula.deleteCharBeforeCursor()">Backspace!</button>
-    <button :disabled="!formula.couldUndo" @click="formula.undo()">UNDO</button>
-    <button :disabled="!formula.couldRedo" @click="formula.redo()">REDO</button>
+    <button class="btn" @click="formula.insertAtCursor('.')">.</button>
+    <button class="btn" @click="formula.insertAtCursor('+')">+</button>
+    <button class="btn" @click="formula.insertAtCursor('(')">(</button>
+    <button class="btn" @click="formula.insertAtCursor(')')">)</button>
+    <button class="btn" @click="formula.insertAtCursor('-')">-</button>
+    <button class="btn" @click="formula.insertAtCursor('*')">*</button>
+    <button class="btn" @click="formula.insertAtCursor('/')">/</button>
+    <button class="btn" @click="formula.insertAtCursor('frac')">frac</button>
+    <button class="btn" @click="formula.insertAtCursor('^')">^</button>
+    <button class="btn" @click="formula.insertAtCursor('sqrt')">sqrt</button>
+    <button class="btn" @click="formula.insertAtCursor('x')">x</button>
+    <button class="btn" @click="formula.moveCursorLeft()">&lt;-</button>
+    <button class="btn" @click="formula.moveCursorRight()">-&gt;</button>
+    <button class="btn" @click="formula.deleteCharBeforeCursor()">
+      Backspace!
+    </button>
+    <button class="btn" :disabled="!formula.couldUndo" @click="formula.undo()">
+      UNDO
+    </button>
+    <button class="btn" :disabled="!formula.couldRedo" @click="formula.redo()">
+      REDO
+    </button>
   </div>
   <FormularInputPad @key-pressed="handleInputPadKeyPressed" />
   <MathJaxViewer
@@ -81,13 +88,13 @@ formula.addTreeChangedListener(({ tree }) => {
 
 const handleInputPadKeyPressed = (name: string) => {
   switch (name) {
-    case "left":
+    case "move-left":
       formula.moveCursorLeft();
       break;
-    case "right":
+    case "move-right":
       formula.moveCursorRight();
       break;
-    case "delete":
+    case "backspace":
       formula.deleteCharBeforeCursor();
       break;
     case "undo":
@@ -95,6 +102,9 @@ const handleInputPadKeyPressed = (name: string) => {
       break;
     case "redo":
       formula.redo();
+      break;
+    case "execute":
+      console.log("execute !");
       break;
     default:
       formula.insertAtCursor(name);
@@ -120,7 +130,7 @@ const onViewerClick = (evt: Event) => {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -128,14 +138,19 @@ const onViewerClick = (evt: Event) => {
   color: #2c3e50;
 }
 .jax-container {
-  border: 1px solid black;
-  min-height: 50px;
-  width: 100%;
+  @apply border border-solid border-black min-h-[50px] w-full;
 }
-.formular-cursor {
-  background: skyblue;
+::v-deep .formular-cursor {
+  @apply bg-sky-400;
 }
-.formular-placeholder {
-  background: lightyellow;
+::v-deep .formular-placeholder {
+  @apply bg-yellow-200;
+}
+.btn {
+  @apply bg-gray-200 rounded-md min-w-min m-1 p-3 
+    hover:bg-gray-300 
+    active:bg-gray-400 
+    focus:outline-none focus:bg-gray-300 focus:ring focus:ring-gray-200
+    disabled:cursor-not-allowed disabled:text-gray-400 disabled:bg-gray-200;
 }
 </style>
