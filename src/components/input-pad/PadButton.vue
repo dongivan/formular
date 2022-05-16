@@ -1,66 +1,51 @@
 <template>
   <div
-    class="w-full min-w-[3rem] h-full min-h-[3rem]"
+    class="w-full min-w-[3rem] h-full min-h-[3rem] relative"
+    :class="{ group: data.children }"
     :style="{
       gridRow: `${data.row} / span ${data.rowSpan || 1}`,
       gridColumn: `${data.col + 1} / span ${data.colSpan || 1}`,
     }"
   >
-    <button
-      class="pad-button"
-      :class="[`btn-type-${data.type || 'default'}`]"
-      @click="emit('click', data.value)"
+    <div
+      v-if="data.children"
+      class="hidden group-hover:block absolute top-[-4px] left-[-4px] w-14 h-14 bg-gray-500 -z-10 rounded-b-lg"
+    ></div>
+    <div
+      v-if="data.children"
+      class="hidden group-hover:flex absolute top-[calc(-100%-0.5rem)] h-full m-w-full box-content p-1 bg-gray-500 z-10 rounded-lg gap-1"
+      :style="[childrenPositionRef]"
     >
-      <SvgIcon
-        v-if="data.icon"
-        :name="data.icon.name"
-        :scale="data.icon.scale"
-        :flip="data.icon.flip"
+      <IconButton
+        v-for="child of data.children"
+        :key="`btn-${data.value}-${child.value}`"
+        :data="child"
+        @click="(payloads) => emit('click', payloads)"
       />
-      <template v-else>
-        {{ data.label || data.name || data.value.toString() }}
-      </template>
-    </button>
+    </div>
+    <IconButton
+      :data="data"
+      :top-bar="data.children && data.children.length > 1"
+      @click="emit('click', data.value)"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
 import { PadButton } from "./buttons";
-import SvgIcon from "@/components/SvgIcon.vue";
-import { PropType } from "vue";
+import { computed, PropType } from "vue";
+import IconButton from "./IconButton.vue";
 
-defineProps({
+const props = defineProps({
   data: { type: Object as PropType<PadButton>, required: true },
 });
 const emit = defineEmits(["click"]);
+
+const childrenPositionRef = computed(() => {
+  if (!props.data.children || props.data.children.length <= 1) {
+    return {};
+  }
+  const n = props.data.children.length;
+  return { left: `${1.375 - 1.625 * n}rem` };
+});
 </script>
-
-<style lang="scss" scoped>
-.pad-button {
-  @apply w-full h-full text-center rounded-md focus:ring;
-
-  &.btn-type-default {
-    @apply bg-gray-200
-    hover:bg-gray-300 
-    active:bg-gray-400 
-    focus:outline-none focus:bg-gray-300 focus:ring-gray-200 
-    disabled:cursor-not-allowed disabled:text-gray-400 disabled:bg-gray-200;
-  }
-
-  &.btn-type-primary {
-    @apply bg-blue-400
-    hover:bg-blue-500 
-    active:bg-blue-600 
-    focus:outline-none focus:bg-blue-500 focus:ring-blue-300 
-    disabled:cursor-not-allowed disabled:text-blue-600 disabled:bg-blue-400;
-  }
-
-  &.btn-type-danger {
-    @apply bg-red-400
-    hover:bg-red-500 
-    active:bg-red-600 
-    focus:outline-none focus:bg-red-500 focus:ring-red-300 
-    disabled:cursor-not-allowed disabled:text-red-600 disabled:bg-red-400;
-  }
-}
-</style>

@@ -1,43 +1,11 @@
 <template>
-  <div>
-    <MathJaxViewer
-      class="jax-container"
-      source-format="tex"
-      target-format="html"
-      :content="latexResultRef"
-    />
-    <div>{{ latexResultRef }}</div>
-    <button
-      v-for="partName of 10"
-      :key="`key-value-${partName - 1}`"
-      class="btn"
-      @click="formula.insertAtCursor((partName - 1).toString())"
-    >
-      {{ partName - 1 }}
-    </button>
-    <button class="btn" @click="formula.insertAtCursor('.')">.</button>
-    <button class="btn" @click="formula.insertAtCursor('+')">+</button>
-    <button class="btn" @click="formula.insertAtCursor('(')">(</button>
-    <button class="btn" @click="formula.insertAtCursor(')')">)</button>
-    <button class="btn" @click="formula.insertAtCursor('-')">-</button>
-    <button class="btn" @click="formula.insertAtCursor('*')">*</button>
-    <button class="btn" @click="formula.insertAtCursor('/')">/</button>
-    <button class="btn" @click="formula.insertAtCursor('frac')">frac</button>
-    <button class="btn" @click="formula.insertAtCursor('^')">^</button>
-    <button class="btn" @click="formula.insertAtCursor('sqrt')">sqrt</button>
-    <button class="btn" @click="formula.insertAtCursor('x')">x</button>
-    <button class="btn" @click="formula.moveCursorLeft()">&lt;-</button>
-    <button class="btn" @click="formula.moveCursorRight()">-&gt;</button>
-    <button class="btn" @click="formula.deleteCharBeforeCursor()">
-      Backspace!
-    </button>
-    <button class="btn" :disabled="!formula.couldUndo" @click="formula.undo()">
-      UNDO
-    </button>
-    <button class="btn" :disabled="!formula.couldRedo" @click="formula.redo()">
-      REDO
-    </button>
-  </div>
+  <MathJaxViewer
+    class="jax-container"
+    source-format="tex"
+    target-format="html"
+    :content="latexResultRef"
+  />
+  <div>{{ latexResultRef }}</div>
   <FormularInputPad @key-pressed="handleInputPadKeyPressed" />
   <MathJaxViewer
     class="jax-container"

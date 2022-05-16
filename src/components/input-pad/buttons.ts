@@ -52,6 +52,7 @@ type Icon = {
 const iconData: Record<string, Partial<Icon>> = {
   "operator-fraction": { scale: 2.5 },
   "operator-square": { scale: 1.5 },
+  "operator-power": { scale: 1.5 },
   "operator-square-root": { scale: 2 },
   "operator-ln": { scale: 1.35 },
   "operator-sum": { scale: 1.2 },
@@ -65,10 +66,11 @@ const iconData: Record<string, Partial<Icon>> = {
 
 type InputButton = {
   value: string;
+  icon: Icon;
   label?: string;
   name?: string;
-  icon?: Icon;
   type?: string;
+  children?: InputButton[];
 };
 type ButtonPosition = {
   page: string;
@@ -87,12 +89,7 @@ const runParser = function (
 ) {
   return parser ? parser(val) : defaultValue ? val : undefined;
 };
-const generateIconData = function (
-  iconName: string | undefined
-): Icon | undefined {
-  if (!iconName) {
-    return undefined;
-  }
+const generateIconData = function (iconName: string): Icon {
   return { name: iconName, ...iconData[iconName] };
 };
 const generateButtons = function (
@@ -107,15 +104,16 @@ const generateButtons = function (
   const result: Record<string, InputButton> = {};
   names.forEach((val) => {
     const key = runParser(fn.key, val),
-      value = runParser(fn.value, val);
-    if (key == undefined || value == undefined) {
+      value = runParser(fn.value, val),
+      iconName = runParser(fn.icon, val);
+    if (key == undefined || value == undefined || iconName == undefined) {
       return;
     }
 
     result[key] = {
       value,
       name: runParser(fn.name, val) || val,
-      icon: generateIconData(runParser(fn.icon, val)),
+      icon: generateIconData(iconName),
     };
   });
 
@@ -143,18 +141,23 @@ export const inputButtons: Record<string, InputButton> = {
   ...generateButtons(controls, { icon: (val) => `control-${val}` }),
 };
 
-type PageLayout = (string | InputButton | undefined)[][];
+type PageLayout = (
+  | string
+  | InputButton
+  | (string | InputButton)[]
+  | undefined
+)[][];
 
 const buttonsLayouts: Record<string, PageLayout> = {
   "page-1": [
     // eslint-disable-next-line prettier/prettier
-    ["7",     "8",        "9",       "plus",    "fraction", "english-lower-x",   "left-paren",  "right-paren",          "backspace:1:2:danger" ],
+    ["7",     "8",        "9",       "plus",               "fraction", "english-lower-x",   "left-paren",  "right-paren",          "backspace:1:2:danger" ],
     // eslint-disable-next-line prettier/prettier
-    ["4",     "5",        "6",      "minus",      "square", "english-lower-k",          "sum",    "factorial",           "undo",        "redo" ],
+    ["4",     "5",        "6",      "minus",      ["square", "power"], "english-lower-k",          "sum",    "factorial",           "undo",        "redo" ],
     // eslint-disable-next-line prettier/prettier
-    ["1",     "2",        "3",      "times",  "square-root", "greek-lower-pi",   "i-integral",  "combination",      "move-left",  "move-right" ],
+    ["1",     "2",        "3",      "times",            "square-root", "greek-lower-pi",   "i-integral",  "combination",      "move-left",  "move-right" ],
     // eslint-disable-next-line prettier/prettier
-    ["point", "0", "infinity",     "divide",          "ln", "english-lower-e", "differential",        "limit",           "execute:1:2:primary" ],
+    ["point", "0", "infinity",     "divide",                     "ln", "english-lower-e", "differential",        "limit",           "execute:1:2:primary" ],
   ],
 };
 
@@ -169,8 +172,8 @@ export const parseLayouts: (
     const buttons: PadButton[] = [];
 
     layout.forEach((line, row) => {
-      line.forEach((key, col) => {
-        if (!key) {
+      line.forEach((btn, col) => {
+        if (!btn) {
           return;
         }
         let inputButton: InputButton;
@@ -179,14 +182,24 @@ export const parseLayouts: (
           row: row + 1,
           col: col + 1,
         };
-        if (typeof key == "string") {
-          const [name, rowSpan, colSpan, type] = key.split(":");
+        if (typeof btn == "string") {
+          const [name, rowSpan, colSpan, type] = btn.split(":");
           inputButton = inputButtons[name];
           inputButton.type = type || inputButton.type || "default";
           buttonPosition.rowSpan = parseInt(rowSpan) || 1;
           buttonPosition.colSpan = parseInt(colSpan) || 1;
+        } else if (Array.isArray(btn)) {
+          if (btn.length == 0) {
+            return;
+          }
+          const children = btn
+            .map<InputButton>((b) =>
+              typeof b == "string" ? inputButtons[b] : b
+            )
+            .filter((b) => b);
+          inputButton = { ...children[0], children };
         } else {
-          inputButton = key;
+          inputButton = btn;
         }
         if (!inputButton) {
           return;
@@ -207,4 +220,4 @@ export const parseLayouts: (
 
 const padButtons = parseLayouts(buttonsLayouts, inputButtons);
 
-export { padButtons, PadButton };
+export { padButtons, PadButton, InputButton };
