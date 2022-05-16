@@ -40,7 +40,6 @@ const loadMathJax = function (src: string, jaxOptions: Record<string, any>) {
     if (window.MathJax.startup?.defaultReady) {
       window.MathJax.startup?.defaultReady();
     }
-    console.log("ready function: tex2chtml", window.MathJax.tex2chtml);
     isMathJaxLoadedRef.value = true;
   };
 
