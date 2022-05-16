@@ -62,18 +62,15 @@ const formula = new Formula();
 
 const mathJaxOptions = {
   loader: {
-    load: [
-      "input/tex-base",
-      "input/mml",
-      "output/chtml",
-      "output/svg",
-      "[tex]/html",
-    ],
+    load: ["input/tex-base", "input/mml", "output/chtml", "[tex]/html"],
   },
   tex: {
     packages: {
       "[+]": ["base"],
     },
+  },
+  startup: {
+    output: ["chtml"],
   },
 };
 

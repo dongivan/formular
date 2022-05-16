@@ -33,6 +33,38 @@ const loadScript = async function (src: string) {
 };
 
 const isMathJaxLoadedRef = ref(false);
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const loadMathJax = function (src: string, jaxOptions: Record<string, any>) {
+  const ready = function () {
+    if (window.MathJax.startup?.defaultReady) {
+      window.MathJax.startup?.defaultReady();
+    }
+    console.log("ready function: tex2chtml", window.MathJax.tex2chtml);
+    isMathJaxLoadedRef.value = true;
+  };
+
+  const options = { ...jaxOptions };
+  if (!options.startup) {
+    options.startup = {};
+  }
+  if (typeof options.startup.ready == "function") {
+    const oldReady = options.startup.ready;
+    options.startup.ready = () => {
+      oldReady();
+      ready();
+    };
+  } else {
+    options.startup.ready = ready;
+  }
+  options.startup.typeset = false;
+
+  window.MathJax = {
+    ...window.MathJax,
+    ...options,
+  };
+  loadScript(src);
+};
 </script>
 
 <script setup lang="ts">
@@ -63,32 +95,6 @@ const props = defineProps({
 });
 const emit = defineEmits(["math-jax-loaded"]);
 
-/* setup ready() */
-const ready = function () {
-  if (window.MathJax.startup?.defaultReady) {
-    window.MathJax.startup?.defaultReady();
-  }
-  isMathJaxLoadedRef.value = true;
-  emit("math-jax-loaded");
-};
-
-const initMathJaxOptionsRef = computed(() => {
-  const options = { ...props.mathJaxOptions };
-  if (!options.startup) {
-    options.startup = {};
-  }
-  if (typeof options.startup.ready == "function") {
-    const oldReady = options.startup.ready;
-    options.startup.ready = () => {
-      oldReady();
-      ready();
-    };
-  } else {
-    options.startup.ready = ready;
-  }
-  return options;
-});
-
 /* load MathJax if needed */
 const mathJaxFunctionNameRef = computed(() => {
   const source =
@@ -103,15 +109,21 @@ const mathJaxFunctionNameRef = computed(() => {
   return `${source}2${target}Promise`;
 });
 
+watch(
+  isMathJaxLoadedRef,
+  (loaded) => {
+    if (loaded) {
+      emit("math-jax-loaded");
+    }
+  },
+  { immediate: true }
+);
+
 if (
   !(window.MathJax && window.MathJax[mathJaxFunctionNameRef.value]) &&
   props.mathJaxSrc
 ) {
-  loadScript(props.mathJaxSrc);
-  window.MathJax = {
-    ...window.MathJax,
-    ...initMathJaxOptionsRef.value,
-  };
+  loadMathJax(props.mathJaxSrc, props.mathJaxOptions);
 }
 
 /* setup components */
@@ -135,6 +147,10 @@ watch(
       el.appendChild(await MathJaxFunction(content));
       MathJax.startup?.document?.clear();
       MathJax.startup?.document?.updateDocument();
+    } else {
+      throw new Error(
+        `MathJax function \`${mathJaxFunctionNameRef.value}\` does not exist.`
+      );
     }
   }
 );
