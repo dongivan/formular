@@ -4,7 +4,7 @@
     :class="{ group: data.children }"
     :style="{
       gridRow: `${data.row} / span ${data.rowSpan || 1}`,
-      gridColumn: `${data.col + 1} / span ${data.colSpan || 1}`,
+      gridColumn: `${data.column} / span ${data.colSpan || 1}`,
     }"
   >
     <div
@@ -32,12 +32,12 @@
 </template>
 
 <script setup lang="ts">
-import { PadButton } from "./buttons";
+import { PadButtonType } from "./buttons";
 import { computed, PropType } from "vue";
 import IconButton from "./IconButton.vue";
 
 const props = defineProps({
-  data: { type: Object as PropType<PadButton>, required: true },
+  data: { type: Object as PropType<PadButtonType>, required: true },
 });
 const emit = defineEmits(["click"]);
 

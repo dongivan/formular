@@ -1,7 +1,7 @@
 <template>
   <button
     class="input-button"
-    :class="[`btn-type-${data.type || 'default'}`]"
+    :class="[`btn-type-${data.type || 'default'}`, { active }]"
     @click="emit('click', data.value)"
   >
     <div
@@ -17,13 +17,14 @@
 </template>
 
 <script setup lang="ts">
-import { InputButton } from "./buttons";
+import { IconButtonType } from "./buttons";
 import SvgIcon from "@/components/SvgIcon.vue";
 import { PropType } from "vue";
 
 defineProps({
-  data: { type: Object as PropType<InputButton>, required: true },
+  data: { type: Object as PropType<IconButtonType>, required: true },
   topBar: { type: Boolean, default: false },
+  active: { type: Boolean, default: false },
 });
 const emit = defineEmits(["click"]);
 </script>
@@ -38,6 +39,10 @@ const emit = defineEmits(["click"]);
     active:bg-gray-400
     focus:outline-none focus:bg-gray-300 focus:ring-gray-200 
     disabled:cursor-not-allowed disabled:text-gray-400 disabled:bg-gray-200;
+
+    &.active {
+      @apply bg-gray-400;
+    }
   }
 
   &.btn-type-primary {
@@ -46,6 +51,10 @@ const emit = defineEmits(["click"]);
     active:bg-blue-600 
     focus:outline-none focus:bg-blue-500 focus:ring-blue-300 
     disabled:cursor-not-allowed disabled:text-blue-600 disabled:bg-blue-400;
+
+    &.active {
+      @apply bg-blue-600;
+    }
   }
 
   &.btn-type-danger {
@@ -54,6 +63,10 @@ const emit = defineEmits(["click"]);
     active:bg-red-600 
     focus:outline-none focus:bg-red-500 focus:ring-red-300 
     disabled:cursor-not-allowed disabled:text-red-600 disabled:bg-red-400;
+
+    &.active {
+      @apply bg-red-600;
+    }
   }
 }
 </style>

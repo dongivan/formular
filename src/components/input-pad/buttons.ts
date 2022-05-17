@@ -1,3 +1,148 @@
+type IconType = {
+  name: string;
+  scale?: number;
+  flip?: boolean;
+};
+type IconButtonType = {
+  name: string;
+  value: string;
+  icon: IconType;
+  type?: string;
+  children?: IconButtonType[];
+};
+type ButtonPositionType = {
+  row: number;
+  column: number;
+  rowSpan?: number;
+  colSpan?: number;
+};
+type PadButtonType = IconButtonType & ButtonPositionType;
+
+type ControlButtonType = {
+  name: "backspace" | "undo" | "redo" | "move-left" | "move-right" | "execute";
+} & PadButtonType;
+
+type ButtonPagesType = Record<string, PadButtonType[]>;
+type InputPadType = {
+  rows: number;
+  menu: IconButtonType[];
+  control: {
+    columns: number;
+    buttons: ControlButtonType[];
+  };
+  buttons: {
+    columns: number;
+    pages: ButtonPagesType;
+  };
+};
+
+type ButtonLayoutType = (
+  | string
+  | IconButtonType
+  | (string | IconButtonType)[]
+  | undefined
+)[][];
+
+type ParseFunction = (val: string | undefined) => string | undefined;
+
+function parse(parser: ParseFunction | undefined, val: string | undefined) {
+  return parser ? parser(val) : val;
+}
+
+function generateIcon(iconName: string): IconType {
+  return { name: iconName, ...iconData[iconName] };
+}
+
+function generateButtons(
+  buttonNames: string[],
+  parsers: {
+    key?: ParseFunction;
+    value?: ParseFunction;
+    icon?: ParseFunction;
+    name?: ParseFunction;
+  } = {}
+) {
+  const result: Record<string, IconButtonType> = {};
+  buttonNames.forEach((val) => {
+    const key = parse(parsers.key, val),
+      value = parse(parsers.value, val),
+      iconName = parse(parsers.icon, val);
+    if (key == undefined || value == undefined || iconName == undefined) {
+      return;
+    }
+
+    result[key] = {
+      value,
+      name: parse(parsers.name, val) || val,
+      icon: generateIcon(iconName),
+    };
+  });
+
+  return result;
+}
+
+function parseLayout(
+  layout: ButtonLayoutType,
+  repo: Record<string, IconButtonType>
+): PadButtonType[] {
+  const buttons: PadButtonType[] = [];
+  layout.forEach((line, row) => {
+    line.forEach((btn, column) => {
+      if (!btn) {
+        return;
+      }
+      let inputButton: IconButtonType;
+      const buttonPosition: ButtonPositionType = {
+        row: row + 1,
+        column: column + 1,
+      };
+      if (typeof btn == "string") {
+        const [name, rowSpan, colSpan, type] = btn.split(":");
+        inputButton = repo[name];
+        inputButton.type = type || inputButton.type || "default";
+        buttonPosition.rowSpan = parseInt(rowSpan) || 1;
+        buttonPosition.colSpan = parseInt(colSpan) || 1;
+      } else if (Array.isArray(btn)) {
+        if (btn.length == 0) {
+          return;
+        }
+        const children = btn
+          .map<IconButtonType>((b) => (typeof b == "string" ? repo[b] : b))
+          .filter((b) => b);
+        inputButton = { ...children[0], children };
+      } else {
+        inputButton = btn;
+      }
+      if (!inputButton) {
+        return;
+      }
+
+      buttons.push({
+        ...inputButton,
+        ...buttonPosition,
+      });
+    });
+  });
+
+  return buttons;
+}
+
+function parsePages(
+  pages: Record<string, ButtonLayoutType>,
+  repo: Record<string, IconButtonType>
+): ButtonPagesType {
+  const result: ButtonPagesType = {};
+
+  Object.keys(pages).forEach((page) => {
+    const layout = pages[page];
+    const buttons: PadButtonType[] = parseLayout(layout, repo);
+
+    result[page] = buttons;
+  });
+
+  return result;
+}
+
 const numbers = "1234567890".split("");
 const english = "abcdefghijklmnopqrstuvwxyz".split("");
 const symbols = ["point", "infinity"];
@@ -42,14 +187,9 @@ const controls = [
   "redo",
   "execute",
 ];
+const menu = ["calculator", "about"];
 
-type Icon = {
-  name: string;
-  scale?: number;
-  flip?: boolean;
-};
-
-const iconData: Record<string, Partial<Icon>> = {
+const iconData: Record<string, Partial<IconType>> = {
   "operator-fraction": { scale: 2.5 },
   "operator-square": { scale: 1.5 },
   "operator-power": { scale: 1.5 },
@@ -64,63 +204,7 @@ const iconData: Record<string, Partial<Icon>> = {
   "control-redo": { name: "control-undo", flip: true },
 };
 
-type InputButton = {
-  value: string;
-  icon: Icon;
-  label?: string;
-  name?: string;
-  type?: string;
-  children?: InputButton[];
-};
-type ButtonPosition = {
-  page: string;
-  row: number;
-  col: number;
-  rowSpan?: number;
-  colSpan?: number;
-};
-type PadButton = InputButton & ButtonPosition;
-
-type ValueParser = (val: string | undefined) => string | undefined;
-const runParser = function (
-  parser: ValueParser | undefined,
-  val: string | undefined,
-  defaultValue = true
-) {
-  return parser ? parser(val) : defaultValue ? val : undefined;
-};
-const generateIconData = function (iconName: string): Icon {
-  return { name: iconName, ...iconData[iconName] };
-};
-const generateButtons = function (
-  names: string[],
-  fn: {
-    key?: ValueParser;
-    value?: ValueParser;
-    icon?: ValueParser;
-    name?: ValueParser;
-  } = {}
-) {
-  const result: Record<string, InputButton> = {};
-  names.forEach((val) => {
-    const key = runParser(fn.key, val),
-      value = runParser(fn.value, val),
-      iconName = runParser(fn.icon, val);
-    if (key == undefined || value == undefined || iconName == undefined) {
-      return;
-    }
-
-    result[key] = {
-      value,
-      name: runParser(fn.name, val) || val,
-      icon: generateIconData(iconName),
-    };
-  });
-
-  return result;
-};
-
-export const inputButtons: Record<string, InputButton> = {
+const buttonsRepo: Record<string, IconButtonType> = {
   ...generateButtons(numbers, { icon: (val) => `number-${val}` }),
   ...generateButtons(symbols, { icon: (val) => `symbol-${val}` }),
   ...generateButtons(operators, { icon: (val) => `operator-${val}` }),
@@ -139,85 +223,70 @@ export const inputButtons: Record<string, InputButton> = {
     icon: (val) => `greek-${val}`,
   }),
   ...generateButtons(controls, { icon: (val) => `control-${val}` }),
+  ...generateButtons(menu, { icon: (val) => `menu-${val}` }),
 };
 
-type PageLayout = (
-  | string
-  | InputButton
-  | (string | InputButton)[]
-  | undefined
-)[][];
-
-const buttonsLayouts: Record<string, PageLayout> = {
-  "page-1": [
+const buttonPages: Record<string, ButtonLayoutType> = {
+  calculator: [
     // eslint-disable-next-line prettier/prettier
-    ["7",     "8",        "9",       "plus",               "fraction", "english-lower-x",   "left-paren",  "right-paren",          "backspace:1:2:danger" ],
+    ["7",     "8",        "9",       "plus",               "fraction", "english-lower-x",   "left-paren",  "right-paren",],
     // eslint-disable-next-line prettier/prettier
-    ["4",     "5",        "6",      "minus",      ["square", "power"], "english-lower-k",          "sum",    "factorial",           "undo",        "redo" ],
+    ["4",     "5",        "6",      "minus",      ["square", "power"], "english-lower-k",          "sum",    "factorial",],
     // eslint-disable-next-line prettier/prettier
-    ["1",     "2",        "3",      "times",            "square-root", "greek-lower-pi",   "i-integral",  "combination",      "move-left",  "move-right" ],
+    ["1",     "2",        "3",      "times",            "square-root",  "greek-lower-pi",   "i-integral",  "combination",],
     // eslint-disable-next-line prettier/prettier
-    ["point", "0", "infinity",     "divide",                     "ln", "english-lower-e", "differential",        "limit",           "execute:1:2:primary" ],
+    ["point", "0", "infinity",     "divide",                     "ln", "english-lower-e", "differential",        "limit",],
   ],
+  english: ["abcdefgh", "ijklmnop", "qrstuvwx", "yz"].map<string[][]>(
+    (letters) =>
+      letters
+        .split("")
+        .map<string[]>((char) => [
+          `english-lower-${char}`,
+          `english-upper-${char}`,
+        ])
+  ),
 };
 
-export const parseLayouts: (
-  layouts: Record<string, PageLayout>,
-  inputButtons: Record<string, InputButton>
-) => Record<string, PadButton[]> = function (layouts) {
-  const result: Record<string, PadButton[]> = {};
+const controlLayout: ButtonLayoutType = [
+  ["backspace:1:2:danger"],
+  ["undo", "redo"],
+  ["move-left", "move-right"],
+  ["execute:1:2:primary"],
+];
 
-  Object.keys(layouts).forEach((page) => {
-    const layout = layouts[page];
-    const buttons: PadButton[] = [];
-
-    layout.forEach((line, row) => {
-      line.forEach((btn, col) => {
-        if (!btn) {
-          return;
-        }
-        let inputButton: InputButton;
-        const buttonPosition: ButtonPosition = {
-          page,
-          row: row + 1,
-          col: col + 1,
-        };
-        if (typeof btn == "string") {
-          const [name, rowSpan, colSpan, type] = btn.split(":");
-          inputButton = inputButtons[name];
-          inputButton.type = type || inputButton.type || "default";
-          buttonPosition.rowSpan = parseInt(rowSpan) || 1;
-          buttonPosition.colSpan = parseInt(colSpan) || 1;
-        } else if (Array.isArray(btn)) {
-          if (btn.length == 0) {
-            return;
-          }
-          const children = btn
-            .map<InputButton>((b) =>
-              typeof b == "string" ? inputButtons[b] : b
-            )
-            .filter((b) => b);
-          inputButton = { ...children[0], children };
-        } else {
-          inputButton = btn;
-        }
-        if (!inputButton) {
-          return;
-        }
-
-        buttons.push({
-          ...inputButton,
-          ...buttonPosition,
-        });
-      });
-    });
-
-    result[page] = buttons;
-  });
-
-  return result;
+const inputPad: InputPadType = {
+  rows: 4,
+  menu: [
+    {
+      name: "calculator",
+      value: "calculator",
+      icon: generateIcon("menu-calculator"),
+    },
+    {
+      name: "english",
+      value: "english",
+      icon: generateIcon("english-upper-a"),
+    },
+    {
+      name: "greek",
+      value: "greek",
+      icon: generateIcon("greek-upper-omega"),
+    },
+    {
+      name: "about",
+      value: "about",
+      icon: generateIcon("menu-about"),
+    },
+  ],
+  control: {
+    columns: 2,
+    buttons: parseLayout(controlLayout, buttonsRepo) as ControlButtonType[],
+  },
+  buttons: {
+    columns: 8,
+    pages: parsePages(buttonPages, buttonsRepo),
+  },
 };
-
-const padButtons = parseLayouts(buttonsLayouts, inputButtons);
-
-export { padButtons, PadButton, InputButton };
+console.log(inputPad);
+export { PadButtonType, IconButtonType, inputPad };
