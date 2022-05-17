@@ -2,8 +2,8 @@
   <div class="w-max m-1 flex gap-1">
     <div class="grid gap-1" :style="menuGridStyles">
       <IconButton
-        v-for="button in menuButtons"
-        :key="`button-${button.name}`"
+        v-for="(button, i) in menuButtons"
+        :key="`menu-${i}`"
         :data="button"
         :active="button.name == currentPageNameRef"
         @click="handleMenuButtonClick(button)"
@@ -11,16 +11,16 @@
     </div>
     <div class="grid gap-1" :style="buttonsGridStyles">
       <PadButton
-        v-for="(button, name) in currentPage"
-        :key="`button-${name}`"
+        v-for="(button, i) in currentPage"
+        :key="`button-${i}`"
         :data="button"
-        @click="(evt) => emit('key-pressed', evt)"
+        @click="handleButtonClick(button)"
       />
     </div>
     <div class="grid gap-1" :style="controlGridStyles">
       <PadButton
-        v-for="button in controlButtons"
-        :key="`button-${button.name}`"
+        v-for="(button, i) in controlButtons"
+        :key="`button-${i}`"
         :data="button"
         @click="(evt) => emit('key-pressed', evt)"
       />
@@ -50,6 +50,7 @@ const controlGridStyles = {
   gridTemplateColumns: `repeat(${inputPad.control.columns}, 1fr)`,
 };
 
+const shiftRef = ref(false);
 const menuButtons = inputPad.menu;
 const currentPageNameRef = ref("");
 currentPageNameRef.value =
@@ -57,7 +58,8 @@ currentPageNameRef.value =
     .map<string>((btn) => btn.value || "")
     .filter((page) => page)[0] || "";
 const currentPage = computed(() => {
-  return inputPad.buttons.pages[currentPageNameRef.value] || [];
+  const page = inputPad.buttons.pages[currentPageNameRef.value] || [];
+  return (shiftRef.value && page[1]) || page[0];
 });
 const controlButtons = inputPad.control.buttons;
 
@@ -69,8 +71,20 @@ function handleMenuButtonClick(button: IconButtonType) {
 
     default:
       if (inputPad.buttons.pages[button.value]) {
+        shiftRef.value = false;
         currentPageNameRef.value = button.value;
       }
+  }
+}
+
+function handleButtonClick(button: IconButtonType) {
+  switch (button.value) {
+    case "shift":
+      shiftRef.value = !shiftRef.value;
+      break;
+
+    default:
+      emit("key-pressed", button.value);
   }
 }
 </script>

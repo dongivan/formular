@@ -3,45 +3,47 @@ type IconType = {
   scale?: number;
   flip?: boolean;
 };
-type IconButtonType = {
-  name: string;
-  value: string;
-  icon: IconType;
-  type?: string;
-  children?: IconButtonType[];
-};
-type ButtonPositionType = {
+type ButtonPosition = {
   row: number;
   column: number;
   rowSpan?: number;
   colSpan?: number;
 };
-type PadButtonType = IconButtonType & ButtonPositionType;
+type IconButton = {
+  name: string;
+  value: string;
+  icon: IconType;
+  type?: string;
+  children?: IconButton[];
+};
+type PadButton = IconButton & ButtonPosition;
 
-type ControlButtonType = {
+type ControlButton = {
   name: "backspace" | "undo" | "redo" | "move-left" | "move-right" | "execute";
-} & PadButtonType;
+} & PadButton;
 
-type ButtonPagesType = Record<string, PadButtonType[]>;
-type InputPadType = {
+type ButtonPage = [PadButton[], PadButton[]?];
+type ButtonPages = Record<string, ButtonPage>;
+type InputPad = {
   rows: number;
-  menu: IconButtonType[];
+  menu: IconButton[];
   control: {
     columns: number;
-    buttons: ControlButtonType[];
+    buttons: ControlButton[];
   };
   buttons: {
     columns: number;
-    pages: ButtonPagesType;
+    pages: ButtonPages;
   };
 };
 
-type ButtonLayoutType = (
+type Layout = (
   | string
-  | IconButtonType
-  | (string | IconButtonType)[]
+  | (IconButton & Partial<ButtonPosition>)
+  | (string | (IconButton & Partial<ButtonPosition>))[]
   | undefined
 )[][];
+type PageLayout = [Layout, Layout?];
 
 type ParseFunction = (val: string | undefined) => string | undefined;
 
@@ -62,7 +64,7 @@ function generateButtons(
     name?: ParseFunction;
   } = {}
 ) {
-  const result: Record<string, IconButtonType> = {};
+  const result: Record<string, IconButton> = {};
   buttonNames.forEach((val) => {
     const key = parse(parsers.key, val),
       value = parse(parsers.value, val),
@@ -82,23 +84,26 @@ function generateButtons(
 }
 
 function parseLayout(
-  layout: ButtonLayoutType,
-  repo: Record<string, IconButtonType>
-): PadButtonType[] {
-  const buttons: PadButtonType[] = [];
+  layout: Layout,
+  repo: Record<string, IconButton>
+): PadButton[] {
+  const buttons: PadButton[] = [];
   layout.forEach((line, row) => {
     line.forEach((btn, column) => {
       if (!btn) {
         return;
       }
-      let inputButton: IconButtonType;
-      const buttonPosition: ButtonPositionType = {
+      let inputButton: IconButton;
+      const buttonPosition: ButtonPosition = {
         row: row + 1,
         column: column + 1,
       };
       if (typeof btn == "string") {
         const [name, rowSpan, colSpan, type] = btn.split(":");
         inputButton = repo[name];
+        if (!inputButton) {
+          return;
+        }
         inputButton.type = type || inputButton.type || "default";
         buttonPosition.rowSpan = parseInt(rowSpan) || 1;
         buttonPosition.colSpan = parseInt(colSpan) || 1;
@@ -107,7 +112,7 @@ function parseLayout(
           return;
         }
         const children = btn
-          .map<IconButtonType>((b) => (typeof b == "string" ? repo[b] : b))
+          .map<IconButton>((b) => (typeof b == "string" ? repo[b] : b))
           .filter((b) => b);
         inputButton = { ...children[0], children };
       } else {
@@ -128,16 +133,20 @@ function parseLayout(
 }
 
 function parsePages(
-  pages: Record<string, ButtonLayoutType>,
-  repo: Record<string, IconButtonType>
-): ButtonPagesType {
-  const result: ButtonPagesType = {};
+  pages: Record<string, PageLayout>,
+  repo: Record<string, IconButton>
+): ButtonPages {
+  const result: ButtonPages = {};
 
   Object.keys(pages).forEach((page) => {
-    const layout = pages[page];
-    const buttons: PadButtonType[] = parseLayout(layout, repo);
+    const pageLayout = pages[page];
+    // const buttons: PadButton[] = parseLayout(layout, repo);
 
-    result[page] = buttons;
+    result[page] = pageLayout
+      .filter((layout) => layout)
+      .map<PadButton[]>((layout) =>
+        parseLayout(layout as Layout, repo)
+      ) as ButtonPage;
   });
 
   return result;
@@ -186,6 +195,7 @@ const controls = [
   "undo",
   "redo",
   "execute",
+  "shift",
 ];
 const menu = ["calculator", "about"];
 
@@ -204,7 +214,7 @@ const iconData: Record<string, Partial<IconType>> = {
   "control-redo": { name: "control-undo", flip: true },
 };
 
-const buttonsRepo: Record<string, IconButtonType> = {
+const buttonsRepo: Record<string, IconButton> = {
   ...generateButtons(numbers, { icon: (val) => `number-${val}` }),
   ...generateButtons(symbols, { icon: (val) => `symbol-${val}` }),
   ...generateButtons(operators, { icon: (val) => `operator-${val}` }),
@@ -226,36 +236,43 @@ const buttonsRepo: Record<string, IconButtonType> = {
   ...generateButtons(menu, { icon: (val) => `menu-${val}` }),
 };
 
-const buttonPages: Record<string, ButtonLayoutType> = {
+const buttonPages: Record<string, PageLayout> = {
   calculator: [
-    // eslint-disable-next-line prettier/prettier
-    ["7",     "8",        "9",       "plus",               "fraction", "english-lower-x",   "left-paren",  "right-paren",],
-    // eslint-disable-next-line prettier/prettier
-    ["4",     "5",        "6",      "minus",      ["square", "power"], "english-lower-k",          "sum",    "factorial",],
-    // eslint-disable-next-line prettier/prettier
-    ["1",     "2",        "3",      "times",            "square-root",  "greek-lower-pi",   "i-integral",  "combination",],
-    // eslint-disable-next-line prettier/prettier
-    ["point", "0", "infinity",     "divide",                     "ln", "english-lower-e", "differential",        "limit",],
+    [
+      // eslint-disable-next-line prettier/prettier
+      ["7",     "8",        "9",       "plus",               "fraction", "english-lower-x",   "left-paren",  "right-paren",],
+      // eslint-disable-next-line prettier/prettier
+      ["4",     "5",        "6",      "minus",      ["square", "power"], "english-lower-k",          "sum",    "factorial",],
+      // eslint-disable-next-line prettier/prettier
+      ["1",     "2",        "3",      "times",            "square-root",  "greek-lower-pi",   "i-integral",  "combination",],
+      // eslint-disable-next-line prettier/prettier
+      ["point", "0", "infinity",     "divide",                     "ln", "english-lower-e", "differential",        "limit",],
+    ],
   ],
-  english: ["abcdefgh", "ijklmnop", "qrstuvwx", "yz"].map<string[][]>(
-    (letters) =>
-      letters
-        .split("")
-        .map<string[]>((char) => [
-          `english-lower-${char}`,
-          `english-upper-${char}`,
-        ])
-  ),
+  english: ["lower", "upper"].map<Layout>((_case) => {
+    const layout = ["abcdefgh", "ijklmnop", "qrstuvwx", "yz"].map<
+      (string | (IconButton & Partial<ButtonPosition>))[]
+    >((letters) =>
+      letters.split("").map<string>((char) => `english-${_case}-${char}`)
+    );
+    layout[3].push("", "", "", "", {
+      name: "english-shift",
+      value: "shift",
+      icon: generateIcon("control-shift"),
+      colSpan: 2,
+    });
+    return layout;
+  }) as [Layout, Layout],
 };
 
-const controlLayout: ButtonLayoutType = [
+const controlLayout: Layout = [
   ["backspace:1:2:danger"],
   ["undo", "redo"],
   ["move-left", "move-right"],
   ["execute:1:2:primary"],
 ];
 
-const inputPad: InputPadType = {
+const inputPad: InputPad = {
   rows: 4,
   menu: [
     {
@@ -281,7 +298,7 @@ const inputPad: InputPadType = {
   ],
   control: {
     columns: 2,
-    buttons: parseLayout(controlLayout, buttonsRepo) as ControlButtonType[],
+    buttons: parseLayout(controlLayout, buttonsRepo) as ControlButton[],
   },
   buttons: {
     columns: 8,
@@ -289,4 +306,4 @@ const inputPad: InputPadType = {
   },
 };
 console.log(inputPad);
-export { PadButtonType, IconButtonType, inputPad };
+export { PadButton as PadButtonType, IconButton as IconButtonType, inputPad };

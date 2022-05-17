@@ -41,7 +41,7 @@ const emit = defineEmits(["click"]);
     disabled:cursor-not-allowed disabled:text-gray-400 disabled:bg-gray-200;
 
     &.active {
-      @apply bg-gray-400;
+      @apply bg-gray-400 active:bg-gray-400;
     }
   }
 
@@ -53,7 +53,7 @@ const emit = defineEmits(["click"]);
     disabled:cursor-not-allowed disabled:text-blue-600 disabled:bg-blue-400;
 
     &.active {
-      @apply bg-blue-600;
+      @apply bg-blue-500 active:bg-blue-600;
     }
   }
 
@@ -65,7 +65,7 @@ const emit = defineEmits(["click"]);
     disabled:cursor-not-allowed disabled:text-red-600 disabled:bg-red-400;
 
     &.active {
-      @apply bg-red-600;
+      @apply bg-red-500 active:bg-red-600;
     }
   }
 }
