@@ -48,5 +48,4 @@ const childrenPositionRef = computed(() => {
   const n = props.data.children.length;
   return { left: `${1.375 - 1.625 * n}rem` };
 });
-console.log("created", props.data);
 </script>

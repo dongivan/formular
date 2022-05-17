@@ -184,10 +184,37 @@ const operators = [
   "right-paren",
   "differential",
 ];
-const greek = [
-  // eslint-disable-next-line prettier/prettier
-  "lower-alpha", "upper-alpha", "lower-beta", "upper-beta", "lower-gamma", "upper-gamma", "lower-delta", "upper-delta", "lower-epsilon", "var-epsilon", "upper-epsilon", "lower-zeta", "upper-zeta", "lower-eta", "upper-eta", "lower-theta", "var-theta", "upper-theta", "lower-iota", "upper-iota", "lower-kappa", "upper-kappa", "lower-lambda", "upper-lambda", "lower-mu", "upper-mu", "lower-nu", "upper-nu", "lower-xi", "upper-xi", "lower-o", "upper-o", "lower-pi", "upper-pi", "lower-rho", "var-rho", "upper-rho", "lower-sigma", "upper-sigma", "lower-tau", "upper-tau", "lower-upsilon", "upper-upsilon", "lower-phi", "var-phi", "upper-phi", "lower-chi", "upper-chi", "lower-psi", "upper-psi", "lower-omega", "upper-omega",
+const greekLetterNames = [
+  "alpha",
+  "beta",
+  "gamma",
+  "delta",
+  "epsilon",
+  "zeta",
+  "eta",
+  "theta",
+  "iota",
+  "kappa",
+  "lambda",
+  "mu",
+  "nu",
+  "xi",
+  "o",
+  "pi",
+  "rho",
+  "sigma",
+  "tau",
+  "upsilon",
+  "phi",
+  "chi",
+  "psi",
+  "omega",
 ];
+const varGreek = ["var-epsilon", "var-theta", "var-rho", "var-phi"];
+const greek = greekLetterNames
+  .map<string[]>((char) => [`upper-${char}`, `lower-${char}`])
+  .reduce((prev, cur) => prev.concat(cur))
+  .concat(varGreek);
 const controls = [
   "move-left",
   "move-right",
@@ -263,6 +290,27 @@ const buttonPages: Record<string, PageLayout> = {
     });
     return layout;
   }) as [Layout, Layout],
+  greek: ["lower", "upper"].map<Layout>((_case) => {
+    const layout = Array.from({ length: 3 }).map<
+      (string | (IconButton & Partial<ButtonPosition>))[]
+    >((_, r) =>
+      Array.from({ length: 8 }).map<string>(
+        (_, i) => `greek-${_case}-${greekLetterNames[i + r * 8]}`
+      )
+    );
+    layout.push([
+      ...varGreek.map((letter) => `greek-${letter}`),
+      "",
+      "",
+      {
+        name: "greek-shift",
+        value: "shift",
+        icon: generateIcon("control-shift"),
+        colSpan: 2,
+      },
+    ]);
+    return layout;
+  }) as [Layout, Layout],
 };
 
 const controlLayout: Layout = [
@@ -305,5 +353,4 @@ const inputPad: InputPad = {
     pages: parsePages(buttonPages, buttonsRepo),
   },
 };
-console.log(inputPad);
 export { PadButton as PadButtonType, IconButton as IconButtonType, inputPad };
