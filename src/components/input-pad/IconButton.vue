@@ -68,5 +68,17 @@ const emit = defineEmits(["click"]);
       @apply bg-red-500 active:bg-red-600;
     }
   }
+
+  &.btn-type-warning {
+    @apply bg-amber-400
+    hover:bg-amber-500 
+    active:bg-amber-600 
+    focus:outline-none focus:bg-amber-500 focus:ring-amber-300 
+    disabled:cursor-not-allowed disabled:text-amber-600 disabled:bg-amber-400;
+
+    &.active {
+      @apply bg-amber-500 active:bg-amber-600;
+    }
+  }
 }
 </style>

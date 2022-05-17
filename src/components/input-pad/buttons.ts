@@ -152,6 +152,16 @@ function parsePages(
   return result;
 }
 
+function generateShiftIcon(name: string): IconButton & Partial<ButtonPosition> {
+  return {
+    name,
+    value: "shift",
+    type: "warning",
+    icon: generateIcon("control-shift"),
+    colSpan: 2,
+  };
+}
+
 const numbers = "1234567890".split("");
 const english = "abcdefghijklmnopqrstuvwxyz".split("");
 const symbols = ["point", "infinity"];
@@ -282,12 +292,7 @@ const buttonPages: Record<string, PageLayout> = {
     >((letters) =>
       letters.split("").map<string>((char) => `english-${_case}-${char}`)
     );
-    layout[3].push("", "", "", "", {
-      name: "english-shift",
-      value: "shift",
-      icon: generateIcon("control-shift"),
-      colSpan: 2,
-    });
+    layout[3].push("", "", "", "", generateShiftIcon("english-shift"));
     return layout;
   }) as [Layout, Layout],
   greek: ["lower", "upper"].map<Layout>((_case) => {
@@ -302,12 +307,7 @@ const buttonPages: Record<string, PageLayout> = {
       ...varGreek.map((letter) => `greek-${letter}`),
       "",
       "",
-      {
-        name: "greek-shift",
-        value: "shift",
-        icon: generateIcon("control-shift"),
-        colSpan: 2,
-      },
+      generateShiftIcon("greek-shift"),
     ]);
     return layout;
   }) as [Layout, Layout],
@@ -326,6 +326,7 @@ const inputPad: InputPad = {
     {
       name: "calculator",
       value: "calculator",
+      type: "primary",
       icon: generateIcon("menu-calculator"),
     },
     {
@@ -341,6 +342,7 @@ const inputPad: InputPad = {
     {
       name: "about",
       value: "about",
+      type: "warning",
       icon: generateIcon("menu-about"),
     },
   ],
