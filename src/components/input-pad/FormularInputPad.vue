@@ -1,5 +1,5 @@
 <template>
-  <div class="w-max m-1 flex gap-1">
+  <div class="m-1 flex gap-1">
     <div class="grid gap-1" :style="menuGridStyles">
       <IconButton
         v-for="(button, i) in menuButtons"

@@ -1,40 +1,108 @@
 <template>
-  <MathJaxViewer
-    class="jax-container"
-    source-format="tex"
-    target-format="html"
-    :content="latexResultRef"
-  />
-  <div>{{ latexResultRef }}</div>
+  <div class="w-screen h-screen flex flex-col items-center">
+    <div class="w-[568px]">
+      <MathJaxViewer
+        v-show="!showSourceRef"
+        class="border border-solid border-gray-400 min-h-[200px] w-full flex flex-col justify-center"
+        :source-format="views[currentViewRef].source"
+        target-format="html"
+        :content="sourceRef"
+        @click="views[currentViewRef].handleClick"
+      />
+      <div
+        v-show="showSourceRef"
+        class="border border-solid border-gray-400 min-h-[200px] w-full overflow-auto"
+      >
+        <pre>{{ sourceRef }}</pre>
+      </div>
+      <div class="flex gap-px">
+        <button
+          v-for="(_, view) in views"
+          :key="view"
+          class="view-btn"
+          :class="{
+            active: view == currentViewRef,
+          }"
+          @click="currentViewRef = view.toString()"
+        >
+          {{ view }}
+        </button>
+        <div class="flex-grow"></div>
+        <button
+          class="view-btn"
+          :class="{ active: !showSourceRef }"
+          @click="showSourceRef = false"
+        >
+          Result
+        </button>
+        <button
+          class="view-btn"
+          :class="{ active: showSourceRef }"
+          @click="showSourceRef = true"
+        >
+          Source
+        </button>
+      </div>
+    </div>
+  </div>
   <FormularInputPad
     class="fixed bottom-1 w-full justify-center"
     @key-pressed="handleInputPadKeyPressed"
   />
-  <MathJaxViewer
-    class="jax-container"
-    source-format="mml"
-    target-format="html"
-    :content="mathMLResultRef"
-    @click="onViewerClick"
-  />
-
-  <pre>{{ mathMLResultRef }}</pre>
 </template>
 
 <script setup lang="ts">
 import FormularInputPad from "@/components/input-pad";
-import { ref } from "vue";
-import { Formula, Latex, MathML } from "./models";
+import { ref, watch } from "vue";
+import { Formula, Latex, MathML, MathTree } from "./models";
 
 const formula = new Formula();
 
-const latexResultRef = ref("");
+const views: {
+  [key: string]: {
+    render: (tree: MathTree) => string;
+    source: string;
+    handleClick?: (evt: Event) => void;
+  };
+} = {
+  MathML: {
+    render: (tree: MathTree) => {
+      return MathML.renderText(tree, "block");
+    },
+    source: "mml",
+    handleClick: (evt: Event) => {
+      if (!evt.target) {
+        return;
+      }
+      let ele: HTMLElement = evt.target as HTMLElement;
+      while (ele) {
+        if (ele.dataset.formularCharSn || !ele.parentElement) {
+          break;
+        }
+        ele = ele.parentElement;
+      }
+      const charSn = ele.dataset.formularCharSn;
+      if (!charSn) {
+        return;
+      }
+      formula.moveCursorBeforeChar(parseInt(charSn));
+    },
+  },
+  Latex: {
+    render: (tree: MathTree) => {
+      return Latex.render(tree);
+    },
+    source: "tex",
+  },
+};
+const currentViewRef = ref(Object.keys(views)[0]);
+const showSourceRef = ref(false);
+const sourceRef = ref("");
 formula.addTreeChangedListener(({ tree }) => {
-  latexResultRef.value = Latex.render(tree);
+  sourceRef.value = views[currentViewRef.value].render(tree);
 });
-const mathMLResultRef = ref("");
-formula.addTreeChangedListener(({ tree }) => {
-  mathMLResultRef.value = MathML.renderText(tree, "block");
+watch(currentViewRef, (view) => {
+  sourceRef.value = views[view].render(formula.tree);
 });
 
 const handleInputPadKeyPressed = (name: string) => {
@@ -61,24 +129,6 @@ const handleInputPadKeyPressed = (name: string) => {
       formula.insertAtCursor(name);
   }
 };
-
-const onViewerClick = (evt: Event) => {
-  if (!evt.target) {
-    return;
-  }
-  let ele: HTMLElement = evt.target as HTMLElement;
-  while (ele) {
-    if (ele.dataset.formularCharSn || !ele.parentElement) {
-      break;
-    }
-    ele = ele.parentElement;
-  }
-  const charSn = ele.dataset.formularCharSn;
-  if (!charSn) {
-    return;
-  }
-  formula.moveCursorBeforeChar(parseInt(charSn));
-};
 </script>
 
 <style lang="scss" scoped>
@@ -88,20 +138,17 @@ const onViewerClick = (evt: Event) => {
   -moz-osx-font-smoothing: grayscale;
   color: #2c3e50;
 }
-.jax-container {
-  @apply border border-solid border-black min-h-[50px] w-full;
-}
 ::v-deep .formular-cursor {
   @apply bg-sky-400;
 }
 ::v-deep .formular-placeholder {
   @apply bg-yellow-200;
 }
-.btn {
-  @apply bg-gray-200 rounded-md min-w-min m-1 p-3 
-    hover:bg-gray-300 
-    active:bg-gray-400 
-    focus:outline-none focus:bg-gray-300 focus:ring focus:ring-gray-200
-    disabled:cursor-not-allowed disabled:text-gray-400 disabled:bg-gray-200;
+.view-btn {
+  @apply bg-gray-200 px-4 py-2 first:rounded-bl-sm last:rounded-br-sm;
+
+  &.active {
+    @apply bg-gray-300 shadow-blue-400 shadow-[inset_0_-3px];
+  }
 }
 </style>

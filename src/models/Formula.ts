@@ -67,6 +67,10 @@ export default class Formula extends Instance {
     return this.getTrackedRelated(PostfixListMaker);
   }
 
+  get tree(): MathTree {
+    return this._tree;
+  }
+
   private _afterCharsChange() {
     this._tree.resetInfixList(this._chars);
     this._treeChangedListeners.forEach((listener) => {
