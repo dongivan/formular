@@ -6,7 +6,7 @@
         :key="`menu-${i}`"
         :data="button"
         :active="button.name == currentPageNameRef"
-        @click="handleMenuButtonClick(button)"
+        @click="handleMenuButtonClick"
       />
     </div>
     <div class="grid gap-1" :style="buttonsGridStyles">
@@ -14,7 +14,7 @@
         v-for="(button, i) in currentPage"
         :key="`button-${i}`"
         :data="button"
-        @click="handleButtonClick(button)"
+        @click="handleButtonClick"
       />
     </div>
     <div class="grid gap-1" :style="controlGridStyles">
@@ -29,7 +29,7 @@
 </template>
 
 <script setup lang="ts">
-import { IconButtonType, inputPad } from "./buttons";
+import { inputPad } from "./buttons";
 import { computed, ref } from "vue";
 import PadButton from "./PadButton.vue";
 import IconButton from "./IconButton.vue";
@@ -63,28 +63,28 @@ const currentPage = computed(() => {
 });
 const controlButtons = inputPad.control.buttons;
 
-function handleMenuButtonClick(button: IconButtonType) {
-  switch (button.value) {
+function handleMenuButtonClick(value: string) {
+  switch (value) {
     case "about":
       console.log("about");
       break;
 
     default:
-      if (inputPad.buttons.pages[button.value]) {
+      if (inputPad.buttons.pages[value]) {
         shiftRef.value = false;
-        currentPageNameRef.value = button.value;
+        currentPageNameRef.value = value;
       }
   }
 }
 
-function handleButtonClick(button: IconButtonType) {
-  switch (button.value) {
+function handleButtonClick(value: string) {
+  switch (value) {
     case "shift":
       shiftRef.value = !shiftRef.value;
       break;
 
     default:
-      emit("key-pressed", button.value);
+      emit("key-pressed", value);
   }
 }
 </script>
