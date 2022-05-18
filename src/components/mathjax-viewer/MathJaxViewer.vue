@@ -4,7 +4,7 @@
 
 <script lang="ts">
 import { computed, onMounted, ref, watch } from "vue";
-
+import { isMathJaxLoadedRef } from "./plugin";
 declare global {
   interface Window {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -12,64 +12,12 @@ declare global {
   }
 }
 
-const loadScript = async function (src: string) {
-  return new Promise<void>((resolve, reject) => {
-    const script = document.createElement("script");
-    script.type = "text/javascript";
-    script.async = true;
-    script.src = src;
-
-    const el = document.getElementsByTagName("head")[0];
-    el.appendChild(script);
-
-    script.addEventListener("load", () => {
-      resolve();
-    });
-
-    script.addEventListener("error", () => {
-      reject(new Error(`${src} failed to load.`));
-    });
-  });
-};
-
-const isMathJaxLoadedRef = ref(false);
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const loadMathJax = function (src: string, jaxOptions: Record<string, any>) {
-  const ready = function () {
-    if (window.MathJax.startup?.defaultReady) {
-      window.MathJax.startup?.defaultReady();
-    }
-    isMathJaxLoadedRef.value = true;
-  };
-
-  const options = { ...jaxOptions };
-  if (!options.startup) {
-    options.startup = {};
-  }
-  if (typeof options.startup.ready == "function") {
-    const oldReady = options.startup.ready;
-    options.startup.ready = () => {
-      oldReady();
-      ready();
-    };
-  } else {
-    options.startup.ready = ready;
-  }
-  options.startup.typeset = false;
-
-  window.MathJax = {
-    ...window.MathJax,
-    ...options,
-  };
-  loadScript(src);
-};
+export default {};
 </script>
 
 <script setup lang="ts">
 /* declare props & emits */
 const props = defineProps({
-  mathJaxSrc: { type: String, default: "" },
   sourceFormat: {
     type: String,
     default: "tex",
@@ -84,17 +32,10 @@ const props = defineProps({
       return ["html", "chtml", "svg"].includes(val);
     },
   },
-  mathJaxOptions: {
-    type: Object,
-    default: () => {
-      return {};
-    },
-  },
   content: { type: String, required: true },
 });
 const emit = defineEmits(["math-jax-loaded"]);
 
-/* load MathJax if needed */
 const mathJaxFunctionNameRef = computed(() => {
   const source =
     {
@@ -117,13 +58,6 @@ watch(
   },
   { immediate: true }
 );
-
-if (
-  !(window.MathJax && window.MathJax[mathJaxFunctionNameRef.value]) &&
-  props.mathJaxSrc
-) {
-  loadMathJax(props.mathJaxSrc, props.mathJaxOptions);
-}
 
 /* setup components */
 const isMountedRef = ref(false);

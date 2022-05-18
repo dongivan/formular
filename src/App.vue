@@ -12,10 +12,8 @@
   />
   <MathJaxViewer
     class="jax-container"
-    math-jax-src="mathjax/es5/startup.js"
     source-format="mml"
     target-format="html"
-    :math-jax-options="mathJaxOptions"
     :content="mathMLResultRef"
     @click="onViewerClick"
   />
@@ -24,26 +22,11 @@
 </template>
 
 <script setup lang="ts">
-import MathJaxViewer from "@/components/MathJaxViewer.vue";
 import FormularInputPad from "@/components/input-pad";
 import { ref } from "vue";
 import { Formula, Latex, MathML } from "./models";
 
 const formula = new Formula();
-
-const mathJaxOptions = {
-  loader: {
-    load: ["input/tex-base", "input/mml", "output/chtml", "[tex]/html"],
-  },
-  tex: {
-    packages: {
-      "[+]": ["base"],
-    },
-  },
-  startup: {
-    output: ["chtml"],
-  },
-};
 
 const latexResultRef = ref("");
 formula.addTreeChangedListener(({ tree }) => {
