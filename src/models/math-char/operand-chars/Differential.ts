@@ -1,7 +1,7 @@
 import { Latex, MathML } from "../../Renderer";
 import { MathCharFactory, OperandChar } from "../internal";
 
-@MathCharFactory.registerMathChar("differential", "dif")
+@MathCharFactory.RegisterMathChar("differential", "dif")
 @Latex.RenderChar(({ params, h }) => h("\\frac{d{<0>}}{d{<1>}}", params))
 @MathML.RenderChar(({ params, h }) => [
   h("mfrac", [

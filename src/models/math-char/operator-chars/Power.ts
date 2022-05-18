@@ -1,7 +1,23 @@
 import { Latex, MathML } from "../../Renderer";
 import { MathCharFactory, OperatorChar } from "../internal";
 
-@MathCharFactory.registerMathChar("^", "power")
+@MathCharFactory.RegisterMathChar("^", "power")
+@MathCharFactory.RegisterCreateFunction("square", (factory, cursor) => {
+  const chars = factory.create("power");
+  chars.splice(1, 0, ...factory.create("2"));
+  if (cursor) {
+    chars.push(cursor);
+  }
+  return chars;
+})
+@MathCharFactory.RegisterCreateFunction("cube", (factory, cursor) => {
+  const chars = factory.create("power");
+  chars.splice(1, 0, ...factory.create("3"));
+  if (cursor) {
+    chars.push(cursor);
+  }
+  return chars;
+})
 @Latex.RenderChar(({ params, h }) => h("^{<0>}", params))
 @Latex.RenderNode(
   ({ current, left, right }) => `{${left || ""}}${current}${right || ""}`

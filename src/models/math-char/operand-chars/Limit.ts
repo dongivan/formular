@@ -1,7 +1,7 @@
 import { Latex, MathML } from "../../Renderer";
 import { MathCharFactory, OperandChar } from "../internal";
 
-@MathCharFactory.registerMathChar("limit", "lim")
+@MathCharFactory.RegisterMathChar("limit", "lim")
 @Latex.RenderChar(({ params, h }) =>
   h("\\lim_{{<0>}\\rightarrow{<1>}}{<2>}", params)
 )

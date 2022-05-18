@@ -1,7 +1,7 @@
 import { Latex, MathML } from "../../Renderer";
 import { MathCharFactory, OperandChar } from "../internal";
 
-@MathCharFactory.registerMathChar("infinity")
+@MathCharFactory.RegisterMathChar("infinity")
 @Latex.RenderChar(() => "\\infty")
 @MathML.RenderChar(({ h }) => [h("mi", "&#x221E;")])
 export default class Infinity extends OperandChar {

@@ -20,14 +20,17 @@ type CreateCommandFunction = (
 const createCommands: Record<string, CreateCommandFunction | typeof MathChar> =
   {};
 
-function registerCreateFunction(
+function registerCreateFunctionDecorator(
   aliases: string | [string, ...string[]],
   fn: CreateCommandFunction
 ) {
-  const keys = Array.isArray(aliases) ? aliases : [aliases];
-  keys.forEach((alias) => {
-    createCommands[alias] = fn;
-  });
+  return <T extends typeof MathChar>(constructor: T) => {
+    const keys = Array.isArray(aliases) ? aliases : [aliases];
+    keys.forEach((alias) => {
+      createCommands[alias] = fn;
+    });
+    return constructor;
+  };
 }
 
 /**
@@ -47,19 +50,10 @@ function registerMathCharDecorator(...aliases: [string, ...string[]]) {
   };
 }
 
-registerCreateFunction("square", (factory, cursor) => {
-  const chars = factory.create("power");
-  chars.splice(1, 0, ...factory.create("2"));
-  if (cursor) {
-    chars.push(cursor);
-  }
-  return chars;
-});
-
 export default class MathCharFactory extends Instance {
-  static registerMathChar = registerMathCharDecorator;
+  static RegisterMathChar = registerMathCharDecorator;
 
-  static registerCreateFunction = registerCreateFunction;
+  static RegisterCreateFunction = registerCreateFunctionDecorator;
 
   private _chars: {
     [key: number]: MathChar;

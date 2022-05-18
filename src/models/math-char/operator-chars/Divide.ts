@@ -1,7 +1,7 @@
 import { Latex, MathML } from "../../Renderer";
 import { MathCharFactory, OperatorChar } from "../internal";
 
-@MathCharFactory.registerMathChar("/", "divide")
+@MathCharFactory.RegisterMathChar("/", "divide")
 @Latex.RenderChar(() => "\\div")
 @MathML.RenderChar(({ h }) => [h("mo", "&#xF7;")])
 export default class Divide extends OperatorChar {

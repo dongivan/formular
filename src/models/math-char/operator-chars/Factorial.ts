@@ -1,6 +1,6 @@
 import { MathCharFactory, OperatorChar } from "../internal";
 
-@MathCharFactory.registerMathChar("!", "factorial")
+@MathCharFactory.RegisterMathChar("!", "factorial")
 export default class Factorial extends OperatorChar {
   constructor() {
     super("!");

@@ -3,7 +3,7 @@ import type MathMLNode from "../../MathMLNode";
 import { Latex, MathML } from "../../Renderer";
 import { MathCharFactory, OperandChar } from "../internal";
 
-@MathCharFactory.registerMathChar(".", "point")
+@MathCharFactory.RegisterMathChar(".", "point")
 @Latex.RenderNode(({ node, renderChar }) => {
   const decimalNode = node as DecimalNode;
   return (

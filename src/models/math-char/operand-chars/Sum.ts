@@ -1,7 +1,7 @@
 import { Latex, MathML } from "../../Renderer";
 import { MathCharFactory, OperandChar } from "../internal";
 
-@MathCharFactory.registerMathChar("sum")
+@MathCharFactory.RegisterMathChar("sum")
 @Latex.RenderChar(({ params, h }) =>
   h("\\sum^{<2>}_{{<0>}={<1>}}{<3>}", params)
 )

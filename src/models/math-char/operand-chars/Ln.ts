@@ -1,7 +1,7 @@
 import { Latex, MathML } from "../../Renderer";
 import { MathCharFactory, OperandChar } from "../internal";
 
-@MathCharFactory.registerMathChar("ln")
+@MathCharFactory.RegisterMathChar("ln")
 @Latex.RenderChar(({ params, h }) => h("\\ln{<0>}", params))
 @MathML.RenderChar(({ params, h }) => [h("mi", "ln"), h("mrow", [params[0]])])
 export default class Ln extends OperandChar {

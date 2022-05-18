@@ -1,7 +1,7 @@
 import { Latex, MathML } from "../../Renderer";
 import { MathCharFactory, OperandChar } from "../internal";
 
-@MathCharFactory.registerMathChar("i-integral")
+@MathCharFactory.RegisterMathChar("i-integral")
 @Latex.RenderChar(({ params, h }) => h("\\int{<0>}d{<1>}", params))
 @MathML.RenderChar(({ params, h }) => [
   h("mo", "&#x222B;"),
