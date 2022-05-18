@@ -6,7 +6,10 @@
     :content="latexResultRef"
   />
   <div>{{ latexResultRef }}</div>
-  <FormularInputPad @key-pressed="handleInputPadKeyPressed" />
+  <FormularInputPad
+    class="fixed bottom-1 w-full justify-center"
+    @key-pressed="handleInputPadKeyPressed"
+  />
   <MathJaxViewer
     class="jax-container"
     math-jax-src="mathjax/es5/startup.js"
