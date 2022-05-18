@@ -1,4 +1,4 @@
-type IconType = {
+type Icon = {
   name: string;
   scale?: number;
   flip?: boolean;
@@ -12,7 +12,7 @@ type ButtonPosition = {
 type IconButton = {
   name: string;
   value: string;
-  icon: IconType;
+  icon: Icon;
   type?: string;
   children?: IconButton[];
 };
@@ -51,7 +51,7 @@ function parse(parser: ParseFunction | undefined, val: string | undefined) {
   return parser ? parser(val) : val;
 }
 
-function generateIcon(iconName: string): IconType {
+function generateIcon(iconName: string): Icon {
   return {
     name: iconName,
     ...iconData[`${iconName.split("-")[0]}-`],
@@ -240,12 +240,13 @@ const controls = [
 ];
 const menu = ["calculator", "about"];
 
-const iconData: Record<string, Partial<IconType>> = {
+const iconData: Record<string, Partial<Icon>> = {
   "number-": { scale: 1.3 },
   "english-": { scale: 1.4 },
   "greek-": { scale: 1.4 },
   "operator-fraction": { scale: 2.5 },
   "operator-square": { scale: 1.5 },
+  "operator-cube": { scale: 1.5 },
   "operator-power": { scale: 1.5 },
   "operator-square-root": { scale: 2 },
   "operator-ln": { scale: 1.35 },
@@ -253,7 +254,7 @@ const iconData: Record<string, Partial<IconType>> = {
   "operator-i-integral": { scale: 2 },
   "operator-differential": { scale: 2 },
   "operator-factorial": { scale: 2 },
-  "operator-combination": { scale: 2.4 },
+  "operator-combination": { scale: 2 },
   "operator-limit": { scale: 2 },
   "control-redo": { name: "control-undo", flip: true },
 };
@@ -283,14 +284,46 @@ const buttonsRepo: Record<string, IconButton> = {
 const buttonPages: Record<string, PageLayout> = {
   calculator: [
     [
-      // eslint-disable-next-line prettier/prettier
-      ["7",     "8",        "9",       "plus",               "fraction", "english-lower-x",   "left-paren",  "right-paren",],
-      // eslint-disable-next-line prettier/prettier
-      ["4",     "5",        "6",      "minus",      ["square", "power"], "english-lower-k",          "sum",    "factorial",],
-      // eslint-disable-next-line prettier/prettier
-      ["1",     "2",        "3",      "times",            "square-root",  "greek-lower-pi",   "i-integral",  "combination",],
-      // eslint-disable-next-line prettier/prettier
-      ["point", "0", "infinity",     "divide",                     "ln", "english-lower-e", "differential",        "limit",],
+      [
+        "7",
+        "8",
+        "9",
+        "plus",
+        "fraction",
+        ["english-lower-x", "english-lower-k"],
+        "left-paren",
+        "right-paren",
+      ],
+      [
+        "4",
+        "5",
+        "6",
+        "minus",
+        ["square", "cube", "power"],
+        "english-lower-k",
+        "sum",
+        "factorial",
+      ],
+      [
+        "1",
+        "2",
+        "3",
+        "times",
+        "square-root",
+        "greek-lower-pi",
+        "i-integral",
+        "combination",
+      ],
+      [
+        ["point", "left-paren"],
+        "0",
+        ["infinity", "right-paren"],
+        ["divide", "fraction"],
+        "ln",
+        "english-lower-e",
+        "differential",
+        "limit",
+      ],
     ],
   ],
   english: ["lower", "upper"].map<Layout>((_case) => {
@@ -362,4 +395,9 @@ const inputPad: InputPad = {
     pages: parsePages(buttonPages, buttonsRepo),
   },
 };
-export { PadButton as PadButtonType, IconButton as IconButtonType, inputPad };
+export {
+  PadButton as PadButtonType,
+  IconButton as IconButtonType,
+  Icon as IconType,
+  inputPad,
+};
