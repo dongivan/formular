@@ -7,25 +7,30 @@
       gridColumn: `${data.column} / span ${data.colSpan || 1}`,
     }"
   >
-    <div
-      v-if="data.children"
-      class="hidden group-hover:block absolute top-[-4px] left-[-4px] w-14 h-14 bg-gray-500 -z-10 rounded-b-lg"
-    ></div>
-    <div
-      v-if="data.children"
-      class="hidden group-hover:flex absolute top-[calc(-100%-0.5rem)] h-full m-w-full box-content p-1 bg-gray-500 z-10 rounded-lg gap-1"
-      :style="[childrenPositionRef]"
-    >
-      <IconButton
-        v-for="child of data.children"
-        :key="`btn-${data.value}-${child.value}`"
-        :data="child"
-        @click="(payloads) => emit('click', payloads)"
-      />
-    </div>
+    <template v-if="data.children">
+      <div
+        class="hidden group-hover:block absolute top-[-4px] left-[-4px] w-14 h-14 bg-gray-500 -z-10 rounded-b-lg"
+      ></div>
+      <div
+        class="hidden group-hover:flex absolute top-[calc(-100%-0.5rem)] h-full m-w-full box-content p-1 bg-gray-500 z-10 rounded-lg gap-1"
+        :style="[childrenPositionRef]"
+      >
+        <IconButton
+          v-for="child of data.children"
+          :key="`btn-${data.value}-${child.value}`"
+          :data="child"
+          @click="(payloads) => emit('click', payloads)"
+        />
+      </div>
+    </template>
     <IconButton
       :data="data"
-      :top-bar="data.children && data.children.length > 1"
+      :top-bar="data.children && data.children.length > 2"
+      :sub-icon="
+        data.children && data.children.length == 2
+          ? data.children[1].icon
+          : undefined
+      "
       @click="emit('click', data.value)"
     />
   </div>

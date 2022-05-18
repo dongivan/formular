@@ -6,8 +6,18 @@
   >
     <div
       v-if="topBar"
-      class="after:content-[''] after:absolute after:top-1 after:left-4 after:w-4 after:border-t-gray-400 after:border-t-2"
+      class="absolute top-1 left-4 w-4 border-t-gray-400 border-t-2"
     ></div>
+    <div
+      v-if="subIcon"
+      class="absolute top-1 right-1 leading-[0] text-gray-500"
+    >
+      <SvgIcon
+        :name="subIcon.name"
+        :scale="Math.min((subIcon.scale || 1) * 0.6, 1)"
+        :flip="subIcon.flip"
+      />
+    </div>
     <SvgIcon
       :name="data.icon.name"
       :scale="data.icon.scale"
@@ -17,7 +27,7 @@
 </template>
 
 <script setup lang="ts">
-import { IconButtonType } from "./buttons";
+import { IconButtonType, IconType } from "./buttons";
 import SvgIcon from "@/components/SvgIcon.vue";
 import { PropType } from "vue";
 
@@ -25,6 +35,7 @@ defineProps({
   data: { type: Object as PropType<IconButtonType>, required: true },
   topBar: { type: Boolean, default: false },
   active: { type: Boolean, default: false },
+  subIcon: { type: Object as PropType<IconType>, default: null },
 });
 const emit = defineEmits(["click"]);
 </script>
