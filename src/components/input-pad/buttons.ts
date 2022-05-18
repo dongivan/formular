@@ -52,7 +52,11 @@ function parse(parser: ParseFunction | undefined, val: string | undefined) {
 }
 
 function generateIcon(iconName: string): IconType {
-  return { name: iconName, ...iconData[iconName] };
+  return {
+    name: iconName,
+    ...iconData[`${iconName.split("-")[0]}-`],
+    ...iconData[iconName],
+  };
 }
 
 function generateButtons(
@@ -237,6 +241,9 @@ const controls = [
 const menu = ["calculator", "about"];
 
 const iconData: Record<string, Partial<IconType>> = {
+  "number-": { scale: 1.3 },
+  "english-": { scale: 1.4 },
+  "greek-": { scale: 1.4 },
   "operator-fraction": { scale: 2.5 },
   "operator-square": { scale: 1.5 },
   "operator-power": { scale: 1.5 },

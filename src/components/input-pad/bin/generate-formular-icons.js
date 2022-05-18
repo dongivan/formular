@@ -120,7 +120,8 @@ const output = async function (MathJax, group, name, latex) {
   }
   const file = path.join(root, `${group}-${name}.svg`);
   console.log(`working on file ${file}...`);
-  const node = await MathJax.tex2svgPromise(latex, {
+  /* add `\mathstrut` to latex string to ensure all expressions has the same height */
+  const node = await MathJax.tex2svgPromise(`${latex}\\mathstrut`, {
     display: true,
   });
   const result = optimize(MathJax.startup.adaptor.innerHTML(node), {
