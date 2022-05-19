@@ -6,7 +6,7 @@
   >
     <div
       v-if="topBar"
-      class="absolute top-1 left-4 w-4 border-t-gray-400 border-t-2"
+      class="absolute top-1 left-1/3 w-1/3 border-t-gray-400 border-t-2"
     ></div>
     <div
       v-if="subIcon"
@@ -14,7 +14,7 @@
     >
       <SvgIcon
         :name="subIcon.name"
-        :scale="Math.min((subIcon.scale || 1) * 0.6, 1)"
+        :scale="Math.min((subIcon.scale || 1) * 0.75, 1)"
         :flip="subIcon.flip"
       />
     </div>
@@ -44,7 +44,11 @@ const emit = defineEmits<{
 
 <style lang="scss" scoped>
 .input-button {
-  @apply relative min-w-[3rem] w-full min-h-[3rem] h-full text-center rounded-md focus:ring group-hover:ring-0;
+  @apply relative 
+    min-w-[calc((100vw-0.25rem)/8-0.25rem)] sm:min-w-[3rem] w-full min-h-[calc((100vw-0.25rem)/8-0.25rem)] sm:min-h-[3rem] h-full 
+    text-center sm:text-base
+    rounded-md 
+    focus:ring group-hover:ring-0;
 
   &.btn-type-default {
     @apply bg-gray-200

@@ -9,13 +9,15 @@
         @click="handleMenuButtonClick"
       />
     </div>
-    <div class="grid gap-1" :style="buttonsGridStyles">
-      <PadButton
-        v-for="(button, i) in currentPage"
-        :key="`button-${i}`"
-        :data="button"
-        @click="handleButtonClick"
-      />
+    <div class="w-[calc((100vw-0.25rem)/8*5-0.25rem)] sm:w-auto">
+      <div class="grid gap-1" :style="buttonsGridStyles">
+        <PadButton
+          v-for="(button, i) in currentPage"
+          :key="`button-${i}`"
+          :data="button"
+          @click="handleButtonClick"
+        />
+      </div>
     </div>
     <div class="grid gap-1" :style="controlGridStyles">
       <PadButton

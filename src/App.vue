@@ -1,9 +1,9 @@
 <template>
-  <div class="w-screen h-screen flex flex-col items-center">
-    <div class="w-[568px]">
+  <div class="w-screen h-screen flex flex-col items-center touch-none">
+    <div class="w-full sm:w-[568px]">
       <MathJaxViewer
         v-show="!showSourceRef"
-        class="border border-solid border-gray-400 min-h-[200px] w-full flex flex-col justify-center"
+        class="border border-solid border-gray-400 h-[200px] flex flex-col justify-center text-4xl sm:text-2xl md:text-lg lg:text-base"
         :source-format="views[currentViewRef].source"
         target-format="html"
         :content="sourceRef"
@@ -11,11 +11,11 @@
       />
       <div
         v-show="showSourceRef"
-        class="border border-solid border-gray-400 min-h-[200px] w-full overflow-auto"
+        class="border border-solid border-gray-400 h-[200px] w-full overflow-auto"
       >
         <pre>{{ sourceRef }}</pre>
       </div>
-      <div class="flex gap-px">
+      <div class="flex gap-px flex-wrap text-2xl sm:text-base">
         <button
           v-for="(_, view) in views"
           :key="view"
@@ -27,16 +27,16 @@
         >
           {{ view }}
         </button>
-        <div class="flex-grow"></div>
+        <div class="flex-grow hidden sm:block"></div>
         <button
-          class="view-btn"
+          class="view-btn hidden sm:block"
           :class="{ active: !showSourceRef }"
           @click="showSourceRef = false"
         >
           Result
         </button>
         <button
-          class="view-btn"
+          class="view-btn hidden sm:block"
           :class="{ active: showSourceRef }"
           @click="showSourceRef = true"
         >
@@ -44,11 +44,11 @@
         </button>
       </div>
     </div>
+    <FormularInputPad
+      class="fixed bottom-1 w-full justify-center"
+      @click="handleCommands"
+    />
   </div>
-  <FormularInputPad
-    class="fixed bottom-1 w-full justify-center"
-    @click="handleCommands"
-  />
 </template>
 
 <script setup lang="ts">

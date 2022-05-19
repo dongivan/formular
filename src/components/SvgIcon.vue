@@ -19,12 +19,16 @@ const iconNameRef = computed(() => {
     return `#svg-icon-${props.name}`;
   }),
   styleRef = computed(() => {
-    const styles: Record<string, string | number> = {
-      width: `${props.scale}rem`,
-      height: `${props.scale}rem`,
-    };
+    const styles: Record<string, string | number> = {};
+    const scale = [1, 1];
+    if (props.scale != 1) {
+      scale[0] = scale[1] = props.scale;
+    }
     if (props.flip) {
-      styles["transform"] = "scale(-1,1)";
+      scale[0] = -scale[0];
+    }
+    if (scale[0] != 1 || scale[1] != 1) {
+      styles["transform"] = `scale(${scale[0]},${scale[1]})`;
     }
     return styles;
   });

@@ -1,6 +1,6 @@
 <template>
   <div
-    class="w-full min-w-[3rem] h-full min-h-[3rem] relative"
+    class="w-full h-full relative"
     :class="{ group: data.children }"
     :style="{
       gridRow: `${data.row} / span ${data.rowSpan || 1}`,
@@ -9,7 +9,7 @@
   >
     <template v-if="data.children">
       <div
-        class="hidden group-hover:block absolute top-[-4px] left-[-4px] w-14 h-14 bg-gray-500 -z-10 rounded-b-lg"
+        class="hidden group-hover:block absolute top-[-0.25rem] left-[-0.25rem] w-[calc((100vw-0.25rem)/8+0.25rem)] h-[calc((100vw-0.25rem)/8+0.25rem)] bg-gray-500 -z-10 rounded-b-lg"
       ></div>
       <div
         class="hidden group-hover:flex absolute top-[calc(-100%-0.5rem)] h-full m-w-full box-content p-1 bg-gray-500 z-10 rounded-lg gap-1"
@@ -53,6 +53,6 @@ const childrenPositionRef = computed(() => {
     return {};
   }
   const n = props.data.children.length;
-  return { left: `${1.375 - 1.625 * n}rem` };
+  return { left: `calc(50% - ((100% + 0.25rem) * ${n} + 0.25rem) / 2)` };
 });
 </script>
