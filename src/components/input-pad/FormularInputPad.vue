@@ -1,29 +1,35 @@
 <template>
-  <div class="m-1 flex gap-1">
-    <div class="grid gap-1" :style="menuGridStyles">
-      <IconButton
-        v-for="(button, i) in menuButtons"
-        :key="`menu-${i}`"
-        :data="button"
-        :active="button.name == currentPageNameRef"
-        @click="handleMenuButtonClick"
+  <div class="p-1 flex flex-col sm:flex-row gap-1 sm:w-auto">
+    <div class="hidden sm:grid sm:gap-1" :style="menuGridStyles">
+      <MenuButtons
+        :buttons="leftMenuButtons"
+        :current-page="currentPageNameRef"
+        @click="handleButtonClick"
+        @change-page="handlePageChange"
       />
     </div>
-    <div class="w-[calc((100vw-0.25rem)/8*5-0.25rem)] sm:w-auto">
-      <div class="grid gap-1" :style="buttonsGridStyles">
-        <PadButton
-          v-for="(button, i) in currentPage"
-          :key="`button-${i}`"
-          :data="button"
-          @click="handleButtonClick"
-        />
-      </div>
+    <div class="grid gap-1 grid-cols-7 grid-rows-4">
+      <PadButton
+        v-for="(button, i) in currentPageRef"
+        :key="`button-${i}`"
+        :button="button"
+        :children="button.children"
+        @click="handleButtonClick"
+      />
     </div>
-    <div class="grid gap-1" :style="controlGridStyles">
+    <div class="flex gap-1 sm:hidden">
+      <MenuButtons
+        :buttons="bottomMenuButtons"
+        :current-page="currentPageNameRef"
+        @click="handleButtonClick"
+        @change-page="handlePageChange"
+      />
+    </div>
+    <div class="hidden sm:grid sm:gap-1" :style="controlGridStyles">
       <PadButton
         v-for="(button, i) in controlButtons"
         :key="`button-${i}`"
-        :data="button"
+        :button="button"
         @click="(command) => emit('click', command)"
       />
     </div>
@@ -34,7 +40,7 @@
 import { inputPad } from "./buttons";
 import { computed, ref } from "vue";
 import PadButton from "./PadButton.vue";
-import IconButton from "./IconButton.vue";
+import MenuButtons from "./MenuButtons.vue";
 
 const emit = defineEmits<{
   (event: "click", command: [string, ...string[]]): void;
@@ -45,45 +51,47 @@ const menuGridStyles = {
   gridTemplateColumns: "1fr",
   gridAutoRows: "1fr",
 };
-const buttonsGridStyles = {
-  gridTemplateRows: `repeat(${inputPad.rows}, 1fr)`,
-  gridTemplateColumns: `repeat(${inputPad.buttons.columns}, 1fr)`,
-};
+
 const controlGridStyles = {
   gridTemplateRows: `repeat(${inputPad.rows}, 1fr)`,
-  gridTemplateColumns: `repeat(${inputPad.control.columns}, 1fr)`,
+  gridTemplateColumns: `repeat(2, 1fr)`,
 };
 
+const bottomMenuButtons = inputPad.bottomMenu;
+const leftMenuButtons = inputPad.leftMenu;
+const pagesRef = computed(() => {
+  const result: string[] = [];
+  [bottomMenuButtons, leftMenuButtons].forEach((menu) => {
+    menu.forEach((pageBtn) => {
+      if ("buttons" in pageBtn) {
+        pageBtn.buttons.forEach((btn) => {
+          result.push(btn.commands[0]);
+        });
+      }
+    });
+  });
+  return Array.from(new Set(result));
+});
+const currentPageNameRef = ref(pagesRef.value[0]);
+
+const controlButtons = inputPad.controls;
+
 const shiftRef = ref(false);
-const menuButtons = inputPad.menu;
-const currentPageNameRef = ref("");
-currentPageNameRef.value =
-  inputPad.menu
-    .map<string>((btn) => btn.commands[0])
-    .filter((page) => page)[0] || "";
-const currentPage = computed(() => {
-  const page = inputPad.buttons.pages[currentPageNameRef.value] || [];
+const currentPageRef = computed(() => {
+  const page = inputPad.pages[currentPageNameRef.value] || [];
   return (shiftRef.value && page[1]) || page[0];
 });
-const controlButtons = inputPad.control.buttons;
 
-function handleMenuButtonClick(commands: string[]) {
-  const cmd = commands[0];
-  switch (cmd as string) {
-    case "about":
-      console.log("about");
-      break;
-
-    default:
-      if (inputPad.buttons.pages[cmd]) {
-        shiftRef.value = false;
-        currentPageNameRef.value = cmd;
-      }
-  }
+function handlePageChange(name: string) {
+  currentPageNameRef.value = name;
+  shiftRef.value = false;
 }
 
 function handleButtonClick(commands: [string, ...string[]]) {
   switch (commands[0]) {
+    case "about":
+      console.log("about");
+      break;
     case "shift":
       shiftRef.value = !shiftRef.value;
       break;

@@ -18,24 +18,21 @@ type IconButton = {
 };
 type PadButton = IconButton & ButtonPosition;
 
-type MenuButton = IconButton & { commands: [string] };
-type ControlButton = {
-  name: "backspace" | "undo" | "redo" | "move-left" | "move-right" | "execute";
-} & PadButton;
+type PageButton = {
+  name: string;
+  buttons: [IconButton, ...IconButton[]];
+};
+type ControlButton = PadButton & { commands: [string] };
 
 type ButtonPage = [PadButton[], PadButton[]?];
 type ButtonPages = Record<string, ButtonPage>;
 type InputPad = {
   rows: number;
-  menu: MenuButton[];
-  control: {
-    columns: number;
-    buttons: ControlButton[];
-  };
-  buttons: {
-    columns: number;
-    pages: ButtonPages;
-  };
+  columns: number;
+  bottomMenu: (PageButton | IconButton)[];
+  leftMenu: (PageButton | IconButton)[];
+  controls: ControlButton[];
+  pages: ButtonPages;
 };
 
 type Layout = (
@@ -223,11 +220,16 @@ const greekLetterNames = [
   "psi",
   "omega",
 ];
-const varGreek = ["var-epsilon", "var-theta", "var-rho", "var-phi"];
+const varGreeks = {
+  epsilon: 4,
+  theta: 7,
+  rho: 16,
+  phi: 20,
+};
 const greek = greekLetterNames
   .map<string[]>((char) => [`upper-${char}`, `lower-${char}`])
   .reduce((prev, cur) => prev.concat(cur))
-  .concat(varGreek);
+  .concat(Object.keys(varGreeks).map<string>((l) => `var-${l}`));
 const controls = [
   "move-left",
   "move-right",
@@ -285,76 +287,85 @@ const buttonsRepo: Record<string, IconButton> = {
   }),
   ...generateButtons(controls, { icon: (val) => `control-${val}` }),
   ...generateButtons(menu, { icon: (val) => `menu-${val}` }),
+  english: {
+    name: "english",
+    commands: ["english"],
+    icon: generateIcon("english-upper-a"),
+  },
+  greek: {
+    name: "greek",
+    commands: ["greek"],
+    icon: generateIcon("greek-upper-omega"),
+  },
 };
 
 const buttonPages: Record<string, PageLayout> = {
   calculator: [
     [
       [
+        "factorial",
+        ["english-lower-x", "english-lower-k"],
+        "fraction",
         "7",
         "8",
         "9",
         "plus",
-        "fraction",
-        ["english-lower-x", "english-lower-k"],
-        "left-paren",
-        "right-paren",
       ],
       [
+        "combination",
+        "sum",
+        ["square", "cube", "power"],
         "4",
         "5",
         "6",
         "minus",
-        ["square", "cube", "power"],
-        "english-lower-k",
-        "sum",
-        "factorial",
       ],
       [
+        "i-integral",
+        "greek-lower-pi",
+        ["square-root", "cube-root", "root"],
         "1",
         "2",
         "3",
         "times",
-        "square-root",
-        "greek-lower-pi",
-        "i-integral",
-        "combination",
       ],
       [
+        "ln",
+        "english-lower-e",
+        "limit",
         ["point", "left-paren"],
         "0",
         ["infinity", "right-paren"],
         ["divide", "fraction"],
-        "ln",
-        "english-lower-e",
-        "differential",
-        "limit",
       ],
     ],
   ],
   english: ["lower", "upper"].map<Layout>((_case) => {
-    const layout = ["abcdefgh", "ijklmnop", "qrstuvwx", "yz"].map<
+    const layout = ["abcdefg", "hijklmn", "opqrstu", "vwxyz"].map<
       (string | (IconButton & Partial<ButtonPosition>))[]
     >((letters) =>
       letters.split("").map<string>((char) => `english-${_case}-${char}`)
     );
-    layout[3].push("", "", "", "", generateShiftIcon("english-shift"));
+    layout[3].push(generateShiftIcon("english-shift"));
     return layout;
   }) as [Layout, Layout],
   greek: ["lower", "upper"].map<Layout>((_case) => {
-    const layout = Array.from({ length: 3 }).map<
-      (string | (IconButton & Partial<ButtonPosition>))[]
+    const layout = Array.from({ length: 4 }).map<
+      (string | string[] | (IconButton & Partial<ButtonPosition>))[]
     >((_, r) =>
-      Array.from({ length: 8 }).map<string>(
-        (_, i) => `greek-${_case}-${greekLetterNames[i + r * 8]}`
+      Array.from({ length: 7 }).map<string>(
+        (_, i) => `greek-${_case}-${greekLetterNames[i + r * 7]}`
       )
     );
-    layout.push([
-      ...varGreek.map((letter) => `greek-${letter}`),
-      "",
-      "",
-      generateShiftIcon("greek-shift"),
-    ]);
+    Object.values(varGreeks).forEach((i) => {
+      const r = Math.floor(i / 7),
+        c = i % 7;
+      layout[r][c] = [
+        layout[r][c] as string,
+        `greek-var-${greekLetterNames[i]}`,
+      ];
+    });
+    layout[3].splice(3, 4, "", "", generateShiftIcon("greek-shift"));
     return layout;
   }) as [Layout, Layout],
 };
@@ -368,43 +379,54 @@ const controlLayout: Layout = [
 
 const inputPad: InputPad = {
   rows: 4,
-  menu: [
+  columns: 7,
+  bottomMenu: [
     {
-      name: "calculator",
-      commands: ["calculator"],
+      name: "main",
+      buttons: [{ ...buttonsRepo["calculator"], type: "primary" }],
+    },
+    {
+      name: "variables",
+      buttons: [buttonsRepo["english"], buttonsRepo["greek"]],
+    },
+    {
+      ...(buttonsRepo["undo"] as IconButton),
+      children: [buttonsRepo["undo"], buttonsRepo["redo"]],
+    },
+    buttonsRepo["move-left"] as IconButton,
+    buttonsRepo["move-right"] as IconButton,
+    {
+      ...(buttonsRepo["backspace"] as IconButton),
+      type: "danger",
+    },
+    {
+      ...(buttonsRepo["execute"] as IconButton),
       type: "primary",
-      icon: generateIcon("menu-calculator"),
+    },
+  ],
+  leftMenu: [
+    {
+      name: "main",
+      buttons: [{ ...buttonsRepo["calculator"], type: "primary" }],
     },
     {
       name: "english",
-      commands: ["english"],
-      icon: generateIcon("english-upper-a"),
+      buttons: [buttonsRepo["english"]],
     },
     {
       name: "greek",
-      commands: ["greek"],
-      icon: generateIcon("greek-upper-omega"),
+      buttons: [buttonsRepo["greek"]],
     },
-    {
-      name: "about",
-      commands: ["about"],
-      type: "warning",
-      icon: generateIcon("menu-about"),
-    },
+    buttonsRepo["about"],
   ],
-  control: {
-    columns: 2,
-    buttons: parseLayout(controlLayout, buttonsRepo) as ControlButton[],
-  },
-  buttons: {
-    columns: 8,
-    pages: parsePages(buttonPages, buttonsRepo),
-  },
+  controls: parseLayout(controlLayout, buttonsRepo) as ControlButton[],
+  pages: parsePages(buttonPages, buttonsRepo),
 };
 
 export {
   PadButton as PadButtonType,
   IconButton as IconButtonType,
+  PageButton as PageButtonType,
   Icon as IconType,
   inputPad,
 };

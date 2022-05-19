@@ -45,7 +45,7 @@ const emit = defineEmits<{
 <style lang="scss" scoped>
 .input-button {
   @apply relative 
-    min-w-[calc((100vw-0.25rem)/8-0.25rem)] sm:min-w-[3rem] w-full min-h-[calc((100vw-0.25rem)/8-0.25rem)] sm:min-h-[3rem] h-full 
+    min-w-[calc((100vw-0.25rem)/7-0.25rem)] sm:min-w-[3rem] w-full min-h-[calc((100vw-0.25rem)/7-0.25rem)] sm:min-h-[3rem] h-full 
     text-center sm:text-base
     rounded-md 
     focus:ring group-hover:ring-0;
