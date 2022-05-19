@@ -2,7 +2,7 @@
   <button
     class="input-button"
     :class="[`btn-type-${data.type || 'default'}`, { active }]"
-    @click="emit('click', data.value)"
+    @click="emit('click', data.commands)"
   >
     <div
       v-if="topBar"
@@ -37,7 +37,9 @@ defineProps({
   active: { type: Boolean, default: false },
   subIcon: { type: Object as PropType<IconType>, default: null },
 });
-const emit = defineEmits(["click"]);
+const emit = defineEmits<{
+  (event: "click", commands: [string, ...string[]]): void;
+}>();
 </script>
 
 <style lang="scss" scoped>

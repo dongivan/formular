@@ -11,13 +11,14 @@ type ButtonPosition = {
 };
 type IconButton = {
   name: string;
-  value: string;
+  commands: [string, ...string[]];
   icon: Icon;
   type?: string;
   children?: IconButton[];
 };
 type PadButton = IconButton & ButtonPosition;
 
+type MenuButton = IconButton & { commands: [string] };
 type ControlButton = {
   name: "backspace" | "undo" | "redo" | "move-left" | "move-right" | "execute";
 } & PadButton;
@@ -26,7 +27,7 @@ type ButtonPage = [PadButton[], PadButton[]?];
 type ButtonPages = Record<string, ButtonPage>;
 type InputPad = {
   rows: number;
-  menu: IconButton[];
+  menu: MenuButton[];
   control: {
     columns: number;
     buttons: ControlButton[];
@@ -45,9 +46,9 @@ type Layout = (
 )[][];
 type PageLayout = [Layout, Layout?];
 
-type ParseFunction = (val: string | undefined) => string | undefined;
+type ParseFunction<T> = (val: T | undefined) => T | undefined;
 
-function parse(parser: ParseFunction | undefined, val: string | undefined) {
+function parse<T>(parser: ParseFunction<T> | undefined, val: T | undefined) {
   return parser ? parser(val) : val;
 }
 
@@ -62,24 +63,23 @@ function generateIcon(iconName: string): Icon {
 function generateButtons(
   buttonNames: string[],
   parsers: {
-    key?: ParseFunction;
-    value?: ParseFunction;
-    icon?: ParseFunction;
-    name?: ParseFunction;
+    name?: ParseFunction<string>;
+    icon?: ParseFunction<string>;
+    commands?: ParseFunction<string[]>;
   } = {}
 ) {
   const result: Record<string, IconButton> = {};
-  buttonNames.forEach((val) => {
-    const key = parse(parsers.key, val),
-      value = parse(parsers.value, val),
-      iconName = parse(parsers.icon, val);
-    if (key == undefined || value == undefined || iconName == undefined) {
+  buttonNames.forEach((btnName) => {
+    const name = parse(parsers.name, btnName) || btnName,
+      commands = parse<string[]>(parsers.commands, [btnName]),
+      iconName = parse(parsers.icon, btnName);
+    if (name == undefined || commands == undefined || iconName == undefined) {
       return;
     }
 
-    result[key] = {
-      value,
-      name: parse(parsers.name, val) || val,
+    result[name] = {
+      commands: commands as [string, ...string[]],
+      name: parse(parsers.name, btnName) || btnName,
       icon: generateIcon(iconName),
     };
   });
@@ -144,7 +144,6 @@ function parsePages(
 
   Object.keys(pages).forEach((page) => {
     const pageLayout = pages[page];
-    // const buttons: PadButton[] = parseLayout(layout, repo);
 
     result[page] = pageLayout
       .filter((layout) => layout)
@@ -159,7 +158,7 @@ function parsePages(
 function generateShiftIcon(name: string): IconButton & Partial<ButtonPosition> {
   return {
     name,
-    value: "shift",
+    commands: ["shift"],
     type: "warning",
     icon: generateIcon("control-shift"),
     colSpan: 2,
@@ -259,22 +258,29 @@ const iconData: Record<string, Partial<Icon>> = {
   "control-redo": { name: "control-undo", flip: true },
 };
 
+const commandsData: Record<string, string[]> = {
+  square: ["power", "2", "move-right"],
+  cube: ["power", "3", "move-right"],
+};
+
 const buttonsRepo: Record<string, IconButton> = {
   ...generateButtons(numbers, { icon: (val) => `number-${val}` }),
   ...generateButtons(symbols, { icon: (val) => `symbol-${val}` }),
-  ...generateButtons(operators, { icon: (val) => `operator-${val}` }),
+  ...generateButtons(operators, {
+    icon: (val) => `operator-${val}`,
+    commands: (val) => (val ? commandsData[val[0]] || val : val),
+  }),
   ...generateButtons(english, {
-    key: (val) => `english-lower-${val}`,
+    name: (val) => `english-lower-${val}`,
     icon: (val) => `english-lower-${val}`,
   }),
   ...generateButtons(english, {
-    key: (val) => `english-upper-${val}`,
-    value: (val) => val?.toUpperCase(),
+    name: (val) => `english-upper-${val}`,
+    commands: (val) => (val ? [val[0].toUpperCase()] : undefined),
     icon: (val) => `english-upper-${val}`,
-    name: (val) => val?.toUpperCase(),
   }),
   ...generateButtons(greek, {
-    key: (val) => `greek-${val}`,
+    name: (val) => `greek-${val}`,
     icon: (val) => `greek-${val}`,
   }),
   ...generateButtons(controls, { icon: (val) => `control-${val}` }),
@@ -365,23 +371,23 @@ const inputPad: InputPad = {
   menu: [
     {
       name: "calculator",
-      value: "calculator",
+      commands: ["calculator"],
       type: "primary",
       icon: generateIcon("menu-calculator"),
     },
     {
       name: "english",
-      value: "english",
+      commands: ["english"],
       icon: generateIcon("english-upper-a"),
     },
     {
       name: "greek",
-      value: "greek",
+      commands: ["greek"],
       icon: generateIcon("greek-upper-omega"),
     },
     {
       name: "about",
-      value: "about",
+      commands: ["about"],
       type: "warning",
       icon: generateIcon("menu-about"),
     },
@@ -395,6 +401,7 @@ const inputPad: InputPad = {
     pages: parsePages(buttonPages, buttonsRepo),
   },
 };
+
 export {
   PadButton as PadButtonType,
   IconButton as IconButtonType,

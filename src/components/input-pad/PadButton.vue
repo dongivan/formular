@@ -17,9 +17,9 @@
       >
         <IconButton
           v-for="child of data.children"
-          :key="`btn-${data.value}-${child.value}`"
+          :key="`btn-${data.commands}-${child.commands}`"
           :data="child"
-          @click="(payloads) => emit('click', payloads)"
+          @click="emit('click', child.commands)"
         />
       </div>
     </template>
@@ -31,7 +31,7 @@
           ? data.children[1].icon
           : undefined
       "
-      @click="emit('click', data.value)"
+      @click="emit('click', data.commands)"
     />
   </div>
 </template>
@@ -44,7 +44,9 @@ import IconButton from "./IconButton.vue";
 const props = defineProps({
   data: { type: Object as PropType<PadButtonType>, required: true },
 });
-const emit = defineEmits(["click"]);
+const emit = defineEmits<{
+  (event: "click", commands: [string, ...string[]]): void;
+}>();
 
 const childrenPositionRef = computed(() => {
   if (!props.data.children || props.data.children.length <= 1) {

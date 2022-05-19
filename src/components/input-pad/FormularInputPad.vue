@@ -22,7 +22,7 @@
         v-for="(button, i) in controlButtons"
         :key="`button-${i}`"
         :data="button"
-        @click="(evt) => emit('key-pressed', evt)"
+        @click="(command) => emit('click', command)"
       />
     </div>
   </div>
@@ -34,7 +34,9 @@ import { computed, ref } from "vue";
 import PadButton from "./PadButton.vue";
 import IconButton from "./IconButton.vue";
 
-const emit = defineEmits(["key-pressed"]);
+const emit = defineEmits<{
+  (event: "click", command: [string, ...string[]]): void;
+}>();
 
 const menuGridStyles = {
   gridTemplateRows: `repeat(${inputPad.rows}, 1fr)`,
@@ -55,7 +57,7 @@ const menuButtons = inputPad.menu;
 const currentPageNameRef = ref("");
 currentPageNameRef.value =
   inputPad.menu
-    .map<string>((btn) => btn.value || "")
+    .map<string>((btn) => btn.commands[0])
     .filter((page) => page)[0] || "";
 const currentPage = computed(() => {
   const page = inputPad.buttons.pages[currentPageNameRef.value] || [];
@@ -63,28 +65,28 @@ const currentPage = computed(() => {
 });
 const controlButtons = inputPad.control.buttons;
 
-function handleMenuButtonClick(value: string) {
-  switch (value) {
+function handleMenuButtonClick(commands: string[]) {
+  const cmd = commands[0];
+  switch (cmd as string) {
     case "about":
       console.log("about");
       break;
 
     default:
-      if (inputPad.buttons.pages[value]) {
+      if (inputPad.buttons.pages[cmd]) {
         shiftRef.value = false;
-        currentPageNameRef.value = value;
+        currentPageNameRef.value = cmd;
       }
   }
 }
 
-function handleButtonClick(value: string) {
-  switch (value) {
+function handleButtonClick(commands: [string, ...string[]]) {
+  switch (commands[0]) {
     case "shift":
       shiftRef.value = !shiftRef.value;
       break;
-
     default:
-      emit("key-pressed", value);
+      emit("click", commands);
   }
 }
 </script>

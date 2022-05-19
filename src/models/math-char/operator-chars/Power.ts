@@ -2,6 +2,8 @@ import { Latex, MathML } from "../../Renderer";
 import { MathCharFactory, OperatorChar } from "../internal";
 
 @MathCharFactory.RegisterMathChar("^", "power")
+/* use commands intead, see [@/components/input-pad/buttons.ts] */
+/*
 @MathCharFactory.RegisterCreateFunction("square", (factory, cursor) => {
   const chars = factory.create("power");
   chars.splice(1, 0, ...factory.create("2"));
@@ -18,6 +20,7 @@ import { MathCharFactory, OperatorChar } from "../internal";
   }
   return chars;
 })
+*/
 @Latex.RenderChar(({ params, h }) => h("^{<0>}", params))
 @Latex.RenderNode(
   ({ current, left, right }) => `{${left || ""}}${current}${right || ""}`

@@ -47,7 +47,7 @@
   </div>
   <FormularInputPad
     class="fixed bottom-1 w-full justify-center"
-    @key-pressed="handleInputPadKeyPressed"
+    @click="handleCommands"
   />
 </template>
 
@@ -105,29 +105,31 @@ watch(currentViewRef, (view) => {
   sourceRef.value = views[view].render(formula.tree);
 });
 
-const handleInputPadKeyPressed = (name: string) => {
-  switch (name) {
-    case "move-left":
-      formula.moveCursorLeft();
-      break;
-    case "move-right":
-      formula.moveCursorRight();
-      break;
-    case "backspace":
-      formula.deleteCharBeforeCursor();
-      break;
-    case "undo":
-      formula.undo();
-      break;
-    case "redo":
-      formula.redo();
-      break;
-    case "execute":
-      console.log("execute !");
-      break;
-    default:
-      formula.insertAtCursor(name);
-  }
+const handleCommands = (commands: [string, ...string[]]) => {
+  commands.forEach((cmd) => {
+    switch (cmd) {
+      case "move-left":
+        formula.moveCursorLeft();
+        break;
+      case "move-right":
+        formula.moveCursorRight();
+        break;
+      case "backspace":
+        formula.deleteCharBeforeCursor();
+        break;
+      case "undo":
+        formula.undo();
+        break;
+      case "redo":
+        formula.redo();
+        break;
+      case "execute":
+        console.log("execute !");
+        break;
+      default:
+        formula.insertAtCursor(cmd);
+    }
+  });
 };
 </script>
 
