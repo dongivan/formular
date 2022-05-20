@@ -89,8 +89,6 @@ const childrenPositionRef = computed(() => {
     return {};
   }
   return props.childrenReverse ? { right: "-0.25em" } : { left: "-0.25em" };
-  // const n = props.children?.length || 0;
-  // return { left: `calc(50% - ((100% + 0.25rem) * ${n} + 0.25rem) / 2)` };
 });
 
 const refIsTouching = ref(false);
@@ -127,12 +125,12 @@ function handleTouchend(evt: TouchEvent) {
     if (button) {
       emit("click", button.commands);
     }
-    refIsTouching.value = false;
     refTouchBaseX.value = 0;
     refTouchChildIndex.value = -1;
   } else {
     emit("click", props.button.commands);
   }
+  refIsTouching.value = false;
   evt.preventDefault();
 }
 </script>
