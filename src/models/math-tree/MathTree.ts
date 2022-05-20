@@ -3,12 +3,14 @@ import type { MathNode } from "../math-node";
 import { OperandNode, OperatorNode } from "../math-node";
 import { InstanceResolver } from "../InstanceResolver";
 import type { MathChar } from "../math-char";
+import { Cursor } from "../math-char";
 
 export default class MathTree {
   private _formulaId: string;
   private _addParen = false;
   private _infixList: MathNode[] = [];
   private _root: MathNode | undefined;
+  private _hasCursor = false;
 
   constructor(formula: Formula, addParen: boolean) {
     this._formulaId = formula.instanceId;
@@ -31,9 +33,15 @@ export default class MathTree {
     return this._root;
   }
 
+  get hasCursor() {
+    return this._hasCursor;
+  }
+
   resetInfixList(chars: MathChar[]) {
     this._infixList = this.infixMaker.make(chars, this._infixList);
     this._generateTree();
+    this._hasCursor =
+      this._infixList.findIndex((node) => node.char instanceof Cursor) > -1;
   }
 
   private _generateTree() {

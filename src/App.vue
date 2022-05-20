@@ -146,6 +146,9 @@ const handleCommands = (commands: [string, ...string[]]) => {
 :deep(.formular-placeholder) {
   @apply bg-yellow-200;
 }
+:deep(.formular-active) {
+  @apply bg-gray-200;
+}
 .view-btn {
   @apply bg-gray-200 px-4 py-2 first:rounded-bl-sm last:rounded-br-sm;
 

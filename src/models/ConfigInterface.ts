@@ -9,6 +9,7 @@ export default interface ConfigInterface {
   placeholderCssClass?: string;
 
   clickableDataKey?: string;
+  activeClass?: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: string]: any;
 }

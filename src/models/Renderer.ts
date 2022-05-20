@@ -8,6 +8,7 @@ import { findByClass, replace } from "./utils";
 type AddClickableMarkFunction<N> = (r: N, sn: number) => N;
 type SetParenthesesLevelFunction<N> = (r: N, level: number) => N;
 type RenderVariableFunction<N> = (char: MathChar) => N;
+type RenderActiveNode<N> = (r: N) => N;
 
 type DecoratorCharTemplateFunction<N, H> = (args: {
   char: MathChar;
@@ -32,6 +33,7 @@ export class Renderer<N, H> {
   private _charFns: Record<string, DecoratorCharTemplateFunction<N, H>> = {};
   private _addClickableMarkFn?: AddClickableMarkFunction<N>;
   private _setParenthesesLevelFn?: SetParenthesesLevelFunction<N>;
+  private _renderActiveNode?: RenderActiveNode<N>;
   private _interactive = true;
 
   private _nodeFns: Record<string, DecoratorNodeTemplateFunction<N, H>> = {};
@@ -45,11 +47,13 @@ export class Renderer<N, H> {
     addClickableMarkFunction?: AddClickableMarkFunction<N>;
     setParenthesesLevelFunction?: SetParenthesesLevelFunction<N>;
     renderTextFunction?: RenderTextFunction<N>;
+    renderActiveNode?: RenderActiveNode<N>;
     renderVariable: RenderVariableFunction<N>;
   }) {
     this._helper = config.helper;
     this._addClickableMarkFn = config.addClickableMarkFunction;
     this._setParenthesesLevelFn = config.setParenthesesLevelFunction;
+    this._renderActiveNode = config.renderActiveNode;
     this._renderTextFunction = config.renderTextFunction;
     this.renderVariable = config.renderVariable;
   }
@@ -76,7 +80,7 @@ export class Renderer<N, H> {
 
   /* functions */
 
-  private _renderChar(char: MathChar, params: N[]): N {
+  private _renderChar(char: MathChar, params: N[], active: boolean): N {
     const fn = findByClass(char, this._charFns);
     let result: N;
     if (fn == undefined) {
@@ -95,26 +99,39 @@ export class Renderer<N, H> {
       result = this._setParenthesesLevelFn(result, char.level);
     }
 
+    if (active && this._renderActiveNode) {
+      result = this._renderActiveNode(result);
+    }
+
     return result;
   }
 
-  private _renderNode(node: MathNode): N {
+  private _renderNode(node: MathNode, cursorRendered = false): N {
     const template = findByClass(node.char, this._nodeFns);
     if (template == undefined) {
       throw new Error(
         `Render failed: cannot find node template of \`${node.char.constructor.name}\`(\`{ ${node.char.value}}\`).`
       );
     } else {
+      const active =
+        !cursorRendered && !!this._renderActiveNode && node.hasCursor;
       return template({
         node,
-        left: node.leftChild ? this._renderNode(node.leftChild) : undefined,
-        right: node.rightChild ? this._renderNode(node.rightChild) : undefined,
+        left: node.leftChild
+          ? this._renderNode(node.leftChild, active)
+          : undefined,
+        right: node.rightChild
+          ? this._renderNode(node.rightChild, active)
+          : undefined,
         current: this._renderChar(
           node.char,
-          (node.paramTrees || []).map<N>((tree) => this.render(tree))
+          (node.paramTrees || []).map<N>((tree) => this.render(tree)),
+          active
         ),
         h: this._helper,
-        renderChar: this._renderChar.bind(this),
+        renderChar: (char, params) => {
+          return this._renderChar(char, params, active);
+        },
       });
     }
   }
@@ -289,6 +306,13 @@ export const MathML = new Renderer<MathMLNode[], typeof MathMLNode.create>({
       eles[0].setAttr({
         [`data-${key}`]: sn.toString(),
       });
+    }
+    return eles;
+  },
+  renderActiveNode: (eles) => {
+    const key = Config.getConfig().activeClass;
+    if (key && eles.length > 0) {
+      eles[0].setAttr({ class: key });
     }
     return eles;
   },

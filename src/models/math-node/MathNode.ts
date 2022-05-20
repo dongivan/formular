@@ -28,6 +28,15 @@ export default class MathNode {
     return this._params;
   }
 
+  get hasCursor() {
+    return this.paramTrees
+      ? this.paramTrees.reduce<boolean>(
+          (flag, tree) => flag || tree.hasCursor,
+          false
+        )
+      : false;
+  }
+
   setParenLevels() {
     const leftResult = this.leftChild?.setParenLevels() || [0, 0],
       rightResult = this.rightChild?.setParenLevels() || [0, 0];
