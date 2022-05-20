@@ -246,6 +246,10 @@ export default class Formula extends Instance {
     }
   }
 
+  verify() {
+    return this._tree.verify();
+  }
+
   toString(): string {
     return "[" + this._chars.toString() + "]";
   }

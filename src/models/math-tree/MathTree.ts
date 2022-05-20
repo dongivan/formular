@@ -3,6 +3,7 @@ import type { MathNode } from "../math-node";
 import { OperandNode, OperatorNode } from "../math-node";
 import { InstanceResolver } from "../InstanceResolver";
 import type { MathChar } from "../math-char";
+import { HiddenTimes, LeftParen, Placeholder, RightParen } from "../math-char";
 import { Cursor } from "../math-char";
 
 export default class MathTree {
@@ -110,5 +111,62 @@ export default class MathTree {
     }
     root.setParenLevels();
     this._root = root;
+  }
+
+  verify() {
+    /* check if infix list has a `Placeholder` */
+    if (
+      this._infixList.findIndex((node) => node.char instanceof Placeholder) > -1
+    ) {
+      return false;
+    }
+
+    /* check if `Cursor` ocuppies a `Placeholder` */
+    /* TODO: current logic will FAIL when `Cursor` is on the left of `Minus` */
+    const cursorPos = this._infixList.findIndex(
+      (node) => node.char instanceof Cursor
+    );
+    if (cursorPos > -1) {
+      if (
+        !(
+          this._infixList[cursorPos - 1] &&
+          this._infixList[cursorPos - 1].char instanceof HiddenTimes
+        ) &&
+        !(
+          this._infixList[cursorPos + 1] &&
+          this._infixList[cursorPos + 1].char instanceof HiddenTimes
+        )
+      ) {
+        return false;
+      }
+    }
+
+    /* check if parentheses are paired. */
+    const parens: MathNode[] = [];
+    this._infixList.forEach((node) => {
+      if (node.char instanceof LeftParen) {
+        parens.unshift(node);
+      } else if (node.char instanceof RightParen) {
+        if (parens[0] && parens[0].char instanceof LeftParen) {
+          parens.shift();
+        } else {
+          parens.unshift(node);
+        }
+      }
+    });
+    if (parens.length > 0) {
+      return false;
+    }
+
+    /* check each nodes */
+    for (const node of this._infixList) {
+      for (const tree of node.paramTrees || []) {
+        if (!tree.verify()) {
+          return false;
+        }
+      }
+    }
+
+    return true;
   }
 }

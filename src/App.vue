@@ -124,7 +124,7 @@ const handleCommands = (commands: [string, ...string[]]) => {
         formula.redo();
         break;
       case "execute":
-        console.log("execute !");
+        console.log("execute !", formula.verify());
         break;
       default:
         formula.insertAtCursor(cmd);
