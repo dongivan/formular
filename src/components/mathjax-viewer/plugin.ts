@@ -52,7 +52,7 @@ async function loadMathJax(src: string, options: MathJaxOptions) {
     if (window.MathJax.startup?.defaultReady) {
       window.MathJax.startup.defaultReady();
     }
-    isMathJaxLoadedRef.value = true;
+    refIsMathJaxLoaded.value = true;
   };
 
   const _options = { ...options };
@@ -77,7 +77,7 @@ async function loadMathJax(src: string, options: MathJaxOptions) {
   return loadScript(src);
 }
 
-const isMathJaxLoadedRef = ref(false);
+const refIsMathJaxLoaded = ref(false);
 let initialized = false;
 
 async function install(app: App, options: MathJaxViewerPluginOptions) {
@@ -88,4 +88,4 @@ async function install(app: App, options: MathJaxViewerPluginOptions) {
   }
 }
 
-export { install, isMathJaxLoadedRef };
+export { install, refIsMathJaxLoaded };

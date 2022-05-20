@@ -7,41 +7,41 @@
           :key="view"
           class="view-btn"
           :class="{
-            active: view == currentViewRef,
+            active: view == refCurrentView,
           }"
-          @click="currentViewRef = view.toString()"
+          @click="refCurrentView = view.toString()"
         >
           {{ view }}
         </button>
         <div class="flex-grow hidden sm:block"></div>
         <button
           class="view-btn hidden sm:block"
-          :class="{ active: !showSourceRef }"
-          @click="showSourceRef = false"
+          :class="{ active: !refShowSource }"
+          @click="refShowSource = false"
         >
           Result
         </button>
         <button
           class="view-btn hidden sm:block"
-          :class="{ active: showSourceRef }"
-          @click="showSourceRef = true"
+          :class="{ active: refShowSource }"
+          @click="refShowSource = true"
         >
           Source
         </button>
       </div>
       <MathJaxViewer
-        v-show="!showSourceRef"
+        v-show="!refShowSource"
         class="box-height max-h-64 bg-white border border-solid border-gray-400 shadow-md overflow-auto flex flex-col justify-center text-4xl sm:text-2xl md:text-lg lg:text-base"
-        :source-format="views[currentViewRef].source"
+        :source-format="views[refCurrentView].source"
         target-format="html"
-        :content="sourceRef"
-        @click="views[currentViewRef].handleClick"
+        :content="refSource"
+        @click="views[refCurrentView].handleClick"
       />
       <div
-        v-show="showSourceRef"
+        v-show="refShowSource"
         class="box-height bg-white border border-solid border-gray-400 w-full overflow-auto"
       >
-        <pre>{{ sourceRef }}</pre>
+        <pre>{{ refSource }}</pre>
       </div>
     </div>
     <FormularInputPad
@@ -95,14 +95,14 @@ const views: {
     source: "tex",
   },
 };
-const currentViewRef = ref(Object.keys(views)[0]);
-const showSourceRef = ref(false);
-const sourceRef = ref("");
+const refCurrentView = ref(Object.keys(views)[0]);
+const refShowSource = ref(false);
+const refSource = ref("");
 formula.addTreeChangedListener(({ tree }) => {
-  sourceRef.value = views[currentViewRef.value].render(tree);
+  refSource.value = views[refCurrentView.value].render(tree);
 });
-watch(currentViewRef, (view) => {
-  sourceRef.value = views[view].render(formula.tree);
+watch(refCurrentView, (view) => {
+  refSource.value = views[view].render(formula.tree);
 });
 
 const handleCommands = (commands: [string, ...string[]]) => {

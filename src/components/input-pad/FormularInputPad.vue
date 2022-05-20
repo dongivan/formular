@@ -3,14 +3,14 @@
     <div class="hidden sm:grid sm:gap-1" :style="menuGridStyles">
       <MenuButtons
         :buttons="leftMenuButtons"
-        :current-page="currentPageNameRef"
+        :current-page="refCurrentPageName"
         @click="handleButtonClick"
         @change-page="handlePageChange"
       />
     </div>
     <div class="grid gap-1 grid-cols-7 grid-rows-4">
       <PadButton
-        v-for="(button, i) in currentPageRef"
+        v-for="(button, i) in refCurrentPage"
         :key="`button-${i}`"
         :button="button"
         :children="button.children"
@@ -23,7 +23,7 @@
     <div class="flex gap-1 sm:hidden">
       <MenuButtons
         :buttons="bottomMenuButtons"
-        :current-page="currentPageNameRef"
+        :current-page="refCurrentPageName"
         @click="handleButtonClick"
         @change-page="handlePageChange"
       />
@@ -62,7 +62,7 @@ const controlGridStyles = {
 
 const bottomMenuButtons = inputPad.bottomMenu;
 const leftMenuButtons = inputPad.leftMenu;
-const pagesRef = computed(() => {
+const refPages = computed(() => {
   const result: string[] = [];
   [bottomMenuButtons, leftMenuButtons].forEach((menu) => {
     menu.forEach((pageBtn) => {
@@ -75,19 +75,19 @@ const pagesRef = computed(() => {
   });
   return Array.from(new Set(result));
 });
-const currentPageNameRef = ref(pagesRef.value[0]);
+const refCurrentPageName = ref(refPages.value[0]);
 
 const controlButtons = inputPad.controls;
 
-const shiftRef = ref(false);
-const currentPageRef = computed(() => {
-  const page = inputPad.pages[currentPageNameRef.value] || [];
-  return (shiftRef.value && page[1]) || page[0];
+const refIsShift = ref(false);
+const refCurrentPage = computed(() => {
+  const page = inputPad.pages[refCurrentPageName.value] || [];
+  return (refIsShift.value && page[1]) || page[0];
 });
 
 function handlePageChange(name: string) {
-  currentPageNameRef.value = name;
-  shiftRef.value = false;
+  refCurrentPageName.value = name;
+  refIsShift.value = false;
 }
 
 function handleButtonClick(commands: [string, ...string[]]) {
@@ -96,7 +96,7 @@ function handleButtonClick(commands: [string, ...string[]]) {
       console.log("about");
       break;
     case "shift":
-      shiftRef.value = !shiftRef.value;
+      refIsShift.value = !refIsShift.value;
       break;
     default:
       emit("click", commands);

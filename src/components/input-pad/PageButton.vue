@@ -1,9 +1,9 @@
 <template>
   <PadButton
-    :button="buttonRef"
-    :children="childrenRef"
-    :sub-icon="subIconRef"
-    :active="isActiveRef"
+    :button="refButton"
+    :children="refChildren"
+    :sub-icon="refSubIcon"
+    :active="refIsActive"
     @click="handleClick"
   />
 </template>
@@ -20,24 +20,24 @@ const props = defineProps({
 const emit = defineEmits<{
   (event: "change-page", page: string): void;
 }>();
-const indexRef = computed(() => {
+const refIndex = computed(() => {
   return props.data.buttons.findIndex(
     (btn) => btn.commands[0] == props.currentPageName
   );
 });
-const isActiveRef = computed(() => {
-  return indexRef.value > -1;
+const refIsActive = computed(() => {
+  return refIndex.value > -1;
 });
-const buttonRef = computed(() => {
-  return props.data.buttons[isActiveRef.value ? indexRef.value : 0];
+const refButton = computed(() => {
+  return props.data.buttons[refIsActive.value ? refIndex.value : 0];
 });
-const subIconRef = computed(() => {
+const refSubIcon = computed(() => {
   if (props.data.buttons.length == 2) {
-    return props.data.buttons[indexRef.value == 1 ? 0 : 1].icon;
+    return props.data.buttons[refIndex.value == 1 ? 0 : 1].icon;
   }
   return undefined;
 });
-const childrenRef = computed(() => {
+const refChildren = computed(() => {
   return props.data.buttons.length == 1 ? undefined : props.data.buttons;
 });
 function handleClick(commands: string[]) {

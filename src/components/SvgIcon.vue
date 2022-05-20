@@ -1,9 +1,9 @@
 <template>
   <svg
     class="inline-block w-4 h-4 fill-current overflow-hidden"
-    :style="styleRef"
+    :style="refStyle"
   >
-    <use :xlink:href="iconNameRef"></use>
+    <use :xlink:href="refIconName"></use>
   </svg>
 </template>
 
@@ -15,10 +15,10 @@ const props = defineProps({
   flip: { type: Boolean, default: false },
 });
 
-const iconNameRef = computed(() => {
+const refIconName = computed(() => {
     return `#svg-icon-${props.name}`;
   }),
-  styleRef = computed(() => {
+  refStyle = computed(() => {
     const styles: Record<string, string | number> = {};
     const scale = [1, 1];
     if (props.scale != 1) {

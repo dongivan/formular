@@ -3,7 +3,7 @@
     ref="refPadRoot"
     class="w-full h-full relative"
     :class="{ group: children }"
-    :style="gridStyleRef"
+    :style="refGridStyle"
   >
     <template v-if="children">
       <div
@@ -19,7 +19,7 @@
           'rounded-bl-none': !childrenReverse,
           'rounded-br-none': childrenReverse,
         }"
-        :style="[childrenPositionRef]"
+        :style="[refChildrenPosition]"
       >
         <IconButton
           v-for="(child, i) of children"
@@ -69,7 +69,7 @@ const emit = defineEmits<{
   (event: "click", commands: [string, ...string[]]): void;
 }>();
 
-const gridStyleRef = computed(() => {
+const refGridStyle = computed(() => {
   return "row" in props.button
     ? {
         gridRow: `${props.button.row} / span ${props.button.rowSpan || 1}`,
@@ -84,7 +84,7 @@ const refHasChildren = computed(() => {
   return props.children && props.children.length > 1;
 });
 
-const childrenPositionRef = computed(() => {
+const refChildrenPosition = computed(() => {
   if (!refHasChildren.value) {
     return {};
   }

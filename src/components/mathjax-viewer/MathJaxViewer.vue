@@ -1,10 +1,10 @@
 <template>
-  <div ref="containerRef"></div>
+  <div ref="refContainer"></div>
 </template>
 
 <script lang="ts">
 import { computed, onMounted, ref, watch } from "vue";
-import { isMathJaxLoadedRef } from "./plugin";
+import { refIsMathJaxLoaded } from "./plugin";
 declare global {
   interface Window {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -36,7 +36,7 @@ const props = defineProps({
 });
 const emit = defineEmits(["math-jax-loaded"]);
 
-const mathJaxFunctionNameRef = computed(() => {
+const refMathJaxFunctionName = computed(() => {
   const source =
     {
       mml: "mathml",
@@ -50,7 +50,7 @@ const mathJaxFunctionNameRef = computed(() => {
 });
 
 watch(
-  isMathJaxLoadedRef,
+  refIsMathJaxLoaded,
   (loaded) => {
     if (loaded) {
       emit("math-jax-loaded");
@@ -60,29 +60,29 @@ watch(
 );
 
 /* setup components */
-const isMountedRef = ref(false);
-const containerRef = ref();
+const refIsMounted = ref(false);
+const refContainer = ref();
 onMounted(() => {
-  isMountedRef.value = true;
+  refIsMounted.value = true;
 });
 
 watch(
-  [() => props.content, isMountedRef, isMathJaxLoadedRef],
+  [() => props.content, refIsMounted, refIsMathJaxLoaded],
   async ([content, isMounted, isMathJaxLoaded]) => {
     if (!isMounted || !isMathJaxLoaded) {
       return;
     }
     const MathJax = window.MathJax,
-      MathJaxFunction = MathJax[mathJaxFunctionNameRef.value];
+      MathJaxFunction = MathJax[refMathJaxFunctionName.value];
     if (typeof MathJaxFunction == "function") {
-      const el = containerRef.value;
+      const el = refContainer.value;
       el.innerHTML = "";
       el.appendChild(await MathJaxFunction(content));
       MathJax.startup?.document?.clear();
       MathJax.startup?.document?.updateDocument();
     } else {
       throw new Error(
-        `MathJax function \`${mathJaxFunctionNameRef.value}\` does not exist.`
+        `MathJax function \`${refMathJaxFunctionName.value}\` does not exist.`
       );
     }
   }
