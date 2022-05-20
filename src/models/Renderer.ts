@@ -1,4 +1,4 @@
-import Config from "./Config";
+import { Config } from "./Config";
 import { AbstractParen, MathChar } from "./math-char";
 import { MathNode } from "./math-node";
 import type { MathTree } from "./math-tree";

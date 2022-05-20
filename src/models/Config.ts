@@ -1,6 +1,20 @@
-import ConfigInterface from "./ConfigInterface";
+export interface ConfigInterface {
+  cursorKatex?: string;
+  placeholderKatex?: string;
+  cursorLatex?: string;
+  placeholderLatex?: string;
+  cursorMathML?: string;
+  placeholderMathML?: string;
+  cursorCssClass?: string;
+  placeholderCssClass?: string;
 
-export default class Config {
+  clickableDataKey?: string;
+  activeClass?: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  [key: string]: any;
+}
+
+export class Config {
   private static _instance: Config;
 
   private static _defaultConfig: ConfigInterface = {

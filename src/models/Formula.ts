@@ -6,7 +6,7 @@ import {
   Placeholder,
 } from "./math-char";
 import { PostfixListMaker, InfixListMaker, MathTree } from "./math-tree";
-import Config from "./Config";
+import { Config } from "./Config";
 import { Instance } from "./InstanceResolver";
 
 type TreeChangedEvent = {

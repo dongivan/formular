@@ -1,4 +1,4 @@
-import Config from "../../Config";
+import { Config } from "../../Config";
 import { Latex, MathML } from "../../Renderer";
 import { OperandChar } from "../internal";
 
