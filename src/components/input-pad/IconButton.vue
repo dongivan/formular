@@ -1,5 +1,6 @@
 <template>
   <button
+    ref="refButton"
     class="input-button"
     :class="[`btn-type-${data.type || 'default'}`, { active }]"
     @click="emit('click', data.commands)"
@@ -29,7 +30,7 @@
 <script setup lang="ts">
 import { IconButtonType, IconType } from "./buttons";
 import SvgIcon from "@/components/SvgIcon.vue";
-import { PropType } from "vue";
+import { PropType, ref } from "vue";
 
 defineProps({
   data: { type: Object as PropType<IconButtonType>, required: true },
@@ -37,9 +38,18 @@ defineProps({
   active: { type: Boolean, default: false },
   subIcon: { type: Object as PropType<IconType>, default: null },
 });
+
 const emit = defineEmits<{
   (event: "click", commands: [string, ...string[]]): void;
 }>();
+
+const refButton = ref();
+function focus() {
+  refButton.value.focus();
+}
+defineExpose({
+  focus,
+});
 </script>
 
 <style lang="scss" scoped>
@@ -48,11 +58,11 @@ const emit = defineEmits<{
     min-w-[calc((100vw-0.25rem)/7-0.25rem)] sm:min-w-[3rem] w-full min-h-[calc((100vw-0.25rem)/7-0.25rem)] sm:min-h-[3rem] h-full 
     text-center sm:text-base
     rounded-md 
-    focus:ring group-hover:ring-0;
+    focus:ring hover-hover:group-hover:ring-0;
 
   &.btn-type-default {
     @apply bg-gray-200
-    hover:bg-gray-300 
+    hover-hover:hover:bg-gray-300 
     active:bg-gray-400
     focus:outline-none focus:bg-gray-300 focus:ring-gray-200 
     disabled:cursor-not-allowed disabled:text-gray-400 disabled:bg-gray-200;
@@ -64,7 +74,7 @@ const emit = defineEmits<{
 
   &.btn-type-primary {
     @apply bg-blue-400
-    hover:bg-blue-500 
+    hover-hover:hover:bg-blue-500 
     active:bg-blue-600 
     focus:outline-none focus:bg-blue-500 focus:ring-blue-300 
     disabled:cursor-not-allowed disabled:text-blue-600 disabled:bg-blue-400;
@@ -76,7 +86,7 @@ const emit = defineEmits<{
 
   &.btn-type-danger {
     @apply bg-red-400
-    hover:bg-red-500 
+    hover-hover:hover:bg-red-500 
     active:bg-red-600 
     focus:outline-none focus:bg-red-500 focus:ring-red-300 
     disabled:cursor-not-allowed disabled:text-red-600 disabled:bg-red-400;

@@ -4,6 +4,10 @@ import "./assets/tailwind.css";
 import "./components/input-pad/svgs";
 import MathJaxViewer from "./components/mathjax-viewer";
 
+window.addEventListener("contextmenu", function (e) {
+  e.preventDefault();
+});
+
 const app = createApp(App);
 app.use(MathJaxViewer, {
   script: "mathjax/es5/startup.js",

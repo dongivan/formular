@@ -140,10 +140,10 @@ const handleCommands = (commands: [string, ...string[]]) => {
   -moz-osx-font-smoothing: grayscale;
   color: #2c3e50;
 }
-::v-deep .formular-cursor {
+:deep(.formular-cursor) {
   @apply bg-sky-400;
 }
-::v-deep .formular-placeholder {
+:deep(.formular-placeholder) {
   @apply bg-yellow-200;
 }
 .view-btn {
