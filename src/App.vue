@@ -1,20 +1,6 @@
 <template>
   <div class="w-screen h-screen flex flex-col items-center touch-none">
-    <div class="w-full sm:w-[568px]">
-      <MathJaxViewer
-        v-show="!showSourceRef"
-        class="border border-solid border-gray-400 h-[200px] flex flex-col justify-center text-4xl sm:text-2xl md:text-lg lg:text-base"
-        :source-format="views[currentViewRef].source"
-        target-format="html"
-        :content="sourceRef"
-        @click="views[currentViewRef].handleClick"
-      />
-      <div
-        v-show="showSourceRef"
-        class="border border-solid border-gray-400 h-[200px] w-full overflow-auto"
-      >
-        <pre>{{ sourceRef }}</pre>
-      </div>
+    <div class="w-full sm:w-[540px]">
       <div class="flex gap-px flex-wrap text-2xl sm:text-base">
         <button
           v-for="(_, view) in views"
@@ -43,9 +29,23 @@
           Source
         </button>
       </div>
+      <MathJaxViewer
+        v-show="!showSourceRef"
+        class="box-height max-h-64 bg-white border border-solid border-gray-400 shadow-md overflow-auto flex flex-col justify-center text-4xl sm:text-2xl md:text-lg lg:text-base"
+        :source-format="views[currentViewRef].source"
+        target-format="html"
+        :content="sourceRef"
+        @click="views[currentViewRef].handleClick"
+      />
+      <div
+        v-show="showSourceRef"
+        class="box-height bg-white border border-solid border-gray-400 w-full overflow-auto"
+      >
+        <pre>{{ sourceRef }}</pre>
+      </div>
     </div>
     <FormularInputPad
-      class="fixed bottom-1 w-full justify-center"
+      class="fixed bottom-1 justify-center"
       @click="handleCommands"
     />
   </div>
@@ -150,7 +150,10 @@ const handleCommands = (commands: [string, ...string[]]) => {
   @apply bg-gray-200 px-4 py-2 first:rounded-bl-sm last:rounded-br-sm;
 
   &.active {
-    @apply bg-gray-300 shadow-blue-400 shadow-[inset_0_-3px];
+    @apply bg-gray-300 shadow-blue-400 shadow-[inset_0_3px];
   }
+}
+.box-height {
+  @apply h-[calc(100vh-60px-(100vw-0.25rem)/7*5)] sm:h-[calc(100vh-60px-13rem)];
 }
 </style>
