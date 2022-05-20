@@ -6,6 +6,9 @@ module.exports = {
         "hover-hover": { raw: "(hover: hover)" },
       },
     },
+    screens: {
+      sm: "540px",
+    },
   },
   plugins: [],
 };
