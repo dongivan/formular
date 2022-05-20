@@ -6,25 +6,29 @@ import { MathCharFactory, OperandChar } from "../internal";
   h("\\lim_{{<0>}\\rightarrow{<1>}}{<2>}", params)
 )
 @MathML.RenderChar(({ params, h }) => [
-  h("munder", {
+  h("mrow", {
     children: [
-      h("mo", {
-        value: "lim",
-        attrs: { movablelimits: "true" },
-      }),
-      h("mrow", {
+      h("munder", {
         children: [
-          h("mrow", [params[0]]),
           h("mo", {
-            value: "&#x2192;",
-            attrs: { stretchy: "false" },
+            value: "lim",
+            attrs: { movablelimits: "true" },
           }),
-          h("mrow", [params[1]]),
+          h("mrow", {
+            children: [
+              h("mrow", [params[0]]),
+              h("mo", {
+                value: "&#x2192;",
+                attrs: { stretchy: "false" },
+              }),
+              h("mrow", [params[1]]),
+            ],
+          }),
         ],
       }),
+      h("mrow", [params[2]]),
     ],
   }),
-  h("mrow", [params[2]]),
 ])
 export default class Limit extends OperandChar {
   protected _paramsNumber = 3;

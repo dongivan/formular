@@ -6,20 +6,24 @@ import { MathCharFactory, OperandChar } from "../internal";
   h("\\sum^{<2>}_{{<0>}={<1>}}{<3>}", params)
 )
 @MathML.RenderChar(({ params, h }) => [
-  h("munderover", {
+  h("mrow", {
     children: [
-      h("mo", "&#x2211;"),
-      h("mrow", {
+      h("munderover", {
         children: [
-          h("mrow", [params[0]]),
-          h("mo", "="),
-          h("mrow", [params[1]]),
+          h("mo", "&#x2211;"),
+          h("mrow", {
+            children: [
+              h("mrow", [params[0]]),
+              h("mo", "="),
+              h("mrow", [params[1]]),
+            ],
+          }),
+          h("mrow", [params[2]]),
         ],
       }),
-      h("mrow", [params[2]]),
+      h("mrow", [params[3]]),
     ],
   }),
-  h("mrow", [params[3]]),
 ])
 export default class Sum extends OperandChar {
   protected _paramsNumber = 4;
