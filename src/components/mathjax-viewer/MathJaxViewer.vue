@@ -1,5 +1,5 @@
 <template>
-  <div ref="containerRef" class="mathjax-viewer"></div>
+  <div ref="containerRef"></div>
 </template>
 
 <script lang="ts">
@@ -88,5 +88,3 @@ watch(
   }
 );
 </script>
-
-<style scoped lang="scss"></style>
