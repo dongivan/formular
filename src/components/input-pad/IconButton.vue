@@ -54,11 +54,11 @@ defineExpose({
 
 <style lang="scss" scoped>
 .input-button {
-  @apply relative 
+  @apply relative select-none
     min-w-[calc((100vw-0.25rem)/7-0.25rem)] sm:min-w-[3rem] w-full min-h-[max(calc((100vw-0.25rem)/7-0.25rem),3rem)] sm:min-h-[3rem] h-full 
     text-center sm:text-base
     rounded-md 
-    focus:ring focus:z-10 hover-hover:group-hover:ring-0;
+    focus:ring focus:z-10;
 
   &.btn-type-default {
     @apply bg-gray-200
