@@ -1,5 +1,5 @@
 <template>
-  <div class="p-1 flex flex-col sm:flex-row gap-1 sm:w-auto">
+  <div class="p-1 flex flex-col sm:flex-row gap-1 sm:w-auto bg-white">
     <div class="hidden sm:grid sm:gap-1" :style="menuGridStyles">
       <MenuButtons
         :buttons="leftMenuButtons"
