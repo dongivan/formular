@@ -11,8 +11,14 @@
         :class="{ hidden: !refIsTouching, block: refIsTouching }"
       ></div>
       <div
-        class="hover-hover:group-hover:flex absolute top-[calc(-100%-0.5rem)] h-full m-w-full box-content p-1 bg-gray-500 z-10 rounded-lg gap-1"
-        :class="{ hidden: !refIsTouching, flex: refIsTouching }"
+        class="hover-hover:group-hover:flex absolute top-[calc(-100%-0.5rem)] h-full m-w-full box-content p-1 bg-gray-500 rounded-lg gap-1 z-10"
+        :class="{
+          hidden: !refIsTouching,
+          flex: refIsTouching,
+          'flex-row-reverse': childrenReverse,
+          'rounded-bl-none': !childrenReverse,
+          'rounded-br-none': childrenReverse,
+        }"
         :style="[childrenPositionRef]"
       >
         <IconButton
@@ -55,6 +61,7 @@ const props = defineProps({
     type: Array as PropType<Array<IconButtonType>>,
     default: undefined,
   },
+  childrenReverse: { type: Boolean, default: false },
   subIcon: { type: Object as PropType<IconType>, default: undefined },
   active: { type: Boolean, default: false },
 });
@@ -81,8 +88,9 @@ const childrenPositionRef = computed(() => {
   if (!refHasChildren.value) {
     return {};
   }
-  const n = props.children?.length || 0;
-  return { left: `calc(50% - ((100% + 0.25rem) * ${n} + 0.25rem) / 2)` };
+  return props.childrenReverse ? { right: "-0.25em" } : { left: "-0.25em" };
+  // const n = props.children?.length || 0;
+  // return { left: `calc(50% - ((100% + 0.25rem) * ${n} + 0.25rem) / 2)` };
 });
 
 const refIsTouching = ref(false);
@@ -105,8 +113,9 @@ function handleTouchstart(evt: TouchEvent) {
 function handleTouchmove(evt: TouchEvent) {
   if (refHasChildren.value) {
     refTouchChildIndex.value = Math.floor(
-      (evt.changedTouches[0].clientX - refTouchBaseX.value) /
-        refButtonWidth.value +
+      ((evt.changedTouches[0].clientX - refTouchBaseX.value) /
+        refButtonWidth.value) *
+        (props.childrenReverse ? -1 : 1) +
         0.5
     );
   }

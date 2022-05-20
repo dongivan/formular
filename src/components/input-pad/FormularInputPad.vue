@@ -14,6 +14,9 @@
         :key="`button-${i}`"
         :button="button"
         :children="button.children"
+        :children-reverse="
+          button.children && button.children.length + button.column > 8
+        "
         @click="handleButtonClick"
       />
     </div>
