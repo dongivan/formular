@@ -1,6 +1,6 @@
 import type { DecimalNode } from "../../math-node";
 import type MathMLNode from "../../MathMLNode";
-import { Latex, MathML } from "../../Renderer";
+import { Latex, MathML } from "../../renderer";
 import { MathCharFactory, OperandChar } from "../internal";
 
 @MathCharFactory.RegisterMathChar(".", "point")

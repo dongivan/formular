@@ -1,4 +1,4 @@
-import { MathML } from "../Renderer";
+import { MathML } from "../renderer";
 import MathChar from "./MathChar";
 
 @MathML.RenderChar(({ char, params, h }) => [

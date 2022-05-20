@@ -1,4 +1,4 @@
-import { Latex, MathML } from "../../Renderer";
+import { Latex, MathML } from "../../renderer";
 import { OperatorChar } from "../internal";
 
 @Latex.RenderChar(() => "")

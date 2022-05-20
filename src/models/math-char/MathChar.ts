@@ -1,4 +1,4 @@
-import { Latex, MathML } from "../Renderer";
+import { Latex, MathML } from "../renderer";
 
 @Latex.RenderChar(({ char }) => char.value)
 @Latex.RenderNode(

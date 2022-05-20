@@ -1,6 +1,6 @@
 import type { IntegerNode } from "../../math-node";
 import type MathMLNode from "../../MathMLNode";
-import { Latex, MathML } from "../../Renderer";
+import { Latex, MathML } from "../../renderer";
 import { OperandChar } from "../internal";
 
 @Latex.RenderNode(({ node, renderChar }) => {

@@ -1,4 +1,4 @@
-import { MathML } from "../../Renderer";
+import { MathML } from "../../renderer";
 import { MathChar, MathCharFactory, OperatorChar } from "../internal";
 
 @MathCharFactory.RegisterMathChar("-", "minus")

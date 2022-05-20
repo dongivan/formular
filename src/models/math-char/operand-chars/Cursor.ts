@@ -1,5 +1,5 @@
 import { Config } from "../../Config";
-import { Latex, MathML } from "../../Renderer";
+import { Latex, MathML } from "../../renderer";
 import { OperandChar } from "../internal";
 
 @Latex.RenderChar(() => "█")
