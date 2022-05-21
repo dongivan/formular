@@ -123,11 +123,10 @@ export default class MathCharFactory extends Instance {
       char = this._afterCreate(
         new Placeholder({ master, offset: leftOrRight == "left" ? -1 : 1 })
       )[0];
-      this._placeholders[master.sequenceNumber] = Object.assign(
-        {},
-        this._placeholders[master.sequenceNumber] || {},
-        { [leftOrRight]: char }
-      );
+      this._placeholders[master.sequenceNumber] = {
+        ...this._placeholders[master.sequenceNumber],
+        [leftOrRight]: char,
+      };
     }
     return char;
   }
