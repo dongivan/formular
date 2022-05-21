@@ -124,7 +124,7 @@ const handleCommands = (commands: [string, ...string[]]) => {
         formula.redo();
         break;
       case "execute":
-        console.log("execute !", formula.verify());
+        console.log("execute !", formula.checkIntegrity(true));
         break;
       default:
         formula.insertAtCursor(cmd);
@@ -148,6 +148,9 @@ const handleCommands = (commands: [string, ...string[]]) => {
 }
 :deep(.formular-active) {
   @apply bg-gray-200 rounded-sm;
+}
+:deep(.formular-incomplete) {
+  @apply border-2 border-red-300 rounded-md p-1;
 }
 .view-btn {
   @apply bg-gray-200 px-4 py-2 first:rounded-bl-sm last:rounded-br-sm;

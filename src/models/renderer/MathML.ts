@@ -87,10 +87,21 @@ export const MathML = new Renderer<MathMLNode[], typeof MathMLNode.create>({
     }
     return eles;
   },
-  renderActiveNode: (eles) => {
-    const key = Config.getConfig().activeClass;
-    if (key && eles.length > 0) {
-      eles[0].setAttr({ class: key });
+  afterRenderFunction: (eles, options) => {
+    if (!options || eles.length == 0) {
+      return eles;
+    }
+    if (options.active) {
+      const clsName = Config.getConfig().activeClass;
+      if (clsName) {
+        eles[0].addClass(clsName);
+      }
+    }
+    if (options.incomplete) {
+      const clsName = Config.getConfig().incompleteClass;
+      if (clsName) {
+        eles[0].addClass(clsName);
+      }
     }
     return eles;
   },

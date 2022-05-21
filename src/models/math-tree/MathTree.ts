@@ -12,6 +12,7 @@ export default class MathTree {
   private _infixList: MathNode[] = [];
   private _root: MathNode | undefined;
   private _hasCursor = false;
+  private _incompleteChars: MathChar[] = [];
 
   constructor(formula: Formula, addParen: boolean) {
     this._formulaId = formula.instanceId;
@@ -38,7 +39,12 @@ export default class MathTree {
     return this._hasCursor;
   }
 
+  get incompleteChars() {
+    return Object.freeze(this._incompleteChars);
+  }
+
   resetInfixList(chars: MathChar[]) {
+    this._incompleteChars = [];
     this._infixList = this.infixMaker.make(chars, this._infixList);
     this._generateTree();
     this._hasCursor =
@@ -113,60 +119,76 @@ export default class MathTree {
     this._root = root;
   }
 
-  verify() {
-    /* check if infix list has a `Placeholder` */
-    if (
-      this._infixList.findIndex((node) => node.char instanceof Placeholder) > -1
-    ) {
+  checkIntegrity(saveIncompleteChars = false): boolean {
+    const incompleteChars: MathChar[] = [];
+    const unpairedParens: MathChar[] = [];
+
+    const flag = this._infixList.every((node, pos) => {
+      /* check if infix list has a `Placeholder` */
+      if (node.char instanceof Placeholder) {
+        if (saveIncompleteChars) {
+          incompleteChars.push(node.char);
+        } else {
+          return false;
+        }
+      }
+      /* check if `Cursor` ocuppies a `Placeholder` */
+      /* TODO: current logic will FAIL when `Cursor` is on the left of `Minus` */
+      if (node.char instanceof Cursor) {
+        if (
+          !(
+            this._infixList[pos - 1] &&
+            this._infixList[pos - 1].char instanceof HiddenTimes
+          ) &&
+          !(
+            this._infixList[pos + 1] &&
+            this._infixList[pos + 1].char instanceof HiddenTimes
+          )
+        ) {
+          if (saveIncompleteChars) {
+            incompleteChars.push(node.char);
+          } else {
+            return false;
+          }
+        }
+      }
+      /* save unpaired parentheses. */
+      if (node.char instanceof LeftParen) {
+        unpairedParens.unshift(node.char);
+      } else if (node.char instanceof RightParen) {
+        if (unpairedParens[0] && unpairedParens[0] instanceof LeftParen) {
+          unpairedParens.shift();
+        } else {
+          unpairedParens.unshift(node.char);
+        }
+      }
+      /* check node params */
+      for (const tree of node.paramTrees || []) {
+        if (!tree.checkIntegrity(saveIncompleteChars)) {
+          if (saveIncompleteChars) {
+            incompleteChars.push(node.char);
+          } else {
+            return false;
+          }
+        }
+      }
+      return true;
+    });
+
+    if (!saveIncompleteChars && !flag) {
       return false;
     }
 
-    /* check if `Cursor` ocuppies a `Placeholder` */
-    /* TODO: current logic will FAIL when `Cursor` is on the left of `Minus` */
-    const cursorPos = this._infixList.findIndex(
-      (node) => node.char instanceof Cursor
-    );
-    if (cursorPos > -1) {
-      if (
-        !(
-          this._infixList[cursorPos - 1] &&
-          this._infixList[cursorPos - 1].char instanceof HiddenTimes
-        ) &&
-        !(
-          this._infixList[cursorPos + 1] &&
-          this._infixList[cursorPos + 1].char instanceof HiddenTimes
-        )
-      ) {
+    /* check unpaired parentheses */
+    if (unpairedParens.length > 0) {
+      if (saveIncompleteChars) {
+        incompleteChars.push(...unpairedParens);
+      } else {
         return false;
       }
     }
 
-    /* check if parentheses are paired. */
-    const parens: MathNode[] = [];
-    this._infixList.forEach((node) => {
-      if (node.char instanceof LeftParen) {
-        parens.unshift(node);
-      } else if (node.char instanceof RightParen) {
-        if (parens[0] && parens[0].char instanceof LeftParen) {
-          parens.shift();
-        } else {
-          parens.unshift(node);
-        }
-      }
-    });
-    if (parens.length > 0) {
-      return false;
-    }
-
-    /* check each nodes */
-    for (const node of this._infixList) {
-      for (const tree of node.paramTrees || []) {
-        if (!tree.verify()) {
-          return false;
-        }
-      }
-    }
-
-    return true;
+    this._incompleteChars = incompleteChars;
+    return incompleteChars.length == 0;
   }
 }

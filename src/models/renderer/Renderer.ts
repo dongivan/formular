@@ -6,7 +6,12 @@ import { findByClass } from "../utils";
 type AddClickableMarkFunction<N> = (r: N, sn: number) => N;
 type SetParenthesesLevelFunction<N> = (r: N, level: number) => N;
 type RenderVariableFunction<N> = (char: MathChar) => N;
-type RenderActiveNode<N> = (r: N) => N;
+
+type AfterRenderFunction<N> = (
+  r: N,
+  afterRenderOptions?: AfterRenderFunctionOptions
+) => N;
+type AfterRenderFunctionOptions = { active?: boolean; incomplete?: boolean };
 
 type DecoratorCharTemplateFunction<N, H> = (args: {
   char: MathChar;
@@ -31,7 +36,7 @@ export class Renderer<N, H> {
   private _charFns: Record<string, DecoratorCharTemplateFunction<N, H>> = {};
   private _addClickableMarkFn?: AddClickableMarkFunction<N>;
   private _setParenthesesLevelFn?: SetParenthesesLevelFunction<N>;
-  private _renderActiveNode?: RenderActiveNode<N>;
+  private _afterRenderFunction?: AfterRenderFunction<N>;
   private _interactive = true;
 
   private _nodeFns: Record<string, DecoratorNodeTemplateFunction<N, H>> = {};
@@ -45,13 +50,13 @@ export class Renderer<N, H> {
     addClickableMarkFunction?: AddClickableMarkFunction<N>;
     setParenthesesLevelFunction?: SetParenthesesLevelFunction<N>;
     renderTextFunction?: RenderTextFunction<N>;
-    renderActiveNode?: RenderActiveNode<N>;
+    afterRenderFunction?: AfterRenderFunction<N>;
     renderVariable: RenderVariableFunction<N>;
   }) {
     this._helper = config.helper;
     this._addClickableMarkFn = config.addClickableMarkFunction;
     this._setParenthesesLevelFn = config.setParenthesesLevelFunction;
-    this._renderActiveNode = config.renderActiveNode;
+    this._afterRenderFunction = config.afterRenderFunction;
     this._renderTextFunction = config.renderTextFunction;
     this.renderVariable = config.renderVariable;
   }
@@ -78,7 +83,11 @@ export class Renderer<N, H> {
 
   /* functions */
 
-  private _renderChar(char: MathChar, params: N[], active: boolean): N {
+  private _renderChar(
+    char: MathChar,
+    params: N[],
+    afterRenderOptions: AfterRenderFunctionOptions
+  ): N {
     const fn = findByClass(char, this._charFns);
     let result: N;
     if (fn == undefined) {
@@ -97,14 +106,18 @@ export class Renderer<N, H> {
       result = this._setParenthesesLevelFn(result, char.level);
     }
 
-    if (active && this._renderActiveNode) {
-      result = this._renderActiveNode(result);
+    if (this._afterRenderFunction) {
+      result = this._afterRenderFunction(result, afterRenderOptions);
     }
 
     return result;
   }
 
-  private _renderNode(node: MathNode, cursorRendered = false): N {
+  private _renderNode(
+    node: MathNode,
+    cursorRendered: boolean,
+    incompleteChars: readonly MathChar[]
+  ): N {
     const template = findByClass(node.char, this._nodeFns);
     if (template == undefined) {
       throw new Error(
@@ -112,23 +125,25 @@ export class Renderer<N, H> {
       );
     } else {
       const active =
-        !cursorRendered && !!this._renderActiveNode && node.hasCursor;
+          !cursorRendered && !!this._afterRenderFunction && node.hasCursor,
+        incomplete =
+          incompleteChars.findIndex((char) => node.char == char) > -1;
       return template({
         node,
         left: node.leftChild
-          ? this._renderNode(node.leftChild, active)
+          ? this._renderNode(node.leftChild, active, incompleteChars)
           : undefined,
         right: node.rightChild
-          ? this._renderNode(node.rightChild, active)
+          ? this._renderNode(node.rightChild, active, incompleteChars)
           : undefined,
         current: this._renderChar(
           node.char,
           (node.paramTrees || []).map<N>((tree) => this.render(tree)),
-          active
+          { active, incomplete }
         ),
         h: this._helper,
         renderChar: (char, params) => {
-          return this._renderChar(char, params, active);
+          return this._renderChar(char, params, { active, incomplete });
         },
       });
     }
@@ -140,7 +155,7 @@ export class Renderer<N, H> {
         "Render failed: the `root` of `MathTree` is `undefined`."
       );
     }
-    return this._renderNode(tree.root);
+    return this._renderNode(tree.root, false, tree.incompleteChars);
   }
 
   renderText(tree: MathTree, ...args: unknown[]): string {

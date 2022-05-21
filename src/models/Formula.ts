@@ -73,6 +73,10 @@ export default class Formula extends Instance {
 
   private _afterCharsChange() {
     this._tree.resetInfixList(this._chars);
+    this._notifyTreeChangedListeners();
+  }
+
+  private _notifyTreeChangedListeners() {
     this._treeChangedListeners.forEach((listener) => {
       listener({ tree: this._tree });
     });
@@ -246,8 +250,12 @@ export default class Formula extends Instance {
     }
   }
 
-  verify() {
-    return this._tree.verify();
+  checkIntegrity(saveIncompleteChars = false) {
+    const integerity = this._tree.checkIntegrity(saveIncompleteChars);
+    if (!integerity && saveIncompleteChars) {
+      this._notifyTreeChangedListeners();
+    }
+    return integerity;
   }
 
   toString(): string {

@@ -10,6 +10,7 @@ export interface ConfigInterface {
 
   clickableDataKey?: string;
   activeClass?: string;
+  incompleteClass?: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: string]: any;
 }
@@ -32,6 +33,7 @@ export class Config {
 
     clickableDataKey: "formular-char-sn",
     activeClass: "formular-active",
+    incompleteClass: "formular-incomplete",
   };
 
   static getConfig(): ConfigInterface {
