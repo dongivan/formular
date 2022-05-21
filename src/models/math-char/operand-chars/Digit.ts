@@ -16,7 +16,7 @@ import { OperandChar } from "../internal";
   });
 })
 export default class Digit extends OperandChar {
-  protected _clickable = true;
+  protected _interactive = true;
 
   constructor(value: string) {
     super(value.toString());

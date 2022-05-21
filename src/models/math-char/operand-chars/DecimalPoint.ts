@@ -26,7 +26,7 @@ import { MathCharFactory, OperandChar } from "../internal";
   ];
 })
 export default class DecimalPoint extends OperandChar {
-  protected _clickable = true;
+  protected _interactive = true;
 
   constructor() {
     super(".");

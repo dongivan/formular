@@ -78,8 +78,8 @@ export const MathML = new Renderer<MathMLNode[], typeof MathMLNode.create>({
     eles[0].setAttr(attrs);
     return eles;
   },
-  addClickableMarkFunction: (eles, sn) => {
-    const key = Config.getConfig().clickableDataKey;
+  interactiveFunction: (eles, sn) => {
+    const key = Config.getConfig().interactiveDataName;
     if (key && eles.length > 0) {
       eles[0].setAttr({
         [`data-${key}`]: sn.toString(),

@@ -3,7 +3,7 @@ import { MathNode } from "../math-node";
 import type { MathTree } from "../math-tree";
 import { findByClass } from "../utils";
 
-type AddClickableMarkFunction<N> = (r: N, sn: number) => N;
+type InteractableFunction<N> = (r: N, sn: number) => N;
 type SetParenthesesLevelFunction<N> = (r: N, level: number) => N;
 type RenderVariableFunction<N> = (char: MathChar) => N;
 
@@ -34,7 +34,7 @@ export class Renderer<N, H> {
   private _helper: H;
 
   private _charFns: Record<string, DecoratorCharTemplateFunction<N, H>> = {};
-  private _addClickableMarkFn?: AddClickableMarkFunction<N>;
+  private _interactiveFn?: InteractableFunction<N>;
   private _setParenthesesLevelFn?: SetParenthesesLevelFunction<N>;
   private _afterRenderFunction?: AfterRenderFunction<N>;
   private _interactive = true;
@@ -47,14 +47,14 @@ export class Renderer<N, H> {
 
   constructor(config: {
     helper: H;
-    addClickableMarkFunction?: AddClickableMarkFunction<N>;
+    interactiveFunction?: InteractableFunction<N>;
     setParenthesesLevelFunction?: SetParenthesesLevelFunction<N>;
     renderTextFunction?: RenderTextFunction<N>;
     afterRenderFunction?: AfterRenderFunction<N>;
     renderVariable: RenderVariableFunction<N>;
   }) {
     this._helper = config.helper;
-    this._addClickableMarkFn = config.addClickableMarkFunction;
+    this._interactiveFn = config.interactiveFunction;
     this._setParenthesesLevelFn = config.setParenthesesLevelFunction;
     this._afterRenderFunction = config.afterRenderFunction;
     this._renderTextFunction = config.renderTextFunction;
@@ -98,8 +98,8 @@ export class Renderer<N, H> {
       result = fn({ char, params, h: this._helper });
     }
 
-    if (this._interactive && this._addClickableMarkFn) {
-      result = this._addClickableMarkFn(result, char.sequenceNumber);
+    if (this._interactive && char.interactive && this._interactiveFn) {
+      result = this._interactiveFn(result, char.sequenceNumber);
     }
 
     if (this._setParenthesesLevelFn && char instanceof AbstractParen) {

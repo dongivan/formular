@@ -10,7 +10,7 @@ import { MathChar, OperandChar } from "../internal";
   }),
 ])
 export default class Placeholder extends OperandChar {
-  protected _clickable = true;
+  protected _interactive = true;
 
   private _masterChar: MathChar;
   private _masterOffset: -1 | 1 = -1;

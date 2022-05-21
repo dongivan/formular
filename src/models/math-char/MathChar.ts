@@ -19,7 +19,7 @@ export default class MathChar {
   /* `_paramsParen` = n, if each ith param should be in parentheses and n & i = 1,
   and jth param should NOT be in parentheses and n & j = 0 */
   protected _paramsParen = 0;
-  protected _clickable = false;
+  protected _interactive = false;
 
   constructor(
     args?:
@@ -54,8 +54,8 @@ export default class MathChar {
     return this._value;
   }
 
-  get clickable(): boolean {
-    return this._clickable;
+  get interactive(): boolean {
+    return this._interactive;
   }
 
   /**

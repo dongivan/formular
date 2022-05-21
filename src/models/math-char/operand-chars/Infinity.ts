@@ -5,7 +5,7 @@ import { MathCharFactory, OperandChar } from "../internal";
 @Latex.RenderChar(() => "\\infty")
 @MathML.RenderChar(({ h }) => [h("mi", "&#x221E;")])
 export default class Infinity extends OperandChar {
-  protected _clickable = true;
+  protected _interactive = true;
 
   constructor() {
     super("infinity");

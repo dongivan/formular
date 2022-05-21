@@ -9,7 +9,7 @@ import { MathCharFactory, OperandChar } from "../internal";
   }),
 ])
 export default class Ln extends OperandChar {
-  protected _clickable = true;
+  protected _interactive = true;
   protected _paramsNumber = 1;
   protected _paramsParen = 1;
 

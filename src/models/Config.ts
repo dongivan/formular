@@ -8,7 +8,7 @@ export interface ConfigInterface {
   cursorCssClass?: string;
   placeholderCssClass?: string;
 
-  clickableDataKey?: string;
+  interactiveDataName?: string;
   activeClass?: string;
   incompleteClass?: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -31,7 +31,7 @@ export class Config {
     cursorCssClass: "formular-cursor",
     placeholderCssClass: "formular-placeholder",
 
-    clickableDataKey: "formular-char-sn",
+    interactiveDataName: "formular-char-sn",
     activeClass: "formular-active",
     incompleteClass: "formular-incomplete",
   };
