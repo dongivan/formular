@@ -6,7 +6,7 @@ import { OperandChar } from "../internal";
 @MathML.RenderChar(({ h }) => [
   h("mrow", {
     value: Config.getConfig().cursorMathML,
-    attrs: { class: Config.getConfig().cursorCssClass },
+    class: Config.getConfig().cursorCssClass,
   }),
 ])
 export default class Cursor extends OperandChar {

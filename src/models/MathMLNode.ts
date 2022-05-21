@@ -6,18 +6,24 @@ type MathMLNodeParameters = {
   attrs?: Attrs;
   value?: string;
   children?: MathMLNode[];
+  class?: string[] | string;
 };
 
 export default class MathMLNode {
   private _pad = 2;
   private _tag: string;
   private _attrs: { [key: string]: string | undefined };
+  private _class: string[];
   value: string;
   children: MathMLNode[];
 
   constructor(tag: string, parameters?: MathMLNodeParameters) {
     this._tag = tag;
     this._attrs = parameters?.attrs || {};
+    this._class =
+      typeof parameters?.class == "string"
+        ? parameters.class.split(" ")
+        : parameters?.class || [];
     this.value = parameters?.value || "";
     this.children = parameters?.children || [];
   }
@@ -56,11 +62,17 @@ export default class MathMLNode {
     return this;
   }
 
+  addClass(clsName: string) {
+    this._class.push(clsName);
+    return this;
+  }
+
   render(level = 0): string {
-    const attrs = Object.keys(this._attrs)
-      .filter((key) => this._attrs[key] !== undefined)
-      .map<string>((key) => ` ${key}="${this._attrs[key]}"`)
-      .join("");
+    const attrs =
+      Object.keys(this._attrs)
+        .filter((key) => this._attrs[key] !== undefined)
+        .map<string>((key) => ` ${key}="${this._attrs[key]}"`)
+        .join("") + ` class="${Array.from(new Set(this._class)).join(" ")}"`;
     const padding = "".padStart(this._pad * level, " "),
       lf = "\n";
     const content =

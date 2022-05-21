@@ -6,7 +6,7 @@ import { MathChar, OperandChar } from "../internal";
 @MathML.RenderChar(({ h }) => [
   h("mrow", {
     value: Config.getConfig().placeholderMathML,
-    attrs: { class: Config.getConfig().placeholderCssClass },
+    class: Config.getConfig().placeholderCssClass,
   }),
 ])
 export default class Placeholder extends OperandChar {
