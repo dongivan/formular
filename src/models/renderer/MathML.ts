@@ -113,6 +113,19 @@ export const MathML = new Renderer<MathMLNode[], typeof MathMLNode.create>({
       ),
     ];
   },
+  renderMathFunction: (char, params) => {
+    return [
+      MathMLNode.create("mrow", {
+        children: [
+          MathMLNode.create("mi", char.value),
+          MathMLNode.create("mo", "&#x2061;"),
+          MathMLNode.create("mrow", {
+            children: params[0],
+          }),
+        ],
+      }),
+    ];
+  },
   renderTextFunction: (children, ...args: unknown[]) => {
     const attrs = { display: "" };
     if (args[0]) {

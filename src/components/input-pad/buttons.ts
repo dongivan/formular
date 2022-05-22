@@ -185,7 +185,6 @@ const operators = [
   "exp-square",
   "limit",
   "log",
-  "ln",
   "lg",
   "combination",
   "permutation",
@@ -194,6 +193,7 @@ const operators = [
   "right-paren",
   "differential",
 ];
+const functions = ["ln", "lg"];
 const greekLetterNames = [
   "alpha",
   "beta",
@@ -275,6 +275,10 @@ const buttonsRepo: Record<string, IconButton> = {
     icon: (val) => `operator-${val}`,
     commands: (val) => (val ? commandsData[val[0]] || val : val),
   }),
+  ...generateButtons(functions, {
+    icon: (val) => `operator-${val}`,
+    commands: (val) => (val ? commandsData[val[0]] || [`${val[0]}()`] : val),
+  }),
   ...generateButtons(english, {
     name: (val) => `english-lower-${val}`,
     icon: (val) => `english-lower-${val}`,
@@ -333,7 +337,7 @@ const buttonPages: Record<string, PageLayout> = {
         "times",
       ],
       [
-        "ln",
+        ["ln", "lg"],
         "english-lower-e",
         "limit",
         ["point", "left-paren"],

@@ -67,5 +67,8 @@ export const Latex = new Renderer<string, typeof replace>({
   renderVariable(char) {
     return `{${latexGreekLetters[char.value] || char.value}}`;
   },
+  renderMathFunction(char, params) {
+    return `\\${char.value}{${params[0]}}`;
+  },
   renderTextFunction: (r) => r,
 });

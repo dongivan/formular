@@ -10,6 +10,7 @@ import {
   Placeholder,
   RightParen,
   Variable,
+  MathFunction,
 } from "./internal";
 
 type CreateCommandFunction = (
@@ -83,7 +84,7 @@ export default class MathCharFactory extends Instance {
     }
 
     if (!command) {
-      command = Variable;
+      command = commandAlias.slice(-2) == "()" ? MathFunction : Variable;
     }
     let chars: [MathChar, ...MathChar[]];
     if (command.prototype instanceof MathChar || command === MathChar) {

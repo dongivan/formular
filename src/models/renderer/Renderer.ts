@@ -6,6 +6,7 @@ import { findByClass } from "../utils";
 type InteractableFunction<N> = (r: N, sn: number) => N;
 type SetParenthesesLevelFunction<N> = (r: N, level: number) => N;
 type RenderVariableFunction<N> = (char: MathChar) => N;
+type RenderMathFunction<N> = (char: MathChar, params: N[]) => N;
 
 type AfterRenderFunction<N> = (
   r: N,
@@ -44,6 +45,7 @@ export class Renderer<N, H> {
   private _renderTextFunction?: RenderTextFunction<N>;
 
   readonly renderVariable: RenderVariableFunction<N>;
+  readonly renderMathFunction: RenderMathFunction<N>;
 
   constructor(config: {
     helper: H;
@@ -52,6 +54,7 @@ export class Renderer<N, H> {
     renderTextFunction?: RenderTextFunction<N>;
     afterRenderFunction?: AfterRenderFunction<N>;
     renderVariable: RenderVariableFunction<N>;
+    renderMathFunction: RenderMathFunction<N>;
   }) {
     this._helper = config.helper;
     this._interactiveFn = config.interactiveFunction;
@@ -59,6 +62,7 @@ export class Renderer<N, H> {
     this._afterRenderFunction = config.afterRenderFunction;
     this._renderTextFunction = config.renderTextFunction;
     this.renderVariable = config.renderVariable;
+    this.renderMathFunction = config.renderMathFunction;
   }
 
   /* setters / getters */
