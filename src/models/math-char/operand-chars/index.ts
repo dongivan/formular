@@ -14,3 +14,4 @@ export { default as Limit } from "./Limit";
 export { default as Root } from "./Root";
 export { default as MathFunction } from "./MathFunction";
 export { default as Product } from "./Product";
+export { default as Permutation } from "./Permutation";
