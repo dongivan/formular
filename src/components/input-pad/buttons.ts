@@ -345,7 +345,7 @@ const buttonPages: Record<string, PageLayout> = {
       ],
       [
         "combination",
-        "sum",
+        ["sum", "prod"],
         ["square", "cube", "power"],
         "4",
         "5",
