@@ -250,6 +250,8 @@ const iconData: Record<string, Partial<Icon>> = {
   "operator-cube": { scale: 1.5 },
   "operator-power": { scale: 1.5 },
   "operator-square-root": { scale: 2 },
+  "operator-cube-root": { scale: 2 },
+  "operator-root": { scale: 2 },
   "operator-ln": { scale: 1.35 },
   "operator-sum": { scale: 1.2 },
   "operator-i-integral": { scale: 2 },
@@ -263,6 +265,7 @@ const iconData: Record<string, Partial<Icon>> = {
 const commandsData: Record<string, string[]> = {
   square: ["power", "2", "move-right"],
   cube: ["power", "3", "move-right"],
+  "cube-root": ["root", "move-right", "3", "move-left", "move-left"],
 };
 
 const buttonsRepo: Record<string, IconButton> = {

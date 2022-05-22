@@ -12,3 +12,4 @@ export { default as IIntegral } from "./IIntegral";
 export { default as Differential } from "./Differential";
 export { default as Combination } from "./Combination";
 export { default as Limit } from "./Limit";
+export { default as Root } from "./Root";
