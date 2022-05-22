@@ -3,7 +3,7 @@
     :button="button"
     :children="button.children"
     :children-reverse="childrenReverse"
-    @click="(commands) => runCommands?.(commands)"
+    @click="(evt) => runCommands?.(evt.commands)"
   />
 </template>
 

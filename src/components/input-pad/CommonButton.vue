@@ -26,7 +26,7 @@
           :key="`btn-${button.commands}-${child.commands}`"
           :data="child"
           :active="refTouchChildIndex == i"
-          @click="emit('click', child.commands)"
+          @click="emit('click', { commands: child.commands, target: 'child' })"
         />
       </div>
     </template>
@@ -39,7 +39,7 @@
         (children && children.length == 2 ? children[1].icon : undefined)
       "
       :active="active"
-      @click="emit('click', button.commands)"
+      @click="emit('click', { commands: button.commands, target: 'button' })"
       @touchstart="handleTouchstart"
       @touchmove="handleTouchmove"
       @touchend="handleTouchend"
@@ -66,7 +66,10 @@ const props = defineProps({
   active: { type: Boolean, default: false },
 });
 const emit = defineEmits<{
-  (event: "click", commands: [string, ...string[]]): void;
+  (
+    event: "click",
+    evt: { commands: [string, ...string[]]; target: "button" | "child" }
+  ): void;
 }>();
 
 const refGridStyle = computed(() => {
@@ -94,6 +97,7 @@ const refChildrenPosition = computed(() => {
 const refIsTouching = ref(false);
 const refTouchBaseX = ref(0);
 const refTouchChildIndex = ref(-1);
+const refTouchMoved = ref(false);
 const refButtonWidth = ref(48);
 const refPadRoot = ref();
 const refIconButton = ref();
@@ -101,6 +105,7 @@ const refIconButton = ref();
 function handleTouchstart(evt: TouchEvent) {
   refIconButton.value.focus();
   refIsTouching.value = true;
+  refTouchMoved.value = false;
   if (refHasChildren.value) {
     refTouchChildIndex.value = 0;
     refTouchBaseX.value = evt.targetTouches[0].clientX;
@@ -109,6 +114,7 @@ function handleTouchstart(evt: TouchEvent) {
 }
 
 function handleTouchmove(evt: TouchEvent) {
+  refTouchMoved.value = true;
   if (refHasChildren.value) {
     refTouchChildIndex.value = Math.floor(
       ((evt.changedTouches[0].clientX - refTouchBaseX.value) /
@@ -120,15 +126,15 @@ function handleTouchmove(evt: TouchEvent) {
 }
 
 function handleTouchend(evt: TouchEvent) {
-  if (refHasChildren.value) {
+  if (refTouchMoved.value && refHasChildren.value) {
     const button = props.children?.[refTouchChildIndex.value];
     if (button) {
-      emit("click", button.commands);
+      emit("click", { commands: button.commands, target: "child" });
     }
     refTouchBaseX.value = 0;
     refTouchChildIndex.value = -1;
   } else {
-    emit("click", props.button.commands);
+    emit("click", { commands: props.button.commands, target: "button" });
   }
   refIsTouching.value = false;
   evt.preventDefault();

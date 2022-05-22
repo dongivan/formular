@@ -41,7 +41,13 @@ const refIndex = computed(() => {
     return props.data.buttons.length == 1 ? undefined : props.data.buttons;
   });
 
-function handleClick(commands: string[]) {
-  changePage?.(commands[0]);
+function handleClick(evt: { commands: string[]; target: string }) {
+  if (evt.target == "child") {
+    changePage?.(evt.commands[0]);
+  } else {
+    changePage?.(
+      props.data.buttons[(refIndex.value + 1) % props.data.buttons.length].name
+    );
+  }
 }
 </script>

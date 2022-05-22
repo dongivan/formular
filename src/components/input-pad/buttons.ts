@@ -497,7 +497,7 @@ const inputPad: InputPad = {
   controls: parseLayout(controlLayout, buttonsRepo) as ControlButton[],
   pages: parsePages(buttonPages, buttonsRepo),
 };
-console.log(buttonsRepo["calculator-2"]);
+
 export {
   PadButton as PadButtonType,
   IconButton as IconButtonType,
