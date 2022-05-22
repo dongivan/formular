@@ -1,3 +1,4 @@
+InputPad
 <template>
   <div class="w-screen h-screen flex flex-col items-center touch-none">
     <div class="w-full sm:w-[540px]">
@@ -44,15 +45,12 @@
         <pre>{{ refSource }}</pre>
       </div>
     </div>
-    <FormularInputPad
-      class="fixed bottom-1 justify-center"
-      @click="handleCommands"
-    />
+    <InputPad class="fixed bottom-1 justify-center" @click="handleCommands" />
   </div>
 </template>
 
 <script setup lang="ts">
-import FormularInputPad from "@/components/input-pad";
+import InputPad from "@/components/input-pad";
 import { ref, watch } from "vue";
 import { Formula, Latex, MathML, MathTree } from "./models";
 

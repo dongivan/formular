@@ -4,21 +4,15 @@
       v-if="`buttons` in button"
       :data="button"
       :current-page-name="currentPage"
-      @change-page="handlePageChange"
     />
-    <PadButton
-      v-else
-      :button="button"
-      :children="button.children"
-      @click="handleButtonClick"
-    />
+    <CommandButton v-else :button="button" />
   </template>
 </template>
 
 <script setup lang="ts">
 import { IconButtonType, PageButtonType } from "./buttons";
 import { PropType } from "vue";
-import PadButton from "./PadButton.vue";
+import CommandButton from "./CommandButton.vue";
 import PageButton from "./PageButton.vue";
 
 defineProps({
@@ -28,17 +22,4 @@ defineProps({
   },
   currentPage: { type: String, default: "" },
 });
-
-const emit = defineEmits<{
-  (event: "click", command: [string, ...string[]]): void;
-  (event: "change-page", page: string): void;
-}>();
-
-function handlePageChange(page: string) {
-  emit("change-page", page);
-}
-
-function handleButtonClick(commands: [string, ...string[]]) {
-  emit("click", commands);
-}
 </script>

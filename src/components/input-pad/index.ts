@@ -1,2 +1,2 @@
-import FormularInputPad from "./FormularInputPad.vue";
-export default FormularInputPad;
+import InputPad from "./InputPad.vue";
+export default InputPad;
