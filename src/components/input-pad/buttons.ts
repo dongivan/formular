@@ -291,6 +291,8 @@ const iconData: Record<string, Partial<Icon>> = {
   "operator-arctan": { scale: 2 },
   "operator-pi-square-root": { scale: 2 },
   "operator-2pi-square-root": { scale: 2 },
+  "operator-exp": { scale: 1.4 },
+  "operator-exp-square": { scale: 1.4 },
 };
 
 const commandsData: Record<string, string[]> = {
@@ -299,6 +301,8 @@ const commandsData: Record<string, string[]> = {
   "cube-root": ["root", "move-right", "3", "move-left", "move-left"],
   "pi-square-root": ["square-root", "lower-pi", "move-right"],
   "2pi-square-root": ["square-root", "2", "lower-pi", "move-right"],
+  exp: ["e", "power"],
+  "exp-square": ["e", "power", "2", "move-right"],
 };
 
 const buttonsRepo: Record<string, IconButton> = {
@@ -344,7 +348,7 @@ const buttonPages: Record<string, PageLayout> = {
     [
       [
         "factorial",
-        ["english-lower-x", "english-lower-k"],
+        ["english-lower-x", "english-lower-y", "english-lower-k"],
         "fraction",
         "7",
         "8",
@@ -371,7 +375,7 @@ const buttonPages: Record<string, PageLayout> = {
       ],
       [
         ["ln", "lg"],
-        "english-lower-e",
+        ["english-lower-e", "exp", "exp-square"],
         "limit",
         ["point", "left-paren"],
         "0",
