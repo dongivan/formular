@@ -269,6 +269,7 @@ const iconData: Record<string, Partial<Icon>> = {
   "operator-ln": { scale: 1.35 },
   "operator-sum": { scale: 1.2 },
   "operator-i-integral": { scale: 2 },
+  "operator-d-integral": { scale: 2.3 },
   "operator-differential": { scale: 2 },
   "operator-factorial": { scale: 1.6 },
   "operator-combination": { scale: 2 },
@@ -354,7 +355,7 @@ const buttonPages: Record<string, PageLayout> = {
         "minus",
       ],
       [
-        "i-integral",
+        ["i-integral", "d-integral", "differential"],
         "greek-lower-pi",
         ["square-root", "cube-root", "root"],
         "1",
