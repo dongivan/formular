@@ -269,6 +269,8 @@ const iconData: Record<string, Partial<Icon>> = {
   "operator-cube-root": { scale: 2 },
   "operator-root": { scale: 2 },
   "operator-ln": { scale: 1.35 },
+  "operator-lg": { scale: 1.35 },
+  "operator-log": { scale: 2.2 },
   "operator-sum": { scale: 1.2 },
   "operator-i-integral": { scale: 2 },
   "operator-d-integral": { scale: 2.3 },
@@ -374,7 +376,7 @@ const buttonPages: Record<string, PageLayout> = {
         "times",
       ],
       [
-        ["ln", "lg"],
+        ["ln", "lg", "log"],
         ["english-lower-e", "exp", "exp-square"],
         "limit",
         ["point", "left-paren"],
