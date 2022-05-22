@@ -253,7 +253,7 @@ const controls = [
   "execute",
   "shift",
 ];
-const menu = ["calculator", "about"];
+const menu = ["calculator", "about", "calculator-2"];
 
 const iconData: Record<string, Partial<Icon>> = {
   "number-": { scale: 1.3 },
@@ -274,6 +274,17 @@ const iconData: Record<string, Partial<Icon>> = {
   "operator-combination": { scale: 2 },
   "operator-limit": { scale: 2 },
   "control-redo": { name: "control-undo", flip: true },
+  "operator-sin": { scale: 2 },
+  "operator-cos": { scale: 2 },
+  "operator-tan": { scale: 2 },
+  "operator-cot": { scale: 2 },
+  "operator-sec": { scale: 2 },
+  "operator-csc": { scale: 2 },
+  "operator-sinh": { scale: 2 },
+  "operator-cosh": { scale: 2 },
+  "operator-arcsin": { scale: 2 },
+  "operator-arccos": { scale: 2 },
+  "operator-arctan": { scale: 2 },
 };
 
 const commandsData: Record<string, string[]> = {
@@ -361,6 +372,46 @@ const buttonPages: Record<string, PageLayout> = {
       ],
     ],
   ],
+  "calculator-2": [
+    [
+      [
+        ["sin", "arcsin", "sinh"],
+        ["english-lower-x", "english-lower-k"],
+        "fraction",
+        "7",
+        "8",
+        "9",
+        "plus",
+      ],
+      [
+        ["cos", "arccos", "cosh"],
+        "sum",
+        ["square", "cube", "power"],
+        "4",
+        "5",
+        "6",
+        "minus",
+      ],
+      [
+        ["tan", "cot", "arctan"],
+        "greek-lower-pi",
+        ["square-root", "cube-root", "root"],
+        "1",
+        "2",
+        "3",
+        "times",
+      ],
+      [
+        ["ln", "lg"],
+        "english-lower-e",
+        "limit",
+        ["point", "left-paren"],
+        "0",
+        ["infinity", "right-paren"],
+        ["divide", "fraction"],
+      ],
+    ],
+  ],
   english: ["lower", "upper"].map<Layout>((_case) => {
     const layout = ["abcdefg", "hijklmn", "opqrstu", "vwxyz"].map<
       (string | (IconButton & Partial<ButtonPosition>))[]
@@ -404,7 +455,10 @@ const inputPad: InputPad = {
   bottomMenu: [
     {
       name: "main",
-      buttons: [{ ...buttonsRepo["calculator"], type: "primary" }],
+      buttons: [
+        { ...buttonsRepo["calculator"], type: "primary" },
+        { ...buttonsRepo["calculator-2"], type: "primary" },
+      ],
     },
     {
       name: "variables",
@@ -431,19 +485,19 @@ const inputPad: InputPad = {
       buttons: [{ ...buttonsRepo["calculator"], type: "primary" }],
     },
     {
-      name: "english",
-      buttons: [buttonsRepo["english"]],
+      name: "calculator-2",
+      buttons: [buttonsRepo["calculator-2"]],
     },
     {
-      name: "greek",
-      buttons: [buttonsRepo["greek"]],
+      name: "variables",
+      buttons: [buttonsRepo["english"], buttonsRepo["greek"]],
     },
     buttonsRepo["about"],
   ],
   controls: parseLayout(controlLayout, buttonsRepo) as ControlButton[],
   pages: parsePages(buttonPages, buttonsRepo),
 };
-
+console.log(buttonsRepo["calculator-2"]);
 export {
   PadButton as PadButtonType,
   IconButton as IconButtonType,
