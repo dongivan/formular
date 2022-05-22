@@ -72,7 +72,10 @@ export default class MathMLNode {
       Object.keys(this._attrs)
         .filter((key) => this._attrs[key] !== undefined)
         .map<string>((key) => ` ${key}="${this._attrs[key]}"`)
-        .join("") + ` class="${Array.from(new Set(this._class)).join(" ")}"`;
+        .join("") +
+      (this._class.length > 0
+        ? ` class="${Array.from(new Set(this._class)).join(" ")}"`
+        : "");
     const padding = "".padStart(this._pad * level, " "),
       lf = "\n";
     const content =
