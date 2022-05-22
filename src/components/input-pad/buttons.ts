@@ -390,8 +390,8 @@ const buttonPages: Record<string, PageLayout> = {
     [
       [
         ["sin", "arcsin", "sinh"],
-        ["english-lower-x", "english-lower-k"],
-        "fraction",
+        ["english-lower-x", "english-lower-y", "english-lower-z"],
+        ["english-lower-k", "english-lower-m", "english-lower-n"],
         "7",
         "8",
         "9",
@@ -399,7 +399,7 @@ const buttonPages: Record<string, PageLayout> = {
       ],
       [
         ["cos", "arccos", "cosh"],
-        "sum",
+        "english-lower-i",
         ["square", "cube", "power"],
         "4",
         "5",
@@ -408,7 +408,7 @@ const buttonPages: Record<string, PageLayout> = {
       ],
       [
         ["tan", "cot", "arctan"],
-        "greek-lower-pi",
+        ["greek-lower-pi", "pi-square-root", "2pi-square-root"],
         ["square-root", "cube-root", "root"],
         "1",
         "2",
@@ -416,8 +416,8 @@ const buttonPages: Record<string, PageLayout> = {
         "times",
       ],
       [
-        ["ln", "lg"],
-        "english-lower-e",
+        ["sec", "csc"],
+        ["english-lower-e", "exp", "exp-square"],
         "limit",
         ["point", "left-paren"],
         "0",
