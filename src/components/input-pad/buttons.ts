@@ -193,7 +193,21 @@ const operators = [
   "right-paren",
   "differential",
 ];
-const functions = ["ln", "lg"];
+const functions = [
+  "ln",
+  "lg",
+  "sin",
+  "cos",
+  "tan",
+  "cot",
+  "sec",
+  "csc",
+  "sinh",
+  "cosh",
+  "arcsin",
+  "arccos",
+  "arctan",
+];
 const greekLetterNames = [
   "alpha",
   "beta",
