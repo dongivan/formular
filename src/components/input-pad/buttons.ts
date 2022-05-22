@@ -183,6 +183,8 @@ const operators = [
   "d-integral",
   "exp",
   "exp-square",
+  "pi-square-root",
+  "2pi-square-root",
   "limit",
   "log",
   "lg",
@@ -287,12 +289,16 @@ const iconData: Record<string, Partial<Icon>> = {
   "operator-arcsin": { scale: 2 },
   "operator-arccos": { scale: 2 },
   "operator-arctan": { scale: 2 },
+  "operator-pi-square-root": { scale: 2 },
+  "operator-2pi-square-root": { scale: 2 },
 };
 
 const commandsData: Record<string, string[]> = {
   square: ["power", "2", "move-right"],
   cube: ["power", "3", "move-right"],
   "cube-root": ["root", "move-right", "3", "move-left", "move-left"],
+  "pi-square-root": ["square-root", "lower-pi", "move-right"],
+  "2pi-square-root": ["square-root", "2", "lower-pi", "move-right"],
 };
 
 const buttonsRepo: Record<string, IconButton> = {
@@ -356,7 +362,7 @@ const buttonPages: Record<string, PageLayout> = {
       ],
       [
         ["i-integral", "d-integral", "differential"],
-        "greek-lower-pi",
+        ["greek-lower-pi", "pi-square-root", "2pi-square-root"],
         ["square-root", "cube-root", "root"],
         "1",
         "2",

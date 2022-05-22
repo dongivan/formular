@@ -97,6 +97,8 @@ const latexes = {
     "d-integral": "\\int^⬚_⬚",
     exp: "e^⬚",
     "exp-square": "e^2",
+    "pi-square-root": "\\sqrt{\\pi}",
+    "2pi-square-root": "\\sqrt{2\\pi}",
     /* limit: "\\lim_{⬚\\rightarrow⬚}", */
     limit: "\\lim",
     log: "\\log_⬚",
