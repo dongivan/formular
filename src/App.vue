@@ -47,11 +47,29 @@ InputPad
     </div>
     <InputPad class="fixed bottom-1 justify-center" @click="handleCommands" />
   </div>
+  <DialogPanel v-model:show="refShowPanel" dialog-style="width: 500px;">
+    <MathJaxViewer
+      v-show="refResult"
+      source-format="mml"
+      target-format="html"
+      :content="refResult"
+    />
+    <div v-if="refShowPanel && !refResult">
+      Oops! We cannot find anything from the input...
+    </div>
+    <div v-if="refHasErrors" class="mt-4">
+      Oops! Maybe you should check the expression...
+    </div>
+    <div v-else class="mt-4">
+      Yeah! But we cannot calculate it for you now...
+    </div>
+  </DialogPanel>
 </template>
 
 <script setup lang="ts">
 import InputPad from "@/components/input-pad";
-import { ref, watch } from "vue";
+import DialogPanel from "@/components/DialogPanel.vue";
+import { computed, ref, watch } from "vue";
 import { Formula, Latex, MathML, MathTree } from "./models";
 
 const formula = new Formula();
@@ -122,22 +140,31 @@ const handleCommands = (commands: [string, ...string[]]) => {
         formula.redo();
         break;
       case "execute":
-        console.log("execute !", formula.checkIntegrity(true));
+        // console.log("execute !", formula.checkIntegrity(true));
+        refShowPanel.value = true;
         break;
       default:
         formula.insertAtCursor(cmd);
     }
   });
 };
+
+const refShowPanel = ref(false);
+const refResult = ref("");
+const refHasErrors = ref(false);
+watch(refShowPanel, (show) => {
+  if (show) {
+    const tree = formula.getPureTree();
+    refResult.value = MathML.renderText(tree);
+    refHasErrors.value = tree.incompleteChars.length > 0;
+  } else {
+    refResult.value = "";
+    refHasErrors.value = false;
+  }
+});
 </script>
 
 <style lang="scss" scoped>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  color: #2c3e50;
-}
 :deep(.formular-cursor) {
   @apply bg-sky-400;
 }

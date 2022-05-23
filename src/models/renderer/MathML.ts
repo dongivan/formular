@@ -87,6 +87,9 @@ export const MathML = new Renderer<MathMLNode[], typeof MathMLNode.create>({
     }
     return eles;
   },
+  renderEmptyTreeFunction: () => {
+    return [];
+  },
   afterRenderFunction: (eles, options) => {
     if (!options || eles.length == 0) {
       return eles;
@@ -127,6 +130,9 @@ export const MathML = new Renderer<MathMLNode[], typeof MathMLNode.create>({
     ];
   },
   renderTextFunction: (children, ...args: unknown[]) => {
+    if (children.length == 0) {
+      return "";
+    }
     const attrs = { display: "" };
     if (args[0]) {
       if (typeof args[0] == "string") {

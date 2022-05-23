@@ -64,6 +64,9 @@ export const Latex = new Renderer<string, typeof replace>({
       ] || "") + latex
     );
   },
+  renderEmptyTreeFunction: () => {
+    return "";
+  },
   renderVariable(char) {
     return `{${latexGreekLetters[char.value] || char.value}}`;
   },

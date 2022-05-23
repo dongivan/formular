@@ -1,4 +1,5 @@
-import type { MathChar, Cursor } from "./math-char";
+import type { MathChar } from "./math-char";
+import { Cursor } from "./math-char";
 import {
   MathCharFactory,
   ParamEnd,
@@ -43,7 +44,7 @@ export default class Formula extends Instance {
     this._chars.push(this._cursor);
     this._pushStep();
 
-    this._tree = new MathTree(this, false);
+    this._tree = new MathTree(this, { addParen: false, interactive: true });
     this._afterCharsChange();
   }
 
@@ -256,6 +257,15 @@ export default class Formula extends Instance {
       this._notifyTreeChangedListeners();
     }
     return integerity;
+  }
+
+  getPureTree() {
+    const tree = new MathTree(this, { addParen: false, interactive: false });
+    tree.resetInfixList(
+      this._chars.filter((char) => !(char instanceof Cursor))
+    );
+    tree.checkIntegrity(true);
+    return tree;
   }
 
   toString(): string {

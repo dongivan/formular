@@ -13,10 +13,15 @@ export default class MathTree {
   private _root: MathNode | undefined;
   private _hasCursor = false;
   private _incompleteChars: MathChar[] = [];
+  private _interactive = true;
 
-  constructor(formula: Formula, addParen: boolean) {
+  constructor(
+    formula: Formula,
+    options: { addParen: boolean; interactive: boolean }
+  ) {
     this._formulaId = formula.instanceId;
-    this._addParen = addParen;
+    this._addParen = options.addParen;
+    this._interactive = options.interactive;
   }
 
   get formula() {
@@ -43,6 +48,10 @@ export default class MathTree {
     return Object.freeze(this._incompleteChars);
   }
 
+  get interactive() {
+    return this._interactive;
+  }
+
   resetInfixList(chars: MathChar[]) {
     this._incompleteChars = [];
     this._infixList = this.infixMaker.make(chars, this._infixList);
@@ -57,13 +66,13 @@ export default class MathTree {
   }
 
   private _parsePostfixToBinaryTree(postfix: MathNode[]): void {
-    let root: MathNode | undefined = undefined;
-
     if (postfix.length == 0) {
-      throw new Error("Create expression tree failed: postfix array is empty.");
+      return;
     }
+
+    let root: MathNode | undefined = undefined,
+      pos = 0;
     const stack: MathNode[] = [];
-    let pos = 0;
     while (pos < postfix.length) {
       const node = postfix[pos];
       if (node instanceof OperandNode) {
@@ -87,7 +96,10 @@ export default class MathTree {
         if (node.params.length > 0) {
           const trees: MathTree[] = [];
           node.params.forEach((param, i) => {
-            const tree = new MathTree(this.formula, node.char.hasParamParen(i));
+            const tree = new MathTree(this.formula, {
+              addParen: node.char.hasParamParen(i),
+              interactive: this._interactive,
+            });
             trees.push(tree);
             tree.resetInfixList(param);
           });
