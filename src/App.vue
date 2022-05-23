@@ -57,7 +57,7 @@ InputPad
     <div v-if="refShowPanel && !refResult">
       Oops! We cannot find anything from the input...
     </div>
-    <div v-if="refHasErrors" class="mt-4">
+    <div v-else-if="refHasErrors" class="mt-4">
       Oops! Maybe you should check the expression...
     </div>
     <div v-else class="mt-4">
@@ -69,7 +69,7 @@ InputPad
 <script setup lang="ts">
 import InputPad from "@/components/input-pad";
 import DialogPanel from "@/components/DialogPanel.vue";
-import { computed, ref, watch } from "vue";
+import { ref, watch } from "vue";
 import { Formula, Latex, MathML, MathTree } from "./models";
 
 const formula = new Formula();
