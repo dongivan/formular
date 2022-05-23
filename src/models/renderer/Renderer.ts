@@ -178,8 +178,8 @@ export class Renderer<N, H> {
     }
     return this._renderNode(
       tree.root,
-      false,
       tree.interactive,
+      false,
       tree.incompleteChars
     );
   }
