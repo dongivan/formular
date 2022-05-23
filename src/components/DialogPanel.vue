@@ -1,7 +1,7 @@
 <template>
-  <transition name="dialog-panel">
+  <transition name="dialog-panel" @after-leave="emit('update:show', false)">
     <div
-      v-show="show"
+      v-show="refVisible"
       class="fixed top-0 left-0 w-screen h-screen touch-none bg-gray-400/25 flex flex-col items-center justify-end sm:justify-center"
       @click="close"
     >
@@ -28,7 +28,9 @@
 </template>
 
 <script setup lang="ts">
-defineProps({
+import { ref, watch } from "vue";
+
+const props = defineProps({
   show: { type: Boolean, default: false, required: true },
   dialogClass: { type: [String, Array, Object], default: "" },
   dialogStyle: { type: String, default: "" },
@@ -37,8 +39,18 @@ const emit = defineEmits<{
   (event: "update:show", value: boolean): void;
 }>();
 
+const refVisible = ref(false);
+watch(
+  () => props.show,
+  (val) => {
+    if (val) {
+      refVisible.value = val;
+    }
+  },
+  { immediate: true }
+);
 function close() {
-  emit("update:show", false);
+  refVisible.value = false;
 }
 </script>
 
@@ -46,7 +58,7 @@ function close() {
 .dialog-content {
   @apply bg-white p-4 flex flex-col items-center
     max-h-[75vh] min-h-[25vh] w-screen
-    sm:w-[400px] sm:h-[200px]
+    sm:min-w-[400px] sm:min-h-[200px]
     border-t rounded-t-md
     sm:border sm:rounded-xl sm:-translate-y-1/4
     border-gray-500 shadow-md;
