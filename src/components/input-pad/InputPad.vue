@@ -85,9 +85,6 @@ provide("changePage", (name: string) => {
 
 provide("runCommands", (commands: [string, ...string[]]) => {
   switch (commands[0]) {
-    case "about":
-      console.log("about");
-      break;
     case "shift":
       refIsShift.value = !refIsShift.value;
       break;

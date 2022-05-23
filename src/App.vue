@@ -81,6 +81,15 @@ InputPad
       </template>
     </div>
   </DialogPanel>
+  <DialogPanel v-model:show="refAboutPanel" dialog-style="width: 450px;">
+    <div class="mx-8">
+      <p>
+        Mathematics is the queen of science, and arithmetic the queen of
+        mathematics.
+      </p>
+      <p class="text-right">– Carl Friedrich Gauss</p>
+    </div>
+  </DialogPanel>
 </template>
 
 <script setup lang="ts">
@@ -157,8 +166,10 @@ const handleCommands = (commands: [string, ...string[]]) => {
         formula.redo();
         break;
       case "execute":
-        // console.log("execute !", formula.checkIntegrity(true));
         refShowPanel.value = true;
+        break;
+      case "about":
+        refAboutPanel.value = true;
         break;
       default:
         formula.insertAtCursor(cmd);
@@ -184,6 +195,8 @@ watch(refShowPanel, (show) => {
     refWolframAlphaExpression.value = "";
   }
 });
+
+const refAboutPanel = ref(false);
 </script>
 
 <style lang="scss" scoped>
