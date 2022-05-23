@@ -63,48 +63,48 @@ defineExpose({
   &.btn-type-default {
     @apply bg-gray-200
     hover-hover:hover:bg-gray-300 
-    active:bg-gray-400
+    active:bg-gray-400 hover-hover:active:bg-gray-400
     focus:outline-none focus:bg-gray-300 focus:ring-gray-200 
     disabled:cursor-not-allowed disabled:text-gray-400 disabled:bg-gray-200;
 
     &.active {
-      @apply bg-gray-400 active:bg-gray-400;
+      @apply bg-gray-400 active:bg-gray-400 hover-hover:active:bg-gray-400;
     }
   }
 
   &.btn-type-primary {
     @apply bg-blue-400
     hover-hover:hover:bg-blue-500 
-    active:bg-blue-600 
+    active:bg-blue-600 hover-hover:active:bg-blue-600 
     focus:outline-none focus:bg-blue-500 focus:ring-blue-300 
     disabled:cursor-not-allowed disabled:text-blue-600 disabled:bg-blue-400;
 
     &.active {
-      @apply bg-blue-500 active:bg-blue-600;
+      @apply bg-blue-500 active:bg-blue-600 hover-hover:active:bg-blue-600;
     }
   }
 
   &.btn-type-danger {
     @apply bg-red-400
     hover-hover:hover:bg-red-500 
-    active:bg-red-600 
+    active:bg-red-600 hover-hover:active:bg-red-600 
     focus:outline-none focus:bg-red-500 focus:ring-red-300 
     disabled:cursor-not-allowed disabled:text-red-600 disabled:bg-red-400;
 
     &.active {
-      @apply bg-red-500 active:bg-red-600;
+      @apply bg-red-500 active:bg-red-600 hover-hover:active:bg-red-600;
     }
   }
 
   &.btn-type-warning {
     @apply bg-amber-400
     hover:bg-amber-500 
-    active:bg-amber-600 
+    active:bg-amber-600 hover-hover:active:bg-amber-600 
     focus:outline-none focus:bg-amber-500 focus:ring-amber-300 
     disabled:cursor-not-allowed disabled:text-amber-600 disabled:bg-amber-400;
 
     &.active {
-      @apply bg-amber-500 active:bg-amber-600;
+      @apply bg-amber-500 active:bg-amber-600 hover-hover:active:bg-amber-600;
     }
   }
 }
