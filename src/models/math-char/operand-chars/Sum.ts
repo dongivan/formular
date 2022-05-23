@@ -1,4 +1,4 @@
-import { Latex, MathML } from "../../renderer";
+import { Latex, MathML, WolframAlpha } from "../../renderer";
 import { MathCharFactory, OperandChar } from "../internal";
 
 @MathCharFactory.RegisterMathChar("sum")
@@ -25,6 +25,7 @@ import { MathCharFactory, OperandChar } from "../internal";
     ],
   }),
 ])
+@WolframAlpha.RenderChar(({ params, h }) => h("Sum[<3>,{<0>,<1>,<2>}]", params))
 export default class Sum extends OperandChar {
   protected _paramsNumber = 4;
   protected _paramsParen = 1 << 3;

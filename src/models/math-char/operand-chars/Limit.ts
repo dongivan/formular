@@ -1,4 +1,4 @@
-import { Latex, MathML } from "../../renderer";
+import { Latex, MathML, WolframAlpha } from "../../renderer";
 import { MathCharFactory, OperandChar } from "../internal";
 
 @MathCharFactory.RegisterMathChar("limit", "lim")
@@ -30,6 +30,7 @@ import { MathCharFactory, OperandChar } from "../internal";
     ],
   }),
 ])
+@WolframAlpha.RenderChar(({ params, h }) => h("Limit[<2>,<0>-><1>", params))
 export default class Limit extends OperandChar {
   protected _paramsNumber = 3;
   protected _paramsParen = 1 << 2;

@@ -1,4 +1,4 @@
-import { Latex, MathML } from "../../renderer";
+import { Latex, MathML, WolframAlpha } from "../../renderer";
 import { MathCharFactory, OperandChar } from "../internal";
 
 @MathCharFactory.RegisterMathChar("log")
@@ -19,6 +19,7 @@ import { MathCharFactory, OperandChar } from "../internal";
     ],
   }),
 ])
+@WolframAlpha.RenderChar(({ params, h }) => h("Log[<0>,<1>]", params))
 export default class Log extends OperandChar {
   protected _paramsNumber = 2;
   protected _paramsParen = 1 << 1;

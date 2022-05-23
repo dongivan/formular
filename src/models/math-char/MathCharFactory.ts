@@ -136,10 +136,10 @@ export default class MathCharFactory extends Instance {
     return this._hidden;
   }
 
-  createTempParen(): [LeftParen, RightParen] {
+  createPhontomParens(): [LeftParen, RightParen] {
     return [
-      new LeftParen({ sequenceNumber: -1 }),
-      new RightParen({ sequenceNumber: -1 }),
+      new LeftParen({ phontom: true }),
+      new RightParen({ phontom: true }),
     ];
   }
 

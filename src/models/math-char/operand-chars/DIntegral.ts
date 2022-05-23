@@ -1,4 +1,4 @@
-import { Latex, MathML } from "../../renderer";
+import { Latex, MathML, WolframAlpha } from "../../renderer";
 import { MathCharFactory, OperandChar } from "../internal";
 
 @MathCharFactory.RegisterMathChar("d-integral")
@@ -19,6 +19,9 @@ import { MathCharFactory, OperandChar } from "../internal";
     ],
   }),
 ])
+@WolframAlpha.RenderChar(({ params, h }) =>
+  h("Integrate[<2>,{<3>,<0>,<1>}]", params)
+)
 export default class DIntegral extends OperandChar {
   protected _paramsNumber = 4;
 

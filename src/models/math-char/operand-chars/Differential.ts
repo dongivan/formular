@@ -1,4 +1,4 @@
-import { Latex, MathML } from "../../renderer";
+import { Latex, MathML, WolframAlpha } from "../../renderer";
 import { MathCharFactory, OperandChar } from "../internal";
 
 @MathCharFactory.RegisterMathChar("differential", "dif")
@@ -9,6 +9,7 @@ import { MathCharFactory, OperandChar } from "../internal";
     [h("mi", "d"), h("mrow", [params[1]])],
   ]),
 ])
+@WolframAlpha.RenderChar(({ params, h }) => h("D[<0>,<1>]", params))
 export default class Differential extends OperandChar {
   constructor() {
     super("dif");

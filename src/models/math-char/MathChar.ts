@@ -1,4 +1,4 @@
-import { Latex, MathML } from "../renderer";
+import { Latex, MathML, WolframAlpha } from "../renderer";
 
 @Latex.RenderChar(({ char }) => char.value)
 @Latex.RenderNode(
@@ -10,6 +10,10 @@ import { Latex, MathML } from "../renderer";
   ...current,
   ...(right || []),
 ])
+@WolframAlpha.RenderChar(({ char }) => char.value)
+@WolframAlpha.RenderNode(
+  ({ current, left, right }) => `${left || ""}${current}${right || ""}`
+)
 export default class MathChar {
   private static _SEQUENCE_NUMBER = 0;
 

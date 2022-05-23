@@ -1,9 +1,12 @@
-import { Latex, MathML } from "../../renderer";
+import { Latex, MathML, WolframAlpha } from "../../renderer";
 import { OperandChar } from "../internal";
 
 @Latex.RenderChar(({ char, params }) => Latex.renderMathFunction(char, params))
 @MathML.RenderChar(({ char, params }) =>
   MathML.renderMathFunction(char, params)
+)
+@WolframAlpha.RenderChar(({ char, params }) =>
+  WolframAlpha.renderMathFunction(char, params)
 )
 export default class MathFunction extends OperandChar {
   protected _interactive = true;

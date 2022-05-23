@@ -2,7 +2,7 @@ InputPad
 <template>
   <div class="w-screen h-screen flex flex-col items-center touch-none">
     <div class="w-full sm:w-[540px]">
-      <div class="flex gap-px flex-wrap text-2xl sm:text-base">
+      <div class="hidden sm:flex gap-px flex-wrap text-2xl sm:text-base">
         <button
           v-for="(_, view) in views"
           :key="view"
@@ -14,16 +14,16 @@ InputPad
         >
           {{ view }}
         </button>
-        <div class="flex-grow hidden sm:block"></div>
+        <div class="flex-grow"></div>
         <button
-          class="view-btn hidden sm:block"
+          class="view-btn"
           :class="{ active: !refShowSource }"
           @click="refShowSource = false"
         >
           Result
         </button>
         <button
-          class="view-btn hidden sm:block"
+          class="view-btn"
           :class="{ active: refShowSource }"
           @click="refShowSource = true"
         >
@@ -48,20 +48,37 @@ InputPad
     <InputPad class="fixed bottom-1 justify-center" @click="handleCommands" />
   </div>
   <DialogPanel v-model:show="refShowPanel" dialog-style="width: 500px;">
-    <MathJaxViewer
-      v-show="refResult"
-      source-format="mml"
-      target-format="html"
-      :content="refResult"
-    />
     <div v-if="refShowPanel && !refResult">
       Oops! We cannot find anything from the input...
     </div>
-    <div v-else-if="refHasErrors" class="mt-4">
-      Oops! Maybe you should check the expression...
-    </div>
-    <div v-else class="mt-4">
-      Yeah! But we cannot calculate it for you now...
+    <div v-else>
+      <div class="mb-4">Your expression is:</div>
+      <MathJaxViewer
+        v-show="refResult"
+        class="text-center"
+        source-format="mml"
+        target-format="html"
+        :content="refResult"
+      />
+      <div v-if="refHasErrors" class="my-4">
+        Oops! Maybe you should check the expression...
+      </div>
+      <template v-else>
+        <div class="my-4">
+          <p>But we cannot calculate it for you now...</p>
+          <p v-if="refWolframAlphaExpression">
+            Or, you can
+            <a
+              :href="`https://www.wolframalpha.com/input?i2d=true&i=${encodeURI(
+                refWolframAlphaExpression
+              )}`"
+              class="text-orange-600"
+              target="_blank"
+              >try the great WolframAlpha</a
+            >!
+          </p>
+        </div>
+      </template>
     </div>
   </DialogPanel>
 </template>
@@ -70,7 +87,7 @@ InputPad
 import InputPad from "@/components/input-pad";
 import DialogPanel from "@/components/DialogPanel.vue";
 import { ref, watch } from "vue";
-import { Formula, Latex, MathML, MathTree } from "./models";
+import { Formula, Latex, MathML, WolframAlpha, MathTree } from "./models";
 
 const formula = new Formula();
 
@@ -152,14 +169,19 @@ const handleCommands = (commands: [string, ...string[]]) => {
 const refShowPanel = ref(false);
 const refResult = ref("");
 const refHasErrors = ref(false);
+const refWolframAlphaExpression = ref("");
 watch(refShowPanel, (show) => {
   if (show) {
     const tree = formula.getPureTree();
     refResult.value = MathML.renderText(tree);
     refHasErrors.value = tree.incompleteChars.length > 0;
+    if (!refHasErrors.value) {
+      refWolframAlphaExpression.value = WolframAlpha.render(tree);
+    }
   } else {
     refResult.value = "";
     refHasErrors.value = false;
+    refWolframAlphaExpression.value = "";
   }
 });
 </script>

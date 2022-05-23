@@ -1,5 +1,5 @@
 import { Config } from "../../Config";
-import { Latex, MathML } from "../../renderer";
+import { Latex, MathML, WolframAlpha } from "../../renderer";
 import { MathChar, OperandChar } from "../internal";
 
 @Latex.RenderChar(() => "⍰")
@@ -9,6 +9,7 @@ import { MathChar, OperandChar } from "../internal";
     class: Config.getConfig().placeholderCssClass,
   }),
 ])
+@WolframAlpha.RenderChar(() => "")
 export default class Placeholder extends OperandChar {
   protected _interactive = true;
 

@@ -1,4 +1,4 @@
-import { Latex, MathML } from "../../renderer";
+import { Latex, MathML, WolframAlpha } from "../../renderer";
 import { MathCharFactory, OperandChar } from "../internal";
 
 @MathCharFactory.RegisterMathChar("permutation")
@@ -11,6 +11,7 @@ import { MathCharFactory, OperandChar } from "../internal";
     ],
   }),
 ])
+@WolframAlpha.RenderChar(({ params, h }) => h("Permutation[<0>,<1>]", params))
 export default class Permutation extends OperandChar {
   constructor() {
     super("permutation");

@@ -120,7 +120,7 @@ export default class MathTree {
       );
     }
     if (this._addParen) {
-      const [left, right] = this.formula.charFactory.createTempParen();
+      const [left, right] = this.formula.charFactory.createPhontomParens();
       const rightNode = new OperatorNode({ char: right }),
         leftNode = new OperatorNode({ char: left });
       rightNode.leftChild = root;

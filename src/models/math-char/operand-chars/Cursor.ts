@@ -1,5 +1,5 @@
 import { Config } from "../../Config";
-import { Latex, MathML } from "../../renderer";
+import { Latex, MathML, WolframAlpha } from "../../renderer";
 import { OperandChar } from "../internal";
 
 @Latex.RenderChar(() => "█")
@@ -9,6 +9,7 @@ import { OperandChar } from "../internal";
     class: Config.getConfig().cursorCssClass,
   }),
 ])
+@WolframAlpha.RenderChar(() => "")
 export default class Cursor extends OperandChar {
   constructor() {
     super("cursor");
