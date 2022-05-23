@@ -2,10 +2,15 @@
   <transition name="dialog-panel">
     <div
       v-show="show"
-      class="fixed top-0 left-0 w-screen h-screen touch-none bg-gray-400/25"
+      class="fixed top-0 left-0 w-screen h-screen touch-none bg-gray-400/25 flex flex-col items-center justify-end sm:justify-center"
       @click="close"
     >
-      <div class="dialog-content" @click.stop>
+      <div
+        :class="dialogClass"
+        :style="dialogStyle"
+        class="dialog-content"
+        @click.stop
+      >
         <div class="flex-grow"></div>
         <slot :close="close"></slot>
         <div class="flex-grow"></div>
@@ -25,6 +30,8 @@
 <script setup lang="ts">
 defineProps({
   show: { type: Boolean, default: false, required: true },
+  dialogClass: { type: [String, Array, Object], default: "" },
+  dialogStyle: { type: String, default: "" },
 });
 const emit = defineEmits<{
   (event: "update:show", value: boolean): void;
@@ -37,11 +44,11 @@ function close() {
 
 <style lang="scss" scoped>
 .dialog-content {
-  @apply absolute bg-white p-4 flex flex-col items-center
-    bottom-0 max-h-[75vh] min-h-[25vh] w-screen
-    sm:top-48 sm:left-[calc(50vw-200px)] sm:w-[400px] sm:h-[200px]
+  @apply bg-white p-4 flex flex-col items-center
+    max-h-[75vh] min-h-[25vh] w-screen
+    sm:w-[400px] sm:h-[200px]
     border-t rounded-t-md
-    sm:border sm:rounded-xl 
+    sm:border sm:rounded-xl sm:-translate-y-1/4
     border-gray-500 shadow-md;
 }
 .dialog-panel-enter-active,
@@ -49,7 +56,8 @@ function close() {
   @apply transition-opacity duration-200;
 
   .dialog-content {
-    @apply transition-transform duration-200;
+    @apply transition-transform duration-200
+      sm:-translate-y-1/4;
   }
 }
 
@@ -58,7 +66,7 @@ function close() {
   @apply opacity-0;
 
   .dialog-content {
-    @apply translate-y-8 sm:-translate-y-4;
+    @apply translate-y-1/2 sm:-translate-y-1/2;
   }
 }
 </style>
