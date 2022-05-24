@@ -38,6 +38,7 @@ InputPad
         :content="refSource"
         display
         @click="views[refCurrentView].handleClick"
+        @math-jax-loaded="refMathJaxLoaded = true"
       />
       <div
         v-show="refShowSource"
@@ -91,6 +92,12 @@ InputPad
       <p class="text-right">– Carl Friedrich Gauss</p>
     </div>
   </DialogPanel>
+  <div
+    v-if="!refMathJaxLoaded"
+    class="w-screen h-screen fixed top-0 left-0 touch-none bg-gray-400/50 flex flex-col items-center justify-center"
+  >
+    Loading MathJax...
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -201,6 +208,7 @@ watch(refShowPanel, (show) => {
 });
 
 const refAboutPanel = ref(false);
+const refMathJaxLoaded = ref(false);
 </script>
 
 <style lang="scss" scoped>
