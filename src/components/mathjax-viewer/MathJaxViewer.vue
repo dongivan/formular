@@ -11,6 +11,7 @@ declare global {
     MathJax: any;
   }
 }
+const MATH_JAX_LOADED_EVENT = "math-jax-loaded";
 
 export default {};
 </script>
@@ -34,7 +35,7 @@ const props = defineProps({
   content: { type: String, required: true },
   display: { type: Boolean, default: false },
 });
-const emit = defineEmits(["math-jax-loaded"]);
+const emit = defineEmits([MATH_JAX_LOADED_EVENT]);
 
 const refMathJaxFunctionName = computed(() => {
   const source =
@@ -53,7 +54,7 @@ watch(
   refIsMathJaxLoaded,
   (loaded) => {
     if (loaded) {
-      emit("math-jax-loaded");
+      emit(MATH_JAX_LOADED_EVENT);
     }
   },
   { immediate: true }
