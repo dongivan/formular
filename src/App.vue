@@ -32,7 +32,7 @@
       <MathJaxVuewer
         v-show="!refShowSource"
         class="box-height max-h-64 bg-white border border-solid border-gray-400 shadow-md overflow-auto flex flex-col justify-center text-4xl sm:text-2xl md:text-lg lg:text-base"
-        :source-format="views[refCurrentView].source"
+        :source-format="refCurrentView"
         target-format="html"
         :content="refSource"
         display
@@ -103,22 +103,18 @@
 import InputPad from "@/components/input-pad";
 import DialogPanel from "@/components/DialogPanel.vue";
 import { ref, watch } from "vue";
-import { Formula, Latex, MathML, WolframAlpha, MathTree } from "./models";
+import { Formula, Latex, MathML, WolframAlpha } from "./models";
 
 const formula = new Formula();
 
 const views: {
   [key: string]: {
-    render: (tree: MathTree) => string;
-    source: string;
+    renderer: { renderText(...args: unknown[]): string };
     handleClick?: (evt: Event) => void;
   };
 } = {
   MathML: {
-    render: (tree: MathTree) => {
-      return MathML.renderText(tree, "block");
-    },
-    source: "mml",
+    renderer: MathML,
     handleClick: (evt: Event) => {
       if (!evt.target) {
         return;
@@ -137,21 +133,23 @@ const views: {
       formula.moveCursorBeforeChar(parseInt(charSn));
     },
   },
-  Latex: {
-    render: (tree: MathTree) => {
-      return Latex.render(tree);
-    },
-    source: "tex",
+  LaTeX: {
+    renderer: Latex,
   },
 };
+
 const refCurrentView = ref(Object.keys(views)[0]);
 const refShowSource = ref(false);
 const refSource = ref("");
 formula.addTreeChangedListener(({ tree }) => {
-  refSource.value = views[refCurrentView.value].render(tree);
+  refSource.value = views[refCurrentView.value].renderer.renderText(
+    tree,
+    /* `LaTex.renderText` only need one param which is `tree`, this "block" is for `MathML.renderText` */
+    "block"
+  );
 });
 watch(refCurrentView, (view) => {
-  refSource.value = views[view].render(formula.tree);
+  refSource.value = views[view].renderer.renderText(formula.tree, "block");
 });
 
 const handleCommands = (commands: [string, ...string[]]) => {
