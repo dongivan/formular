@@ -1,4 +1,4 @@
-import { Latex, MathML } from "../../renderer";
+import { Latex, MathML, WolframAlpha } from "../../renderer";
 import { MathCharFactory, OperatorChar } from "../internal";
 
 @MathCharFactory.RegisterMathChar("^", "power")
@@ -30,6 +30,10 @@ import { MathCharFactory, OperatorChar } from "../internal";
   current[0].children.unshift(h("mrow", left ? [left] : []));
   return current;
 })
+@WolframAlpha.RenderChar(({ params, h }) => h(`<0>`, params))
+@WolframAlpha.RenderNode(
+  ({ current, left }) => `Power[${left || ""},${current}]`
+)
 export default class Power extends OperatorChar {
   constructor() {
     super("^");
