@@ -941,10 +941,10 @@
     "@babel/helper-validator-identifier" "^7.16.7"
     to-fast-properties "^2.0.0"
 
-"@dongivan/mathjax-vuewer@^0.1.1":
-  version "0.1.1"
-  resolved "https://registry.npmjs.org/@dongivan/mathjax-vuewer/-/mathjax-vuewer-0.1.1.tgz"
-  integrity sha512-GsrS31DlsRbOS/Iknz/3Q2Si9bS2fEP9Yir+MPGeA1YZmaAXRJvaI0V6JaT8fF3iqs/6TTmGAMN8gVxdi1ymxQ==
+"@dongivan/mathjax-vuewer@^0.1.2":
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/@dongivan/mathjax-vuewer/-/mathjax-vuewer-0.1.2.tgz#f06b8ee853d13dde4c87c78dd756112be6424aa3"
+  integrity sha512-BQSGzoHrUVHmw5sUwWub9NPyNvDqLXN3Cl23f8IusIdHb5Ca8GGFEJG/Rbq3zpIw4J0Rfc8ZlpRyyJCsWJvEzA==
   dependencies:
     vue "^3.2.25"
 
