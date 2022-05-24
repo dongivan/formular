@@ -22,14 +22,14 @@ const props = defineProps({
     type: String,
     default: "tex",
     validator(val: string) {
-      return ["mml", "mathml", "latex", "tex"].includes(val);
+      return ["mml", "mathml", "latex", "tex"].includes(val.toLowerCase());
     },
   },
   targetFormat: {
     type: String,
     default: "chtml",
     validator(val: string) {
-      return ["html", "chtml", "svg"].includes(val);
+      return ["html", "chtml", "svg"].includes(val.toLowerCase());
     },
   },
   content: { type: String, required: true },
