@@ -1,4 +1,3 @@
-InputPad
 <template>
   <div class="w-screen h-screen flex flex-col items-center touch-none">
     <div class="w-full sm:w-[540px]">
