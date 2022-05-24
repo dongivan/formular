@@ -16,7 +16,6 @@ export default {};
 </script>
 
 <script setup lang="ts">
-/* declare props & emits */
 const props = defineProps({
   sourceFormat: {
     type: String,
@@ -33,6 +32,7 @@ const props = defineProps({
     },
   },
   content: { type: String, required: true },
+  display: { type: Boolean, default: false },
 });
 const emit = defineEmits(["math-jax-loaded"]);
 
@@ -59,7 +59,6 @@ watch(
   { immediate: true }
 );
 
-/* setup components */
 const refIsMounted = ref(false);
 const refContainer = ref();
 onMounted(() => {
@@ -77,7 +76,10 @@ watch(
     if (typeof MathJaxFunction == "function") {
       const el = refContainer.value;
       el.innerHTML = "";
-      el.appendChild(await MathJaxFunction(content));
+      MathJax.texReset();
+      const options = MathJax.getMetricsFor(el) as { display: boolean };
+      options.display = props.display;
+      el.appendChild(await MathJaxFunction(content, options));
       MathJax.startup?.document?.clear();
       MathJax.startup?.document?.updateDocument();
     } else {

@@ -36,6 +36,7 @@ InputPad
         :source-format="views[refCurrentView].source"
         target-format="html"
         :content="refSource"
+        display
         @click="views[refCurrentView].handleClick"
       />
       <div
