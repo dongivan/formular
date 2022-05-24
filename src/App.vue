@@ -30,7 +30,7 @@ InputPad
           Source
         </button>
       </div>
-      <MathJaxViewer
+      <MathJaxVuewer
         v-show="!refShowSource"
         class="box-height max-h-64 bg-white border border-solid border-gray-400 shadow-md overflow-auto flex flex-col justify-center text-4xl sm:text-2xl md:text-lg lg:text-base"
         :source-format="views[refCurrentView].source"
@@ -55,7 +55,7 @@ InputPad
     </div>
     <div v-else>
       <div class="mb-4">Your expression is:</div>
-      <MathJaxViewer
+      <MathJaxVuewer
         v-show="refResult"
         class="text-center"
         source-format="mml"

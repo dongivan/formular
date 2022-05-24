@@ -2,14 +2,14 @@ import { createApp } from "vue";
 import App from "./App.vue";
 import "./assets/tailwind.css";
 import "./components/input-pad/svgs";
-import MathJaxViewer from "./components/mathjax-viewer";
+import MathJaxVuewer from "@dongivan/mathjax-vuewer";
 
 window.addEventListener("contextmenu", function (e) {
   e.preventDefault();
 });
 
 const app = createApp(App);
-app.use(MathJaxViewer, {
+app.use(MathJaxVuewer, {
   script: "mathjax/es5/startup.js",
   options: {
     loader: {
