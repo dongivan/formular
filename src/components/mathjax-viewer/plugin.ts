@@ -47,7 +47,18 @@ async function loadScript(src: string) {
   });
 }
 
-async function loadMathJax(src: string, options: MathJaxOptions) {
+const refIsMathJaxLoaded = ref(false);
+
+async function loadMathJax(src?: string, options?: MathJaxOptions) {
+  /* 
+  MathJax is loaded if `MathJax.config` is set.
+  see [link: http://docs.mathjax.org/en/latest/web/configuration.html#configuring-mathjax-after-it-is-loaded].
+  */
+  if (window.MathJax?.config) {
+    refIsMathJaxLoaded.value = true;
+    return Promise.resolve();
+  }
+
   const ready = function () {
     if (window.MathJax.startup?.defaultReady) {
       window.MathJax.startup.defaultReady();
@@ -55,7 +66,7 @@ async function loadMathJax(src: string, options: MathJaxOptions) {
     refIsMathJaxLoaded.value = true;
   };
 
-  const _options = { ...options };
+  const _options = { ...window.MathJax, ...options };
   if (!_options.startup) {
     _options.startup = {};
   }
@@ -74,17 +85,20 @@ async function loadMathJax(src: string, options: MathJaxOptions) {
     ...window.MathJax,
     ..._options,
   };
-  return loadScript(src);
+  if (src) {
+    return loadScript(src);
+  } else {
+    return Promise.resolve();
+  }
 }
 
-const refIsMathJaxLoaded = ref(false);
-let initialized = false;
+let mathJaxInited = false;
 
-async function install(app: App, options: MathJaxViewerPluginOptions) {
-  app.component(options.componentName || "MathJaxViewer", MathJaxViewer);
-  if (options.script && !initialized) {
-    await loadMathJax(options.script, options.options);
-    initialized = true;
+async function install(app: App, options?: MathJaxViewerPluginOptions) {
+  app.component(options?.componentName || "MathJaxViewer", MathJaxViewer);
+  if (!mathJaxInited) {
+    await loadMathJax(options?.script, options?.options);
+    mathJaxInited = true;
   }
 }
 
