@@ -512,10 +512,10 @@ const inputPad: InputPad = {
   pages: parsePages(buttonPages, buttonsRepo),
 };
 
-export {
+export { inputPad };
+export type {
   PadButton as PadButtonType,
   IconButton as IconButtonType,
   PageButton as PageButtonType,
   Icon as IconType,
-  inputPad,
 };

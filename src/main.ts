@@ -1,7 +1,7 @@
 import { createApp } from "vue";
 import App from "./App.vue";
 import "./assets/tailwind.css";
-import "./components/input-pad/svgs";
+import "virtual:svg-icons-register";
 import MathJaxVuewer from "@dongivan/mathjax-vuewer";
 
 window.addEventListener("contextmenu", function (e) {

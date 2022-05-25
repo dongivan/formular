@@ -194,7 +194,7 @@ watch(refShowPanel, (show) => {
     if (!refHasErrors.value) {
       refWolframAlphaExpression.value = WolframAlpha.render(tree);
     }
-    if (process.env.NODE_ENV == "development") {
+    if (import.meta.env.NODE_ENV == "development") {
       console.log(refWolframAlphaExpression.value);
     }
   } else {

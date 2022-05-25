@@ -16,7 +16,7 @@ const props = defineProps({
 });
 
 const refIconName = computed(() => {
-    return `#svg-icon-${props.name}`;
+    return `#icon-${props.name}`;
   }),
   refStyle = computed(() => {
     const styles: Record<string, string | number> = {};
