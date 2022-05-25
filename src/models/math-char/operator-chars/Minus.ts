@@ -1,7 +1,7 @@
 import { MathML } from "../../renderer";
 import { MathChar, MathCharFactory, OperatorChar } from "../internal";
 
-@MathCharFactory.RegisterMathChar("-", "minus")
+@MathCharFactory.RegisterMathChar("-", "minus", "subtract")
 @MathML.RenderChar(({ h }) => [h("mo", "&#x2212;")])
 export default class Minus extends OperatorChar {
   constructor() {

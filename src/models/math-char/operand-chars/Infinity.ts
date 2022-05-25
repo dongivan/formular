@@ -1,7 +1,7 @@
 import { Latex, MathML, WolframAlpha } from "../../renderer";
 import { MathCharFactory, OperandChar } from "../internal";
 
-@MathCharFactory.RegisterMathChar("infinity")
+@MathCharFactory.RegisterMathChar("infinity", "infty")
 @Latex.RenderChar(() => "\\infty")
 @MathML.RenderChar(({ h }) => [h("mi", "&#x221E;")])
 @WolframAlpha.RenderChar(() => "∞")

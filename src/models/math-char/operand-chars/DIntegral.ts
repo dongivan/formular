@@ -1,7 +1,7 @@
 import { Latex, MathML, WolframAlpha } from "../../renderer";
 import { MathCharFactory, OperandChar } from "../internal";
 
-@MathCharFactory.RegisterMathChar("d-integral")
+@MathCharFactory.RegisterMathChar("d-integral", "defint")
 @Latex.RenderChar(({ params, h }) => h("\\int^<1>_<0>{<2>}d{<3>}", params))
 @MathML.RenderChar(({ params, h }) => [
   h("mrow", {
