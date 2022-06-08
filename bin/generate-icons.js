@@ -3,7 +3,7 @@ const path = require("path");
 const { optimize } = require("svgo");
 const PACKAGES = "base, autoload, require, ams, newcommand";
 
-const root = "../svgs";
+const root = "../src/assets/icons/";
 
 const number = {};
 for (let i = 0; i < 10; i++) {
@@ -74,11 +74,9 @@ const greek = {
 };
 
 const latexes = {
-  symbol: {
+  math: {
     infinity: "\\infty",
     point: ".",
-  },
-  operator: {
     plus: "+",
     minus: "-",
     times: "\\times",
@@ -128,10 +126,11 @@ const latexes = {
 };
 
 const output = async function (MathJax, group, name, latex) {
-  if (!fs.existsSync(root)) {
-    fs.mkdirSync(root, { recursive: true });
+  const dir = path.join(root, group);
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir, { recursive: true });
   }
-  const file = path.join(root, `${group}-${name}.svg`);
+  const file = path.join(dir, `${name}.svg`);
   console.log(`working on file ${file}...`);
   /* add `\mathstrut` to latex string to ensure all expressions has the same height */
   const node = await MathJax.tex2svgPromise(`${latex}\\mathstrut`, {

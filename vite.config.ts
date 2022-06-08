@@ -10,7 +10,7 @@ export default defineConfig({
     vue(),
     createSvgIconsPlugin({
       svgoOptions: false,
-      iconDirs: [path.resolve(__dirname, "./src/components/input-pad/svgs")],
+      iconDirs: [path.resolve(__dirname, "./src/assets/icons")],
       symbolId: "icon-[dir]-[name]",
       inject: "body-first",
       customDomId: "__svg__icons__dom__",
