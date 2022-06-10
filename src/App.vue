@@ -46,7 +46,10 @@
         <pre>{{ refSource }}</pre>
       </div>
     </div>
-    <InputPad class="fixed bottom-1 justify-center" @click="handleCommands" />
+    <MathKeyboard
+      class="fixed bottom-1 justify-center"
+      @click="handleCommands"
+    />
   </div>
   <DialogPanel v-model:show="refShowPanel" dialog-style="width: 500px;">
     <div v-if="refShowPanel && !refResult">
@@ -100,10 +103,10 @@
 </template>
 
 <script setup lang="ts">
-import InputPad from "@/components/input-pad";
 import DialogPanel from "@/components/DialogPanel.vue";
 import { ref, watch } from "vue";
 import { Formula, Latex, MathML, WolframAlpha } from "./models";
+import MathKeyboard from "./components/MathKeyboard.vue";
 
 const formula = new Formula();
 

@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@dongivan/mathjax-vuewer": "^0.1.2",
+    "@dongivan/virtual-keyboard": "^0.1.0",
     "vue": "^3.2.25"
   },
   "devDependencies": {
