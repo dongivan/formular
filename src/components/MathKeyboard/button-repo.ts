@@ -168,7 +168,6 @@ const btnRepo = {
   ...parseButtons(menus, "menu"),
 };
 
-console.log(btnRepo);
 export const parseLayout: (
   layout: (
     | undefined
