@@ -14,7 +14,7 @@ What `formular` could not do:
 - Compute the expression. 
 
 # Demo
-See [here](https://dongivan.github.com).
+See [here](https://dongivan.github.io).
 
 See more details from the source code of the project.
 
