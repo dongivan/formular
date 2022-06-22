@@ -10,11 +10,14 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "esModuleInterop": true,
+    "types": ["node"],
     "skipLibCheck": true,
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
     "baseUrl": ".",
     "experimentalDecorators": true,
+    "declaration": true,
+    "outDir": "dist",
     "paths": {
       "@/*": [
         "src/*"
