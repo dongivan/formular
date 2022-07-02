@@ -1,6 +1,6 @@
 {
   "name": "@dongivan/formular",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": false,
   "description": "`formular` is a toy libray which presents an interactive context of mathematics expressions.",
   "files": [
@@ -15,7 +15,7 @@
     }
   },
   "types": "./dist/types/index.d.ts",
-"scripts": {
+  "scripts": {
     "dev": "vite --config vite-demo.config.ts",
     "build-demo": "vue-tsc --noEmit && vite build --config vite-demo.config.ts --outDir demo-dist && del ..\\dongivan.github.io\\assets\\*.* /q && xcopy demo-dist\\*.* ..\\dongivan.github.io\\ /E /Y ",
     "analyze": "vue-tsc --noEmit && vite build --config vite-demo.config.ts",
