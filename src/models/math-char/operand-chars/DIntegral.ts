@@ -26,6 +26,6 @@ export default class DIntegral extends OperandChar {
   protected _paramsNumber = 4;
 
   constructor() {
-    super("i-integral");
+    super("d-integral");
   }
 }
