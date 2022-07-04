@@ -5,8 +5,8 @@ import { MathCharFactory, OperandChar } from "../internal";
 @Latex.RenderChar(({ params, h }) => h("\\frac{d{<0>}}{d{<1>}}", params))
 @MathML.RenderChar(({ params, h }) => [
   h("mfrac", [
-    [h("mi", "d"), h("mrow", [params[0]])],
-    [h("mi", "d"), h("mrow", [params[1]])],
+    h("mrow", [h("mi", "d"), h("mrow", params[0])]),
+    h("mrow", [h("mi", "d"), h("mrow", params[1])]),
   ]),
 ])
 @WolframAlpha.RenderChar(({ params, h }) => h("D[<0>,<1>]", params))

@@ -1,31 +1,36 @@
-type Attrs = {
+type MathMLNodeAttributes = {
   [key: string]: string | undefined;
-};
-
-type MathMLNodeParameters = {
-  attrs?: Attrs;
-  value?: string;
-  children?: MathMLNode[];
-  class?: string[] | string;
 };
 
 export default class MathMLNode {
   private _pad = 2;
   private _tag: string;
-  private _attrs: { [key: string]: string | undefined };
-  private _class: string[];
-  value: string;
-  children: MathMLNode[];
+  private _attrs: MathMLNodeAttributes;
+  children: (MathMLNode | string)[];
 
-  constructor(tag: string, parameters?: MathMLNodeParameters) {
+  constructor(
+    tag: string,
+    attributes?: MathMLNodeAttributes | string | (MathMLNode | string)[],
+    children?: string | (MathMLNode | string)[]
+  ) {
     this._tag = tag;
-    this._attrs = parameters?.attrs || {};
-    this._class =
-      typeof parameters?.class == "string"
-        ? parameters.class.split(" ")
-        : parameters?.class || [];
-    this.value = parameters?.value || "";
-    this.children = parameters?.children || [];
+    if (typeof attributes == "object" && !Array.isArray(attributes)) {
+      this._attrs = attributes;
+      this.children = this._initialzeChildren(children);
+    } else {
+      this._attrs = {};
+      this.children = this._initialzeChildren(attributes);
+    }
+  }
+
+  private _initialzeChildren(
+    children: undefined | string | (MathMLNode | string)[]
+  ) {
+    return Array.isArray(children)
+      ? children
+      : typeof children == "string"
+      ? [children]
+      : [];
   }
 
   /**
@@ -40,22 +45,13 @@ export default class MathMLNode {
    */
   static create(
     tag: string,
-    parameters?: MathMLNodeParameters | string | MathMLNode[][]
+    attributes?: MathMLNodeAttributes | string | (MathMLNode | string)[],
+    children?: string | (MathMLNode | string)[]
   ) {
-    if (typeof parameters == "string") {
-      return new MathMLNode(tag, { value: parameters });
-    } else if (Array.isArray(parameters)) {
-      return new MathMLNode(tag, {
-        children: parameters.map<MathMLNode>(
-          (param) => new MathMLNode("mrow", { children: param })
-        ),
-      });
-    } else {
-      return new MathMLNode(tag, parameters);
-    }
+    return new MathMLNode(tag, attributes, children);
   }
 
-  setAttr(attrs: { [key: string]: string | undefined }) {
+  setAttrs(attrs: MathMLNodeAttributes) {
     Object.keys(attrs).forEach((key) => {
       this._attrs[key] = attrs[key];
     });
@@ -63,27 +59,30 @@ export default class MathMLNode {
   }
 
   addClass(clsName: string) {
-    this._class.push(clsName);
+    this._attrs.class = Array.from(
+      new Set(`${this._attrs.class || ""} ${clsName}`.split(" "))
+    ).join(" ");
     return this;
   }
 
   render(level = 0): string {
-    const attrs =
-      Object.keys(this._attrs)
-        .filter((key) => this._attrs[key] !== undefined)
-        .map<string>((key) => ` ${key}="${this._attrs[key]}"`)
-        .join("") +
-      (this._class.length > 0
-        ? ` class="${Array.from(new Set(this._class)).join(" ")}"`
-        : "");
+    const attrs = Object.keys(this._attrs)
+      .map<string>((key) =>
+        this._attrs[key] === undefined
+          ? ` ${key}`
+          : ` ${key}="${this._attrs[key]}"`
+      )
+      .join("");
     const padding = "".padStart(this._pad * level, " "),
       lf = "\n";
-    const content =
-      this.children.length > 0
-        ? `${lf}${this.children
-            .map<string>((ele) => ele.render(level + 1))
-            .join(lf)}${lf}${padding}`
-        : this.value;
-    return `${padding}<${this._tag}${attrs}>${content}</${this._tag}>`;
+    const content = this.children
+      .map<string>((ele) =>
+        typeof ele == "string"
+          ? `${padding}${"".padStart(this._pad, " ")}${ele}`
+          : ele.render(level + 1)
+      )
+      .join(lf);
+    const body = content ? `${lf}${content}${lf}${padding}` : "";
+    return `${padding}<${this._tag}${attrs}>${body}</${this._tag}>`;
   }
 }

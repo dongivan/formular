@@ -6,24 +6,14 @@ import { MathCharFactory, OperandChar } from "../internal";
   h("\\prod^{<2>}_{{<0>}={<1>}}{<3>}", params)
 )
 @MathML.RenderChar(({ params, h }) => [
-  h("mrow", {
-    children: [
-      h("munderover", {
-        children: [
-          h("mo", "&#x220F;"),
-          h("mrow", {
-            children: [
-              h("mrow", [params[0]]),
-              h("mo", "="),
-              h("mrow", [params[1]]),
-            ],
-          }),
-          h("mrow", [params[2]]),
-        ],
-      }),
-      h("mrow", [params[3]]),
-    ],
-  }),
+  h("mrow", [
+    h("munderover", [
+      h("mo", "&#x220F;"),
+      h("mrow", [h("mrow", params[0]), h("mo", "="), h("mrow", params[1])]),
+      h("mrow", params[2]),
+    ]),
+    h("mrow", params[3]),
+  ]),
 ])
 @WolframAlpha.RenderChar(({ params, h }) =>
   h("Product[<3>,{<0>,<1>,<2>}]", params)

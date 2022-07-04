@@ -4,10 +4,13 @@ import { OperandChar } from "../internal";
 
 @Latex.RenderChar(() => "█")
 @MathML.RenderChar(({ h }) => [
-  h("mrow", {
-    value: Config.getConfig().cursorMathML,
-    class: Config.getConfig().cursorCssClass,
-  }),
+  h(
+    "mrow",
+    {
+      class: Config.getConfig().cursorCssClass,
+    },
+    Config.getConfig().cursorMathML
+  ),
 ])
 @WolframAlpha.RenderChar(() => "")
 export default class Cursor extends OperandChar {

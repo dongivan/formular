@@ -25,9 +25,9 @@ import { MathCharFactory, OperatorChar } from "../internal";
 @Latex.RenderNode(
   ({ current, left, right }) => `{${left || ""}}${current}${right || ""}`
 )
-@MathML.RenderChar(({ params, h }) => [h("msup", params)])
+@MathML.RenderChar(({ params, h }) => [h("msup", [h("mrow", params[0])])])
 @MathML.RenderNode(({ current, left, h }) => {
-  current[0].children.unshift(h("mrow", left ? [left] : []));
+  current[0].children.unshift(h("mrow", left ? left : []));
   return current;
 })
 @WolframAlpha.RenderChar(({ params, h }) => h(`<0>`, params))

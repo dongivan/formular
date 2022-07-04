@@ -4,7 +4,7 @@ import { Latex, MathML, WolframAlpha } from "../renderer";
 @Latex.RenderNode(
   ({ current, left, right }) => `${left || ""}${current}${right || ""}`
 )
-@MathML.RenderChar(({ char, h }) => [h("mtext", { value: char.value })])
+@MathML.RenderChar(({ char, h }) => [h("mtext", char.value)])
 @MathML.RenderNode(({ current, left, right }) => [
   ...(left || []),
   ...current,

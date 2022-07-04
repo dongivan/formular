@@ -75,13 +75,13 @@ export const MathML = new Renderer<MathMLNode[], typeof MathMLNode.create>({
       { stretchy: "true", minsize: "2.047em", maxsize: "2.047em" },
       { stretchy: "true", minsize: "2.470em", maxsize: "2.470em" },
     ][Math.min(Math.max(level, 0), 4)];
-    eles[0].setAttr(attrs);
+    eles[0].setAttrs(attrs);
     return eles;
   },
   interactiveFunction: (eles, sn) => {
     const key = Config.getConfig().interactiveDataName;
     if (key && eles.length > 0) {
-      eles[0].setAttr({
+      eles[0].setAttrs({
         [`data-${key}`]: sn.toString(),
       });
     }
@@ -109,24 +109,16 @@ export const MathML = new Renderer<MathMLNode[], typeof MathMLNode.create>({
     return eles;
   },
   renderVariable: (char) => {
-    return [
-      MathMLNode.create(
-        "mi",
-        mathMLGreekLetters[char.value] || { value: char.value }
-      ),
-    ];
+    const variable = mathMLGreekLetters[char.value] || { value: char.value };
+    return [MathMLNode.create("mi", variable.attrs || {}, variable.value)];
   },
   renderMathFunction: (char, params) => {
     return [
-      MathMLNode.create("mrow", {
-        children: [
-          MathMLNode.create("mi", char.value),
-          MathMLNode.create("mo", "&#x2061;"),
-          MathMLNode.create("mrow", {
-            children: params[0],
-          }),
-        ],
-      }),
+      MathMLNode.create("mrow", [
+        MathMLNode.create("mi", char.value),
+        MathMLNode.create("mo", "&#x2061;"),
+        MathMLNode.create("mrow", params[0] || []),
+      ]),
     ];
   },
   renderTextFunction: (children, ...args: unknown[]) => {
@@ -141,6 +133,6 @@ export const MathML = new Renderer<MathMLNode[], typeof MathMLNode.create>({
         attrs.display = (args[0] as { display: string }).display;
       }
     }
-    return new MathMLNode("math", { children, attrs }).render();
+    return new MathMLNode("math", attrs, children).render();
   },
 });

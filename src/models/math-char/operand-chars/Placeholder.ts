@@ -4,10 +4,13 @@ import { MathChar, OperandChar } from "../internal";
 
 @Latex.RenderChar(() => "⍰")
 @MathML.RenderChar(({ h }) => [
-  h("mrow", {
-    value: Config.getConfig().placeholderMathML,
-    class: Config.getConfig().placeholderCssClass,
-  }),
+  h(
+    "mrow",
+    {
+      class: Config.getConfig().placeholderCssClass,
+    },
+    Config.getConfig().placeholderMathML
+  ),
 ])
 @WolframAlpha.RenderChar(() => "")
 export default class Placeholder extends OperandChar {
