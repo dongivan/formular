@@ -16,7 +16,6 @@ import {
 } from "../math-node";
 import type { MathNode } from "../math-node";
 import Formula from "../Formula";
-// import type InfixList from "./InfixList";
 import { Instance } from "../InstanceResolver";
 
 export default class InfixListMaker extends Instance {
