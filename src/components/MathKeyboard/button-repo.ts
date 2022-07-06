@@ -120,7 +120,7 @@ const maths: (string | OptionalButton)[] = [
   { value: "sum", icon: { scale: 1.2 } },
   "sinh",
   "tan",
-  "times",
+  { value: "times", icon: { scale: 1 } },
 ];
 
 const controls = [
