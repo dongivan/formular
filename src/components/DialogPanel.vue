@@ -2,7 +2,7 @@
   <transition name="dialog-panel" @after-leave="emit('update:show', false)">
     <div
       v-show="refVisible"
-      class="fixed top-0 left-0 w-screen h-screen touch-none bg-gray-400/25 flex flex-col items-center justify-end sm:justify-center"
+      class="fixed top-0 left-0 w-full h-full touch-none bg-gray-400/25 flex flex-col items-center justify-end sm:justify-center"
       @click="close"
     >
       <div
@@ -11,9 +11,7 @@
         class="dialog-content"
         @click.stop
       >
-        <div class="flex-grow"></div>
         <slot :close="close"></slot>
-        <div class="flex-grow"></div>
         <slot name="bottom" :close="close">
           <button
             class="select-none border rounded-md border-gray-500 bg-white px-4 py-1 hover-hover:active:bg-gray-400 active:bg-gray-400 hover-hover:hover:bg-gray-300 focus:outline-none focus:bg-gray-300 focus:ring focus:ring-gray-200"
@@ -56,7 +54,7 @@ function close() {
 
 <style lang="scss" scoped>
 .dialog-content {
-  @apply bg-white p-4 flex flex-col items-center
+  @apply bg-white p-4 flex flex-col items-center justify-evenly
     max-h-[75vh] min-h-[25vh] w-screen
     sm:min-w-[400px] sm:min-h-[200px]
     border-t rounded-t-md
