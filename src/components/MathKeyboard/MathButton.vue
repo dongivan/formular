@@ -5,7 +5,7 @@
     :children="props.button?.children?.map < string > ((child) => child.value)"
     :style="refSpanStyle"
     :badge="props.button.badge || 'auto'"
-    :config="btnConfig"
+    :css="btnCss"
   >
     <SvgIcon
       :name="props.button.icon.name"
@@ -54,38 +54,32 @@ const refSpanStyle = computed(() => ({
 }));
 const BUTTON_TYPES = {
   default: {
-    hover: ["bg-gray-300"],
-    active: ["bg-gray-400"],
-    focus: ["outline-none bg-gray-300 ring-gray-200"],
-    disabled: ["cursor-not-allowed text-gray-400 bg-gray-200"],
+    hover: "!bg-gray-300",
+    active: "!bg-gray-400",
+    focus: "outline-none !bg-gray-300 ring-gray-200",
   },
   primary: {
-    btn: ["bg-blue-400"],
-    hover: ["bg-blue-500"],
-    active: ["bg-blue-600"],
-    focus: ["outline-none bg-blue-500 ring-blue-300"],
-    disabled: ["cursor-not-allowed text-blue-600 bg-blue-400"],
+    default: "!bg-blue-400",
+    hover: "!bg-blue-500",
+    active: "!bg-blue-600",
+    focus: "outline-none !bg-blue-500 ring-blue-300",
   },
   danger: {
-    btn: ["bg-red-400"],
-    hover: ["bg-red-500"],
-    active: ["bg-red-600"],
-    focus: ["outline-none bg-red-500 ring-red-300"],
-    disabled: ["cursor-not-allowed text-red-600 bg-red-400"],
+    default: "!bg-red-400",
+    hover: "!bg-red-500",
+    active: "!bg-red-600",
+    focus: "outline-none !bg-red-500 ring-red-300",
   },
   warning: {
-    btn: ["bg-amber-400"],
-    hover: ["bg-amber-500"],
-    active: ["bg-amber-600"],
-    focus: ["outline-none bg-amber-500 ring-amber-300"],
-    disabled: ["cursor-not-allowed text-amber-600 bg-amber-400"],
+    default: "!bg-amber-400",
+    hover: "!bg-amber-500",
+    active: "!bg-amber-600",
+    focus: "outline-none !bg-amber-500 ring-amber-300",
   },
 };
-const btnConfig = computed(() => {
+const btnCss = computed(() => {
   return {
-    buttonClass: {
-      ...BUTTON_TYPES[props.button.type || "default"],
-    },
+    ...BUTTON_TYPES[props.button.type || "default"],
   };
 });
 </script>

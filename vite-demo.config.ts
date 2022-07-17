@@ -4,6 +4,7 @@ import * as path from "path";
 import { createSvgIconsPlugin } from "vite-plugin-svg-icons";
 import eslintPlugin from "vite-plugin-eslint";
 import { visualizer } from "rollup-plugin-visualizer";
+import Unocss from "unocss/vite";
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -11,6 +12,7 @@ export default defineConfig({
     host: "0.0.0.0",
   },
   plugins: [
+    Unocss(),
     vue(),
     createSvgIconsPlugin({
       svgoOptions: false,

@@ -1,6 +1,8 @@
 import { createApp } from "vue";
 import App from "./App.vue";
-import "./assets/tailwind.css";
+import "@unocss/reset/tailwind.css";
+import "@dongivan/virtual-keyboard/default.css";
+import "uno.css";
 import "virtual:svg-icons-register";
 import MathJaxVuewer from "@dongivan/mathjax-vuewer";
 

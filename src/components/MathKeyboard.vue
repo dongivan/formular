@@ -1,7 +1,6 @@
 <template>
   <VirtualKeyboard
     class="p-1 flex flex-col sm:flex-row gap-1 sm:w-auto bg-white"
-    :config="config"
     @key-pressed="handleKeyPressed"
   >
     <LeftLayout class="hidden sm:grid sm:gap-1" />
@@ -23,11 +22,7 @@
 </template>
 
 <script setup lang="ts">
-import {
-  VirtualKeyboard,
-  KeyboardPage,
-  VirtualKeyboardConfig,
-} from "@dongivan/virtual-keyboard";
+import { VirtualKeyboard, KeyboardPage } from "@dongivan/virtual-keyboard";
 import CalculatorLayout from "./MathKeyboard/CalculatorLayout.vue";
 import Calculator2Layout from "./MathKeyboard/Calculator2Layout.vue";
 import EnglishLayout from "./MathKeyboard/EnglishLayout.vue";
@@ -43,12 +38,20 @@ const emit = defineEmits<{
 const handleKeyPressed = (name: string) => {
   emit("click", name.trim().split(/,[ ]*/) as [string, ...string[]]);
 };
-
-const config: VirtualKeyboardConfig = {
-  buttonClass: {
-    btn: "relative select-none min-w-[calc((100vw-0.25rem)/7-0.25rem)] sm:min-w-[3rem] w-full min-h-[max(calc((100vw-0.25rem)/7-0.25rem),3rem)] sm:min-h-[3rem] h-full text-center sm:text-base rounded-md bg-gray-200",
-    focus: ["outline-none"],
-  },
-  childrenContainerClass: ["bg-gray-200 z-10"],
-};
 </script>
+
+<style lang="scss" scoped>
+:deep() {
+  .vk-btn {
+    @apply \!relative \!select-none \!min-w-[calc((100vw-0.25rem)/7-0.25rem)] \!sm:min-w-[3rem] \!w-full \!min-h-[max(calc((100vw-0.25rem)/7-0.25rem),3rem)] \!sm:min-h-[3rem] \!h-full \!text-center \!sm:text-base \!rounded-md;
+
+    &.default {
+      @apply \!bg-gray-200;
+    }
+  }
+
+  .vk-btn-children {
+    @apply \!bg-gray-200 \!z-10;
+  }
+}
+</style>
